@@ -1,9 +1,10 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "CommonJS",
     "strict": true,
     "esModuleInterop": true,
+//    "outFile": "./dist/server.js",
     "target": "es6",
     "moduleResolution": "node",
     "sourceMap": true,
@@ -12,7 +13,7 @@
     "skipLibCheck": true,
     "removeComments": true,
     "strictNullChecks": true,
-    "watch": true,
+//    "watch": true,
     "experimentalDecorators": true,
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
