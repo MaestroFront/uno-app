@@ -28,6 +28,6 @@ ws.on('connection', (connection, req) => {
     }
   });
   connection.on('close', () => {
-    console.log(`Disconnected ${ip}`);
+    console.log(`Disconnected ${ip.toString()}`);
   });
 });

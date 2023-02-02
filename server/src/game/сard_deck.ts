@@ -38,7 +38,7 @@ class CardDeck {
         if (this.discardedCards.length > 0) {
           const topCard = this.discardedCards.pop();
           this.deck.push(...this.discardedCards);
-          this.discardedCards = [topCard];
+          this.discardedCards = [topCard as number];
           this.shuffleDeck();
         } else {
           console.log('No more cards!');
