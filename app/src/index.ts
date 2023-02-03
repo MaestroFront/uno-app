@@ -1,5 +1,6 @@
 import './style.scss';
 import Controller from './controller';
+import './components/cards/cards';
 
 console.log('hello');
 Controller.start();
