@@ -3,7 +3,7 @@ import CardDeck from './сard_deck';
 import { CardInfo } from './types';
 
 class ComputerPlayer {
-  private readonly playersName: string;
+  public readonly playersName: string;
 
   private cardsInHand: number[];
 
@@ -13,16 +13,25 @@ class ComputerPlayer {
   }
 
   /* Chooses possible moves depending on the card lying on the table and the available cards */
-  selectPossibleOptionsForMove(topCardId: number): number[] {
+  selectPossibleOptionsForMove(topCardId: number, currentColor?: string): number[] {
     const topCardInfo = CardDeck.getColorAndValue(topCardId);
     const optionsOfMove: number[] = [];
     for (let i = 0; i < this.cardsInHand.length; i++) {
       const cardInfo : CardInfo = CardDeck.getColorAndValue(this.cardsInHand[i]);
-      if (cardInfo.color === topCardInfo.color || cardInfo.value === topCardInfo.value || cardInfo.color === CardDeck.colors[4]) {
+      if (topCardInfo.color === CardDeck.colors[4]) {
+        if (cardInfo.color === currentColor || cardInfo.color === CardDeck.colors[4]) {
+          optionsOfMove.push(this.cardsInHand[i]);
+        }
+      } else if (cardInfo.color === topCardInfo.color || cardInfo.value === topCardInfo.value || cardInfo.color === CardDeck.colors[4]) {
         optionsOfMove.push(this.cardsInHand[i]);
       }
     }
     return optionsOfMove;
+  }
+
+  /* Choose color */
+  chooseColor(): string {
+    return CardDeck.colors[Math.floor(Math.random() * 3)];
   }
 
   /* Adds cards to hand */
@@ -30,9 +39,26 @@ class ComputerPlayer {
     this.cardsInHand.push(...cards);
   }
 
+  /* Returns the number of cards in hand */
+  getNumberOfCardsInHand(): number {
+    return this.cardsInHand.length;
+  }
+
+  /* returns all player cards */
+  getYourCards(): number[] {
+    return this.cardsInHand;
+  }
+
+  /* Makes the first move */
+  getFirstMove(): number {
+    const randomCard: number = this.cardsInHand[Math.floor(Math.random() * this.cardsInHand.length)];
+    this.cardsInHand.splice(this.cardsInHand.indexOf(randomCard), 1);
+    return randomCard;
+  }
+
   /* Makes a move on one of the possible options
   * returns 999 if there are no more cards to draw and the computer has no options  */
-  getMove(deck: CardDeck, topCardId: number): number {
+  getMove(deck: CardDeck, topCardId: number, currentColor?: string): number {
     let options: number[] = this.selectPossibleOptionsForMove(topCardId);
     while (options.length === 0 && deck.isNoMoreCards()) {
       deck.getCards();

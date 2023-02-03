@@ -28,22 +28,8 @@
 //   });
 // }
 // export default app;
-import CardDeck from './game/сard_deck';
-const d = new CardDeck();
-console.log(d.getColorAndValue(2));
-console.log(d.getColorAndValue(29));
-console.log(d.getColorAndValue(59));
-console.log(d.getColorAndValue(88));
-console.log(d.getColorAndValue(0));
-console.log(d.getColorAndValue(25));
-console.log(d.getColorAndValue(50));
-console.log(d.getColorAndValue(75));
-console.log(d.getColorAndValue(100));
-console.log(d.getColorAndValue(107));
-console.log(d.getColorAndValue(99));
-console.log(d.getColorAndValue(74));
-console.log(d.getColorAndValue(49));
-console.log(d.getColorAndValue(24));
-console.log(d.getColorAndValue(6));
+import UnoGame from './game/uno-game';
 
+const game = new UnoGame();
 
+game.startGame();
