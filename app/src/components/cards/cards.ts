@@ -239,21 +239,116 @@ const renderPlusTwoCard = (width: string, height: string, color: string): HTMLEl
   
   return svg;
 };
+
+//--------------------------card Plus 4
+const renderCentralSymbolPlusFour = (): Element => {
+  const g = document.createElementNS(ns, 'g');
+  g.append(
+    renderGradient('greenCard', 'lightgreen', 'green', '#176825'),
+    renderRectangle('greenCard', '50', '245'),
+    renderGradient('blueCard', 'lightblue', 'blue', 'darkblue'),
+    renderRectangle('blueCard', '90', '170'),
+    renderGradient('redCard', 'red', 'red', 'darkred'),
+    renderRectangle('redCard', '135', '210'),
+    renderGradient('yellowCard', 'yellow', 'yellow', '#FFC300'),
+    renderRectangle('yellowCard', '175', '130'),
+  );
+  return g;
+};
+
+const renderPlusFourCard = (width: string, height: string): HTMLElement => {
+  const svg = renderCardTemplate(width, height, 'black');
+  svg.classList.add('plusFourCard');
+  svg.id = 'plusFour';
+  svg.append(renderSmallSymbol('+4', '30', '84', '360'));
+  svg.append(renderSmallSymbol('+4', '-248', '-386', '-180'));
+  svg.append(renderCentralSymbolPlusFour());
   
+  return svg;
+};
+ 
+//--------------------multi card
+const renderCentralMultiSymbol = (): Element => {
+  const g = document.createElementNS(ns, 'g');
+  const ellipse = document.createElementNS( ns, 'ellipse');
+  const pathRed = document.createElementNS(ns, 'path');
+  const pathGreen = document.createElementNS(ns, 'path');
+  const pathBlue = document.createElementNS(ns, 'path');
+  const pathYellow = document.createElementNS(ns, 'path');
+
+  ellipse.setAttribute('stroke', 'white');
+  ellipse.setAttribute('transform', 'rotate(25.860746383666992 140.44525146484378,243.06834411621094)');
+  ellipse.setAttribute('ry', '168.75709');
+  ellipse.setAttribute('rx', '91.38603');
+  ellipse.setAttribute('cy', '243.06835');
+  ellipse.setAttribute('cx', '140.44527');
+  ellipse.setAttribute('fill-opacity', '0');
+  ellipse.setAttribute('fill', '#000000');
   
+  pathRed.setAttribute('stroke', 'white');
+  pathRed.setAttribute('d', 'm198.40001,84.39999c78.99999,1 -12.79366,205.81348 -65.17329,175.01284c-52.37964,-30.80064 -90.03459,-22.73311 -73.03459,-59.73311c17,-37 59.20788,-116.27973 138.20788,-115.27973z');
+  pathRed.setAttribute('fill', redColor);
   
+  pathGreen.setAttribute('stroke', 'white');
+  pathGreen.setAttribute('d', 'm150.0519,247.7688c0,0 -147.34031,134.24862 -70.3855,148.33064c76.95481,14.08202 158.60198,-118.28898 152.03268,-129.55461c-6.56931,-11.26562 -81.64718,-18.77603 -81.64718,-18.77603z');
+  pathGreen.setAttribute('fill', greenColor);
+  pathGreen.setAttribute('transform', 'rotate(-2.6154720783233643 144.7422790527318,322.457824707031)');
   
-  
+  pathBlue.setAttribute('stroke', 'white');
+  pathBlue.setAttribute('d', 'm219.4,92.39999l-81.4,165.16183c0,0 30.4,127.46408 88.4,14.99576c58,-112.46832 0,-180.15758 -7,-180.15758z');
+  pathBlue.setAttribute('fill', blueColor);
     
+  pathYellow.setAttribute('stroke', 'white');
+  pathYellow.setAttribute('d', 'm37.52665,246.52526c33.88023,-120.31747 102.95841,2.12685 103.47396,14.89692c0.51555,12.77007 -61.90296,138.46164 -69.12058,135.57034c-7.2176,-2.89131 -68.23361,-30.14979 -34.35338,-150.46726z');
+  pathYellow.setAttribute('fill', yellowColor);
+    
+  g.append(ellipse, pathRed, pathYellow, pathGreen, pathBlue);
+     
+  return g;
+};
+
+const renderMultiCard = (width: string, height: string): HTMLElement => {
+  const svg = renderCardTemplate(width, height, 'black');
+  svg.classList.add('multidCard');
+  svg.id = 'multi';
+  svg.append(renderCentralMultiSymbol());
+  return svg;
+};
   
+const renderBackSide = (width: string, height: string): Element => {
+  const svg = document.createElementNS(ns, 'svg');
+  svg.classList.add('backSide');
+  svg.id = 'backSide';
+  svg.setAttributeNS(null, 'width', width);
+  svg.setAttributeNS(null, 'height', height);
+  svg.setAttributeNS(null, 'fill', 'black');
+  svg.innerHTML = `
+    <symbol id="backCard" viewBox="0 0 300 520" stroke="white" stroke-width="11">
+     <rect x="15" y="25" rx="10" ry="15" width="250" height="420" />
+      <ellipse cx="230" cy="160" rx="97" ry="172" fill="red" stroke="red" style="transform: rotate(25deg);" />
+      <svg width="240" height="410" x="19" y="30">
+        <ellipse cx="-130" cy="230" rx="20" ry="20" fill="black" stroke="black" stroke-dasharray="6,7" d="M5 20 l215 0" d="M5 40 l215 0" stroke-width="418" opacity="0.15" style="-ms-transform: rotate(25deg);-webkit-transform: rotate(25deg); transform: rotate( -65deg);" />
+      </svg>
+    </symbol>
+    <use xlink:href="#backCard"></use>
+    <linearGradient id="Gradient2" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="white"/>
+      <stop offset="55%" stop-color="gold"/>
+      <stop offset="100%" stop-color="#806308"/>
+    </linearGradient>
+    <text class="centerText" x="-40" y="300" fill="url(#Gradient2)">UNO</text> 
+  `;
+  return svg;
 
-
-
-
+};  
+  
 //-------------------------------Listeners
 window.addEventListener('DOMContentLoaded', () => {
   body.append(renderCardWithNumber('300', '520', '2', redColor));
   body.append(renderReverseCard('300', '520', blueColor));
   body.append(renderBlockedCard('300', '520', yellowColor));
   body.append(renderPlusTwoCard('300', '520', greenColor));
+  body.append(renderPlusFourCard('300', '520'));
+  body.append(renderMultiCard('300', '520'));
+  body.append(renderBackSide('300', '520'));
 });
