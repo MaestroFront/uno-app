@@ -12,7 +12,7 @@ class CardDeck {
 
   private discardedCards: number[];
 
-  private readonly colors:string[] = ['blue', 'green', 'red', 'yellow', 'black'];
+  public static readonly colors:string[] = ['blue', 'green', 'red', 'yellow', 'black'];
 
   constructor() {
     this.deck = [...Array(108).keys()].map(i => i++);
@@ -60,9 +60,8 @@ class CardDeck {
   }
 
   /* Returns the color and value of the card */
-  getColorAndValue(cardId: number): CardInfo {
-    const cardInfo: CardInfo = { color: 'blue', value: 0 };
-    cardInfo.color = this.colors[Math.floor(cardId / 25)];
+  static getColorAndValue(cardId: number): CardInfo {
+    const cardInfo: CardInfo = { color: CardDeck.colors[Math.floor(cardId / 25)], value: 0 };
     if (cardId < 100) {
       if (cardId % 25 < 19) {
         cardInfo.value = cardId % 25 < 10 ? cardId % 25 : ((cardId % 25) % 10) + 1;
@@ -73,6 +72,13 @@ class CardDeck {
       cardInfo.value = cardId < 104 ? 13 : 14;
     }
     return cardInfo;
+  }
+
+  /* Checks if there are cards to issue
+  * 'true' if there are cards,
+  * 'false' if there are no cards */
+  isNoMoreCards(): boolean {
+    return this.discardedCards.length > 0 || this.deck.length > 0;
   }
 }
 
