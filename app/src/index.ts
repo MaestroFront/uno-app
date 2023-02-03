@@ -2,6 +2,7 @@ import './style.scss';
 import Controller from './controller';
 import './components/cards/cards';
 import './components/main-page/main-page';
+import './components/rules-page/rules-page';
 
 console.log('hello');
 Controller.start();
