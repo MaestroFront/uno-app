@@ -1,3 +1,4 @@
+import { CardInfo } from './types';
 /* Generates a deck of cards to play Uno.
    There are 108 cards in a deck, each card has its own serial number from 0 to 107.
     - cards of 4 colors: blue, yellow, red, green
@@ -10,6 +11,8 @@ class CardDeck {
   private usersCards: number[];
 
   private discardedCards: number[];
+
+  private readonly colors:string[] = ['blue', 'green', 'red', 'yellow', 'black'];
 
   constructor() {
     this.deck = [...Array(108).keys()].map(i => i++);
@@ -54,6 +57,22 @@ class CardDeck {
   discardCard(cardId: number): void {
     this.usersCards.splice(this.usersCards.indexOf(cardId), 1);
     this.discardedCards.push(cardId);
+  }
+
+  /* Returns the color and value of the card */
+  getColorAndValue(cardId: number): CardInfo {
+    const cardInfo: CardInfo = { color: 'blue', value: 0 };
+    cardInfo.color = this.colors[Math.floor(cardId / 25)];
+    if (cardId < 100) {
+      if (cardId % 25 < 19) {
+        cardInfo.value = cardId % 25 < 10 ? cardId % 25 : ((cardId % 25) % 10) + 1;
+      } else {
+        cardInfo.value = cardId % 25 < 21 ? 10 : cardId % 25 < 23 ? 11 : 12;
+      }
+    } else {
+      cardInfo.value = cardId < 104 ? 13 : 14;
+    }
+    return cardInfo;
   }
 }
 
