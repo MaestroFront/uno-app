@@ -1,0 +1,123 @@
+* {
+  box-sizing: border-box;
+}
+
+.html {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.body {
+  width: 100%;
+  height: 100%;
+  background: #41144e;
+  background: -webkit-linear-gradient(to right, #c27e25, #41144e);
+  background: linear-gradient(to right, #c27e25, #41144e);
+}
+
+.header,
+.main,
+.footer {
+  width: 100%;
+  padding: 5px 10px;
+}
+
+.header,
+.footer {
+  padding: 5px 50px;
+  height: 10%;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.header .button:not(:last-child) {
+  margin-right: 15px;
+}
+
+.header .btns-container {
+  transform: translate(0%, -200%);
+  max-width: 60%;
+  transition: all 1s ease-in-out;
+}
+
+.btns-container.show {
+  transform: translate(0%, 0%);
+}
+
+.main {
+  height: 80%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.choice-game {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+}
+
+.logo {
+  max-width: 50%;
+  opacity: 0.8;
+}
+
+.links-container {
+  width: 30%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.links-container .img {
+  width: 40px;
+}
+
+[data-title] {
+  position: relative;
+}
+[data-title]:after {
+  content: attr(data-title);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 2;
+  position: absolute;
+  top: -20px;
+  left: 0%;
+  padding: 2px 8px;
+  font-size: 13px;
+  font-weight: 300;
+  white-space: nowrap;
+  color: #fff;
+  background-color: white;
+  background-color: red;
+  border-radius: 3px;
+  box-shadow: 0 0 5px #ccc;
+}
+[data-title]:hover:after {
+  opacity: 0.5;
+  visibility: visible;
+}
+
+.version {
+  position: absolute;
+  left: 5%;
+  bottom: 5%;
+}
+
+.settings {
+  width: 5%;
+  cursor: pointer;
+  transition: all .5s ease-in-out;
+}
