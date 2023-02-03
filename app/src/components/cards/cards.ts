@@ -1,6 +1,6 @@
 import { renderCardTemplate, renderSmallSymbol, renderGradient, renderRectangle, setClassName, checkColorForGradient } from './cards-helpers';
+import { body } from '../global-compomemts/constants';
 
-const body = document.querySelector('body') as HTMLBodyElement;
 export const ns = 'http://www.w3.org/2000/svg' as string;
 export const redColor = '#c01e1e' as string;
 export const blueColor = 'darkblue' as string;

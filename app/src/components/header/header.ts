@@ -1,3 +1,4 @@
+import { body } from '../global-compomemts/constants';
 import { createElement, createImage, createButton } from '../helpers/helpers';
 
 const changeLanguage = (): void => {
@@ -12,13 +13,36 @@ const changeLanguage = (): void => {
 const toggleMusic = (): void => {
   const btnMusicVolume = document.querySelector('.btn-music') as HTMLButtonElement;
   btnMusicVolume.classList.toggle('off');
-  btnMusicVolume.classList.contains('off') ? btnMusicVolume.textContent = 'music OFF' : btnMusicVolume.textContent = 'music ON';
+  if (btnMusicVolume.classList.contains('off')) {
+    btnMusicVolume.textContent = 'music OFF';
+  } else {
+    btnMusicVolume.textContent = 'music ON';
+  }
 };
 
 const toggleSounds = (): void => {
   const btnSoundsVolume = document.querySelector('.btn-sounds') as HTMLButtonElement;
   btnSoundsVolume.classList.toggle('off');
-  btnSoundsVolume.classList.contains('off') ? btnSoundsVolume.textContent = 'sound OFF' : btnSoundsVolume.textContent = 'sound ON';
+  if (btnSoundsVolume.classList.contains('off')) {
+    btnSoundsVolume.textContent = 'sound OFF';
+  } else {
+    btnSoundsVolume.textContent = 'sound ON';
+  }
+};
+
+const createBtnsHeaderContainer = () => {
+  const container = createElement('div', 'btns-container');
+  const btnLang = createButton('btn-lang', 'button', 'en');
+  btnLang.addEventListener('click', changeLanguage);
+
+  const btnMusicVolume = createButton('btn-music', 'button', 'music ON');
+  btnMusicVolume.addEventListener('click', toggleMusic);
+
+  const btnSoundsVolume = createButton('btn-sounds', 'button', 'sound ON');
+  btnSoundsVolume.addEventListener('click', toggleSounds);
+
+  container.append(btnLang, btnMusicVolume, btnSoundsVolume);
+  return container;
 };
 
 const createHeader = (): HTMLDivElement => {
@@ -33,25 +57,5 @@ const createHeader = (): HTMLDivElement => {
   return header;
 };
 
-const createBtnsHeaderContainer = () => {
-    const container = createElement('div', 'btns-container');
-    const btnLang = createButton('btn-lang', 'button', 'en');
-    btnLang.onclick = () => {
-        changeLanguage();
-    };
-
-    const btnMusicVolume = createButton('btn-music', 'button', 'music ON');
-    btnMusicVolume.onclick = () => {
-        toggleMusic();
-    };
-
-    const btnSoundsVolume = createButton('btn-sounds', 'button', 'sound ON');
-    btnSoundsVolume.onclick = () => {
-        toggleSounds();
-    };
-
-    container.append(btnLang, btnMusicVolume, btnSoundsVolume);
-    return container;
-  };
-
+body.append(createHeader());
   
