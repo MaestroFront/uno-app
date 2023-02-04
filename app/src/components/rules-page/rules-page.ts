@@ -1,8 +1,9 @@
-import { blueColor, greenColor, redColor, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from '../cards/cards';
+import { blueColor, greenColor, redColor, yellowColor, renderCardWithNumber, renderMultiCard, renderBlockedCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard } from '../cards/cards';
 import { langData } from '../data';
 import { body } from '../global-components/constants';
 import { createHeader } from '../header/header';
 import { createElement, createParagraph } from '../helpers/helpers';
+
 
 const createCardBlock  = (currCard: Element, cardTitle: string, cardValue: string, cardText: string): HTMLDivElement => {
   const card = createElement('div', 'card-block') as HTMLDivElement;
@@ -22,12 +23,12 @@ const createCardBlock  = (currCard: Element, cardTitle: string, cardValue: strin
 const createCardsDescription = (): HTMLDivElement => {
   const cardsDescription = createElement('div', 'cards-description') as HTMLDivElement;
   
-  const numberedCard = createCardBlock(renderCardWithNumber('100%', '100%', '8', greenColor), langData.ru['numbered-card-title'], langData.ru['numbered-card-points'], langData.ru['numbered-card-descr']);
-  const plusTwoCard = createCardBlock(renderPlusTwoCard('100%', '100%', blueColor), langData.ru['plustwo-card-title'], langData.ru['action-card-points'], langData.ru['plustwo-card-descr']);
-  const reverseCard = createCardBlock(renderReverseCard('100%', '100%', redColor), langData.ru['reverse-card-title'], langData.ru['action-card-points'], langData.ru['reverse-card-descr']);
-  const blockedCard = createCardBlock(renderBlockedCard('100%', '100%', yellowColor), langData.ru['blocked-card-title'], langData.ru['action-card-points'], langData.ru['blocked-card-descr']);
-  const plusFourCard = createCardBlock(renderPlusFourCard('100%', '100%'), langData.ru['plusfour-card-title'], langData.ru['black-card-points'], langData.ru['plusfour-card-descr']);
-  const multiCard = createCardBlock(renderMultiCard('100%', '100%'), langData.ru['multi-card-title'], langData.ru['black-card-points'], langData.ru['multi-card-descr']);
+  const numberedCard = createCardBlock(renderCardWithNumber('8', greenColor, 0.3), langData.ru['numbered-card-title'], langData.ru['numbered-card-points'], langData.ru['numbered-card-descr']);
+  const plusTwoCard = createCardBlock(renderPlusTwoCard(blueColor, 0.3), langData.ru['plustwo-card-title'], langData.ru['action-card-points'], langData.ru['plustwo-card-descr']);
+  const reverseCard = createCardBlock(renderReverseCard(redColor, 0.3), langData.ru['reverse-card-title'], langData.ru['action-card-points'], langData.ru['reverse-card-descr']);
+  const blockedCard = createCardBlock(renderBlockedCard(yellowColor, 0.3), langData.ru['blocked-card-title'], langData.ru['action-card-points'], langData.ru['blocked-card-descr']);
+  const plusFourCard = createCardBlock(renderPlusFourCard(0.3), langData.ru['plusfour-card-title'], langData.ru['black-card-points'], langData.ru['plusfour-card-descr']);
+  const multiCard = createCardBlock(renderMultiCard(0.3), langData.ru['multi-card-title'], langData.ru['black-card-points'], langData.ru['multi-card-descr']);
   cardsDescription.append(numberedCard, blockedCard, reverseCard, plusTwoCard, multiCard, plusFourCard);
 
   cardsDescription.append();
