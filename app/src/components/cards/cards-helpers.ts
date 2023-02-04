@@ -2,20 +2,18 @@ import { ns, redColor, greenColor, yellowColor, blueColor } from './cards';
 
 //--------------card template
 export const renderCardTemplate = (
-  width: string,
-  height: string,
   color: string,
+  currScale: number,
 ): HTMLElement => {
   const svg = document.createElementNS(ns, 'svg') as HTMLElement;
-  
-  svg.setAttributeNS(null, 'width', width);
-  svg.setAttributeNS(null, 'height', height);
+  svg.setAttributeNS(null, 'width', `${300 * currScale}`);
+  svg.setAttributeNS(null, 'height', `${520 * currScale}`);
   svg.setAttributeNS(null, 'fill', color);
   svg.innerHTML = `
-      <symbol id="mySymbol" viewBox="0 0 300 520" stroke="white" stroke-width="11">
-            <rect class="mainCard" x="15" y="25" rx="10" ry="15" width="250" height="420"/>
-            <ellipse cx="230" cy="160" rx="105" ry="183"
-      style="fill:white;stroke:white;stroke-width:3;transform: rotate(25deg);"/>
+      <symbol id="mySymbol" viewBox="0 0 ${300 * currScale} ${520 * currScale}" stroke="white" stroke-width="${11 * currScale}">
+            <rect class="mainCard" x="${15 * currScale}" y="${25 * currScale}" rx="${10 * currScale}" ry="${15 * currScale}" width="${250 * currScale}" height="${420 * currScale}"/>
+            <ellipse cx="${230 * currScale}" cy="${160 * currScale}" rx="${105 * currScale}" ry="${183 * currScale}"
+      style="fill:white;stroke:white;stroke-width:${3 * currScale};transform: rotate(25deg);"/>
           </symbol>  
          
         <use xlink:href="#mySymbol"></use>
@@ -24,10 +22,10 @@ export const renderCardTemplate = (
 };
   
 //---------------small symbols om the top and bottom
-export const renderSmallSymbol = (cardSymbol: string, x1: string, y1: string, deg: string): Element => {
+export const renderSmallSymbol = (cardSymbol: string, x1: number, y1: number, deg: string, currScale: number): Element => {
   const g = document.createElementNS(ns, 'g');
   g.innerHTML = `
-      <text x=${x1} y=${y1} style="transform: rotate(${deg}deg)" font-family="Arial" font-size="55" font-style="italic" font-weight="bold" fill="white">${cardSymbol}</text>
+      <text x=${x1 * currScale} y=${y1 * currScale} style="transform: rotate(${deg}deg)" font-family="Arial" font-size="${55 * currScale}" font-style="italic" font-weight="bold" fill="white">${cardSymbol}</text>
       `;
   return g;
 };
@@ -53,17 +51,17 @@ export const renderGradient = (
   return gradient;
 };
     
-export const renderRectangle = (recId: string, x: string, y: string): Element => {
+export const renderRectangle = (recId: string, x: number, y: number, currScale: number): Element => {
   const rect = document.createElementNS(ns, 'rect');
-  rect.setAttribute('x', x);
-  rect.setAttribute('y', y);
-  rect.setAttribute('rx', '5');
-  rect.setAttribute('ry', '5');
-  rect.setAttribute('width', '65');
-  rect.setAttribute('height', '100');
+  rect.setAttribute('x', `${x * currScale}`);
+  rect.setAttribute('y', `${y * currScale}`);
+  rect.setAttribute('rx', `${5 * currScale}`);
+  rect.setAttribute('ry', `${5 * currScale}`);
+  rect.setAttribute('width', `${65 * currScale}`);
+  rect.setAttribute('height', `${100 * currScale}`);
   rect.setAttribute('fill', `url(#${recId})`);
   rect.setAttribute('stroke', 'white');
-  rect.setAttribute('stroke-width', '4');
+  rect.setAttribute('stroke-width', `${4 * currScale}`);
     
   return rect;
 };  
