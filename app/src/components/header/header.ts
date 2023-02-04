@@ -1,4 +1,4 @@
-import { body } from '../global-compomemts/constants';
+// import { body } from '../global-compomemts/constants';
 import { createElement, createImage, createButton } from '../helpers/helpers';
 
 const changeLanguage = (): void => {
@@ -45,7 +45,7 @@ const createBtnsHeaderContainer = () => {
   return container;
 };
 
-const createHeader = (): HTMLDivElement => {
+export const createHeader = (): HTMLDivElement => {
   const header = createElement('header', 'header') as HTMLDivElement;
   const settings = createImage(
     'settings',
@@ -57,5 +57,5 @@ const createHeader = (): HTMLDivElement => {
   return header;
 };
 
-body.append(createHeader());
+// body.append(createHeader());
   
