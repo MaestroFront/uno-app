@@ -1,0 +1,78 @@
+.rules-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 80%;
+    padding: 10px;
+    color: white;
+    font-size: 1.1em;
+    gap: 40px;
+}
+
+.card-block {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;   
+    width: 48%; 
+    height: 100%; 
+}
+
+.card-block:first-child,
+.card-block:nth-child(2),
+.card-block:nth-child(3) {
+    width: 30%; 
+}
+
+.card-block:nth-child(4),
+.card-block:nth-child(5) {
+    width: 47%; 
+}
+.card-block:last-child {
+    width: 100%; 
+}
+.cards-description {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px 10px;
+    flex-wrap: wrap;
+}
+
+.card-description {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.rules-description,
+.card-block {
+    background: #ffffff00;
+    border: 3px #ffffff45 solid;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 1px 25px rgba(0, 0, 0, 0.2);
+
+
+}
+
+.card-title,
+.rules-description-title {
+    font-size: 1.5rem;
+    color: #0e1632;
+    font-weight: 700;
+}
+
+.rules-description-block {
+    margin-bottom: 20px;
+}
+
+.rules-description-text {
+    text-align: justify;
+    font-size: 1.2em;
+}
+

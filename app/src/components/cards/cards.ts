@@ -1,5 +1,5 @@
 import { renderCardTemplate, renderSmallSymbol, renderGradient, renderRectangle, setClassName, checkColorForGradient } from './cards-helpers';
-import { body } from '../global-compomemts/constants';
+import { body } from '../global-components/constants';
 
 export const ns = 'http://www.w3.org/2000/svg' as string;
 export const redColor = '#c01e1e' as string;
@@ -16,7 +16,7 @@ const renderCentralSymbolNumber = (cardSymbol: string, color: string) => {
   return g;
 };
 
-const renderCardWithNumber = (
+export const renderCardWithNumber = (
   width: string,
   height: string,
   cardSymbol: string,
@@ -49,7 +49,7 @@ const renderCentralSymbolReverse = (color: string): Element => {
   return g;
 };
 
-const renderReverseCard = (width: string, height: string, color: string) => {
+export const renderReverseCard = (width: string, height: string, color: string) => {
   const svg = renderCardTemplate(width, height, color);
   svg.classList.add('reverseCard', setClassName(color));
   //   svg.id = 'reverse';
@@ -91,7 +91,7 @@ const renderCentralSymbolBlock = (color: string): Element => {
   return g;
 };
 
-const renderBlockedCard = (width: string, height: string, color: string): HTMLElement => {
+export const renderBlockedCard = (width: string, height: string, color: string): HTMLElement => {
   const svg = renderCardTemplate(width, height, color);
   svg.classList.add('blockedCard', setClassName(color));
   //svg.id = 'blocked';
@@ -124,7 +124,7 @@ const renderCentralSymbolPlusTwo = (color: string): Element => {
   return g;
 };
 
-const renderPlusTwoCard = (width: string, height: string, color: string): HTMLElement => {
+export const renderPlusTwoCard = (width: string, height: string, color: string): HTMLElement => {
   const svg = renderCardTemplate(width, height, color);
   svg.classList.add('plusTwoCard', setClassName(color));
   svg.id = 'plusTwo';
@@ -151,7 +151,7 @@ const renderCentralSymbolPlusFour = (): Element => {
   return g;
 };
 
-const renderPlusFourCard = (width: string, height: string): HTMLElement => {
+export const renderPlusFourCard = (width: string, height: string): HTMLElement => {
   const svg = renderCardTemplate(width, height, 'black');
   svg.classList.add('plusFourCard');
   svg.id = 'plusFour';
@@ -202,7 +202,7 @@ const renderCentralMultiSymbol = (): Element => {
   return g;
 };
 
-const renderMultiCard = (width: string, height: string): HTMLElement => {
+export const renderMultiCard = (width: string, height: string): HTMLElement => {
   const svg = renderCardTemplate(width, height, 'black');
   svg.classList.add('multidCard');
   svg.id = 'multi';
