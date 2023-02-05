@@ -1,7 +1,5 @@
 import { blueColor, greenColor, redColor, yellowColor, renderCardWithNumber, renderMultiCard, renderBlockedCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard } from '../cards/cards';
 import { langData } from '../data';
-import { body } from '../global-components/constants';
-import { createHeader } from '../header/header';
 import { createElement, createParagraph } from '../helpers/helpers';
 
 
@@ -59,12 +57,7 @@ const createRulesBlock = (): HTMLDivElement => {
   return rulesBlock;
 };
 
-const createRulesPage = () => {
-  const main = createElement('main', 'main') as HTMLDivElement;
+export const createRulesPage = () => {
+  const main = document.querySelector('.main') as HTMLDivElement;
   main.append(createRulesBlock());
-  body.append(createHeader(), main);
 };
-
-
-
-createRulesPage();
