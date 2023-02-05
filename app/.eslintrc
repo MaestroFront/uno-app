@@ -18,5 +18,7 @@
     "import/no-extraneous-dependencies": "off",
     "import/extensions": "off",
     "no-alert": "warn"
+    // "allowTernary": "true",
+    // "always-multiline": "never"
   }
 }
