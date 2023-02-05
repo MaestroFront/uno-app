@@ -1,7 +1,23 @@
+import { createDevelopedByContainer } from '../developed-by/developed-by';
+import { createHeader } from '../header/header';
+import { createMainPage } from '../main-page/main-page';
+import { createFooter } from '../footer/footer';
+
 export const createElement = (tagName: string, className: string) => {
   const element = document.createElement(tagName);
   element.classList.add(className);
   return element;
+};
+
+export const createPage = () => {
+  const body = document.querySelector('.body') as HTMLDivElement;
+  const header = createElement('header', 'header') as HTMLDivElement;
+  const main = createElement('main', 'main') as HTMLDivElement;
+  const footer = createElement('footer', 'footer') as HTMLDivElement;
+  body.append(header, main, footer, createDevelopedByContainer());
+  createHeader();
+  createMainPage();
+  createFooter();
 };
 
 export const createImage = (className: string, src: string, alt: string) => {
