@@ -6,13 +6,13 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(9001, () => {
-  console.log('Listen port 8000');
+  console.log('Listen port 9001');
 });
 
 const ws = new WebSocket.Server({ server });
 ws.on('connection', (connection, req) => {
   const ip = req.socket.remoteAddress;
-  // console.log(`Connected ${ip}`);
+  console.log(`Connected ${ip as string}`);
   connection.on('message', (message) => {
     // console.log('Received: ' + message);
     for (const client of ws.clients) {
@@ -28,6 +28,6 @@ ws.on('connection', (connection, req) => {
     }
   });
   connection.on('close', () => {
-    console.log(`Disconnected ${ip.toString() }`);
+    // console.log(`Disconnected ${ip.toString() }`);
   });
 });

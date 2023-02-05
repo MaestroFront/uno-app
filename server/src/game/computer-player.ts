@@ -31,7 +31,8 @@ class ComputerPlayer {
 
   /* Choose color */
   chooseColor(): string {
-    return CardDeck.colors[Math.floor(Math.random() * 3)];
+    const colorArr = ['blue', 'green', 'red', 'yellow'].sort(() => Math.random() - 0.5);
+    return colorArr[0];
   }
 
   /* Adds cards to hand */
@@ -51,7 +52,10 @@ class ComputerPlayer {
 
   /* Makes the first move */
   getFirstMove(): number {
-    const randomCard: number = this.cardsInHand[Math.floor(Math.random() * this.cardsInHand.length)];
+    let randomCard: number = this.cardsInHand[Math.floor(Math.random() * this.cardsInHand.length)];
+    while (CardDeck.getColorAndValue(randomCard).value > 9) {
+      randomCard = this.cardsInHand[Math.floor(Math.random() * this.cardsInHand.length)];
+    }
     this.cardsInHand.splice(this.cardsInHand.indexOf(randomCard), 1);
     return randomCard;
   }
@@ -59,9 +63,11 @@ class ComputerPlayer {
   /* Makes a move on one of the possible options
   * returns 999 if there are no more cards to draw and the computer has no options  */
   getMove(deck: CardDeck, topCardId: number, currentColor?: string): number {
-    let options: number[] = this.selectPossibleOptionsForMove(topCardId);
+    let options: number[] = this.selectPossibleOptionsForMove(topCardId, currentColor);
     while (options.length === 0 && deck.isNoMoreCards()) {
-      deck.getCards();
+      this.takeCards(deck.getCards());
+      console.log(`${this.playersName} take a card`);
+      console.log(...this.cardsInHand);
       options = this.selectPossibleOptionsForMove(topCardId);
     }
     if (options.length > 0) {

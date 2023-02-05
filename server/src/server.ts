@@ -32,4 +32,4 @@ import UnoGame from './game/uno-game';
 
 const game = new UnoGame();
 
-game.startGame();
+game.startGame().then(()=> console.log('Run!')).catch(err => console.log(err));

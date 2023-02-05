@@ -2,80 +2,73 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      margin: 0 auto;
-      max-width: 800px;
-      padding: 0 20px;
-    }
-
-    .container {
-      border: 2px solid #dedede;
-      background-color: #f1f1f1;
-      border-radius: 5px;
-      padding: 10px;
-      margin: 10px 0;
-    }
-
-    .darker {
-      border-color: #ccc;
-      background-color: #ddd;
-    }
-
-    .container::after {
-      content: "";
-      clear: both;
-      display: table;
-    }
-
-    .container img {
-      float: left;
-      max-width: 60px;
-      width: 100%;
-      margin-right: 20px;
-      border-radius: 50%;
-    }
-
-    .container img.right {
-      float: right;
-      margin-left: 20px;
-      margin-right:0;
-    }
-
-    .time-right {
-      float: right;
-      color: #aaa;
-    }
-
-    .time-left {
-      float: left;
-      color: #999;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="chat">
   <h2>Chat Messages</h2>
 
-  <div class="container">
-    <img src="/w3images/bandmember.jpg" alt="Avatar" style="width:100%;">
-    <p>Hello. How are you today?</p>
-    <span class="time-right">11:00</span>
+  <div class="container" style="height: 300px">
+
   </div>
 </div>
 
+<div class="play_field">
 
+</div>
+
+<div class="cards" style="display: flex; width: 100%">
+  <div class="user0" style="display: flex; flex-direction: column; width: 25%; border: solid black 2px"></div>
+  <div class="user1" style="display: flex;flex-direction: column; width: 25%; border: solid black 2px"></div>
+  <div class="user2" style="display: flex;flex-direction: column; width: 25%; border: solid black 2px"></div>
+  <div class="user3" style="display: flex;flex-direction: column; width: 25%; border: solid black 2px"></div>
+</div>
+
+<input id="message" type="text" >
+<button onclick="sent1()">SEND</button>
 <script>
   let webSocket1 = new WebSocket('ws://localhost:9001')
+  document.querySelector('.user0').addEventListener('click', ev => {
+    ev.stopPropagation()
+    webSocket1.send('user0_turn: '.concat(ev.target.id))
+  })
+  document.querySelector('.user1').addEventListener('click', ev => {
+    ev.stopPropagation()
+    webSocket1.send('user1_turn: '.concat(ev.target.id))
+  })
+  document.querySelector('.user2').addEventListener('click', ev => {
+    ev.stopPropagation()
+    webSocket1.send('user2_turn: '.concat(ev.target.id))
+  })
+  document.querySelector('.user3').addEventListener('click', ev => {
+    ev.stopPropagation()
+    webSocket1.send('user3_turn: '.concat(ev.target.id))
+  })
   webSocket1.addEventListener('message', (event) => {
-    document.querySelector('.chat').innerHTML += event.data
+    if (event.data.toString().includes('users_cards:')) {
+      if (event.data.toString().includes('pl0')) {
+        document.querySelector('.user0').innerHTML = event.data.toString().replace('users_cards:pl0', '')
+      }
+      if (event.data.toString().includes('pl1')) {
+        document.querySelector('.user1').innerHTML = event.data.toString().replace('users_cards:pl1', '')
+      }
+      if (event.data.toString().includes('pl2')) {
+        document.querySelector('.user2').innerHTML = event.data.toString().replace('users_cards:pl2', '')
+      }
+      if (event.data.toString().includes('pl3')) {
+        document.querySelector('.user3').innerHTML = event.data.toString().replace('users_cards:pl3', '')
+      }
+    } else if (event.data.toString().includes('top_card: ')) {
+      document.querySelector('.play_field').innerHTML = event.data.toString().replace('top_card: ', '')
+    }
+    else {
+      document.querySelector('.container').innerHTML += event.data
+    }
   });
   function sent1() {
     webSocket1.send(document.querySelector('#message').value)
     console.log(document.querySelector('#message').value)
   }
 </script>
-<input id="message" type="text" >
-<button onclick="sent1()">SEND</button>
 </body>
 </html>

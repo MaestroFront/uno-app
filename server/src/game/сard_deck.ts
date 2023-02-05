@@ -78,6 +78,7 @@ class CardDeck {
   * 'true' if there are cards,
   * 'false' if there are no cards */
   isNoMoreCards(): boolean {
+    console.log(this.discardedCards.length > 0 || this.deck.length > 0);
     return this.discardedCards.length > 0 || this.deck.length > 0;
   }
 }
