@@ -36,18 +36,23 @@
 
 .btn-computer,
 .btn-multiplayer {
-    padding: 25px 30px;
-    font-size: 20px;
-    margin-bottom: 15px;
+  padding: 25px 30px;
+  font-size: 20px;
+  margin-bottom: 15px;
 }
 
 .btn-rules {
-    width: 50%;
-    margin: 0 auto;
+  width: 50%;
+  margin: 0 auto;
 }
 
 .btn-cross {
-    position: absolute;
-    top: 5%;
-    right: 5%;
+  position: absolute;
+  top: 5%;
+  right: 5%;
+}
+
+.btn-main-page {
+  position: absolute;
+  left: 5%;
 }
