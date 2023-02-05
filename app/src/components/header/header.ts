@@ -46,7 +46,7 @@ const createBtnsHeaderContainer = () => {
 };
 
 export const createHeader = (): HTMLDivElement => {
-  const header = createElement('header', 'header') as HTMLDivElement;
+  const header = document.querySelector('.header') as HTMLDivElement;
   const settings = createImage(
     'settings',
     '../assets/img/settings.png',
@@ -57,5 +57,5 @@ export const createHeader = (): HTMLDivElement => {
   return header;
 };
 
-// body.append(createHeader());
+
   
