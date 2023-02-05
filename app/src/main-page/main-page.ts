@@ -1,13 +1,9 @@
 import { createElement, createButton, createImage } from '../helpers/helpers';
-import { createDevelopedByContainer } from '../developed-by/developed-by';
+import { createChoiceContainer } from '../choice-quantity-players/choice';
+import { createGameField } from '../game-field/game-field';
 
-const body = document.querySelector('.body') as HTMLDivElement;
-const header = createElement('header', 'header') as HTMLDivElement;
-const main = createElement('main', 'main') as HTMLDivElement;
-const footer = createElement('footer', 'footer') as HTMLDivElement;
-body.append(header, main, footer);
-
-const createBtnsHeaderContainer = () => {
+export const createHeader = () => {
+  const header = document.querySelector('.header') as HTMLDivElement;
   const container = createElement('div', 'btns-container');
   const btnLang = createButton('btn-lang', 'button', 'en');
   btnLang.onclick = () => {
@@ -54,18 +50,15 @@ const createBtnsHeaderContainer = () => {
         .catch((error) => console.log('Не удалось поделиться', error));
     }
   };
+  const settings = createImage(
+    'settings',
+    '../assets/img/settings.png',
+    'settings',
+  );
   container.append(btnLang, btnDevelopedBy, btnMusicVolume, btnSoundsVolume, btnShare);
-  return container;
+  header.append(container, settings);
+  return header;
 };
-
-const logo = createImage('logo', '../assets/img/logo-UNO.png', 'logo');
-const settings = createImage(
-  'settings',
-  '../assets/img/settings.png',
-  'settings',
-);
-header.append(createBtnsHeaderContainer(), settings);
-main.append(logo);
 
 const createChoiceGameContainer = () => {
   const container = createElement('div', 'choice-game');
@@ -83,38 +76,101 @@ const createChoiceGameContainer = () => {
   container.append(btnPlayWithComp, btnMultiplayer, btnRules);
   return container;
 };
-main.append(createChoiceGameContainer());
 
-document.querySelector('.body')?.append(createDevelopedByContainer());
+export const createMainPage = () => {
+  const main = document.querySelector('.main') as HTMLDivElement;
+  const logo = createImage('logo', '../assets/img/logo-UNO.png', 'logo');
+  main?.append(logo, createChoiceGameContainer());
+
+  return main;
+};
+
+const showDevelopedByBlock = () => {
+  (document.querySelector('.opacity') as HTMLDivElement).classList.add(
+    'show',
+  );
+  (document.querySelector('.developed-by') as HTMLDivElement).classList.add(
+    'show',
+  );
+};
+
+const hideDevelopedByBlock = () => {
+  (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
+    'show',
+  );
+  (document.querySelector('.developed-by') as HTMLDivElement).classList.remove(
+    'show',
+  );
+};
+
+const showSettings = (element: HTMLButtonElement) => {
+  element.style.transform = 'scale(0)';
+  (
+    document.querySelector('.header .btns-container') as HTMLDivElement
+  ).classList.add('show');
+};
+
+const hideSettings = (element: HTMLButtonElement) => {
+  (
+    document.querySelector('.header .btns-container') as HTMLDivElement
+  ).classList.remove('show');
+  element.style.transform = 'scale(1)';
+};
+
+const removeChoiceContainer = () => {
+  const choiceContainer = document.querySelector('.choice-container');
+  choiceContainer?.remove();
+  (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
+    'show',
+  );
+};
+
+const fillGameField = (quantity: number) => {
+  const main = document.querySelector('.main') as HTMLDivElement;
+  (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
+    'show',
+  );
+  main.innerHTML = '';
+  createGameField(quantity);
+};
+
+const addButtonBackToMainPage = () => {
+  const btn = createButton('btn-main-page', 'button', 'main page');
+  const header = document.querySelector('header') as HTMLDivElement;
+  header.append(btn);
+};
 
 document.addEventListener('click', (e) => {
+  const main = document.querySelector('.main') as HTMLDivElement;
   const element = e.target as HTMLButtonElement;
-  if (element.closest('.btn-developed')) {
+  if (element.closest('.btn-developed')) showDevelopedByBlock();
+  if (element.closest('.developed-by .btn-cross')) hideDevelopedByBlock();
+  if (element.closest('.settings')) {
+    showSettings(element);
+    setTimeout(() => hideSettings(element), 5000);
+  }
+  if (element.closest('.btn-computer')) {
     (document.querySelector('.opacity') as HTMLDivElement).classList.add(
       'show',
     );
-    (document.querySelector('.developed-by') as HTMLDivElement).classList.add(
-      'show',
-    );
+    createChoiceContainer();
   }
-  if (element.closest('.btn-cross')) {
-    (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
-      'show',
-    );
-    (
-      document.querySelector('.developed-by') as HTMLDivElement
-    ).classList.remove('show');
+  if (element.closest('.choice-container .btn-cross')) removeChoiceContainer();
+  if (element.closest('.choice-quantity .two')) {
+    addButtonBackToMainPage();
+    fillGameField(2);
   }
-  if (element.closest('.settings')) {
-    element.style.transform = 'scale(0)';
-    (
-      document.querySelector('.header .btns-container') as HTMLDivElement
-    ).classList.add('show');
-    setTimeout(() => {
-      (
-        document.querySelector('.header .btns-container') as HTMLDivElement
-      ).classList.remove('show');
-      element.style.transform = 'scale(1)';
-    }, 5000);
+  if (element.closest('.choice-quantity .three')) {
+    addButtonBackToMainPage();
+    fillGameField(3);
+  }
+  if (element.closest('.choice-quantity .four')) {
+    addButtonBackToMainPage();
+    fillGameField(4);
+  }
+  if (element.closest('.btn-main-page')) {
+    main.innerHTML = '';
+    element.remove();
+    createMainPage();
   }
 });
