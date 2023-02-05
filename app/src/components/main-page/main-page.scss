@@ -21,12 +21,17 @@
 .footer {
   width: 100%;
   padding: 5px 10px;
+  position: relative;
 }
 
 .header,
 .footer {
   padding: 5px 50px;
   height: 10%;
+}
+
+.footer {
+  height: 5%;
 }
 
 .footer {
@@ -46,7 +51,7 @@
 }
 
 .header .btns-container {
-  transform: translate(0%, -200%);
+  transform: translate(0%, -300%);
   max-width: 60%;
   transition: all 1s ease-in-out;
 }
@@ -56,7 +61,7 @@
 }
 
 .main {
-  height: 80%;
+  height: 85%;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -69,7 +74,7 @@
 }
 
 .logo {
-  max-width: 50%;
+  max-width: 40%;
   opacity: 0.8;
 }
 
@@ -108,12 +113,6 @@
 [data-title]:hover:after {
   opacity: 0.5;
   visibility: visible;
-}
-
-.version {
-  position: absolute;
-  left: 5%;
-  bottom: 5%;
 }
 
 .settings {
