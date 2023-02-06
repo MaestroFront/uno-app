@@ -1,3 +1,9 @@
-* {
-  color: red;
-}
+@import url(../src/components/main-page/main-page.scss);
+@import url(../src/components/developed-by/developed-by.scss);
+@import url(../src/components/developed-by/developed-by.scss);
+@import url(../src/components/choice-quantity-players/choice.scss);
+@import url(../src/components/game-field/game-field.scss);
+@import url(../src/components/cards/cards.scss);
+@import url(../src/components/rules-page/rules-page.scss);
+@import url(../src/scss/_normalize.scss);
+@import url(../src/scss/buttons.scss);
