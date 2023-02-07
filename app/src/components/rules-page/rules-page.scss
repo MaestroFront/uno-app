@@ -1,94 +1,106 @@
 .rules-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
-    color: white;
-    font-size: 1em;
-    gap: 40px;
-    transform: scale(.85);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  color: white;
+  font-size: 1em;
+  gap: 40px;
+  transform: scale(0.85);
+  width: 100%;
+  height: 100%;
 }
 
-.card-block {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    cursor: pointer;
+.rules-description {
+  flex: 0 0 40%;
+  border: 1px solid white;
+  padding: 10px;
+  height: 100%;
 }
 
-.card-block:first-child,
-.card-block:nth-child(2),
-.card-block:nth-child(3) {
-    width: 20%; 
-}
-
-.card-block:nth-child(4) {
-    width: 35%; 
-}
-
-.card-block:nth-child(5),
-.card-block:last-child {
-    width: 48%; 
-}
 .cards-description {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    justify-content: space-between;
-    gap: 25px 0px;
-    flex-wrap: wrap;
+  flex: 0 0 60%;
+  border: 1px solid white;
+  padding: 10px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.card-description {
-    gap: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
+.card-container {
+  display: flex;
+  position: relative;
+  border: 1px solid white;
+  height: 30%;
+  flex: 1 0 35%;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform 1s;
 }
 
-.rules-description,
+.card-container.open {
+  transform: rotateX(-180deg);
+}
+
+.card-block,
+.card-block-front {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: 1s ease-in-out;
+}
+
 .card-block {
-    background: #ffffff00;
-    border: 3px #ffffff45 solid;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 1px 25px rgba(0, 0, 0, 0.2);   
+  cursor: pointer;
+  backface-visibility: hidden;
+  z-index: 2;
+  opacity: 1;
 }
 
-.card-block:hover {
-    box-shadow: 0 1px 15px rgba(226, 211, 211, 0.827);
-    transform: scale(1.05);
-    cursor: pointer;
+.card-block.open {
+    opacity: 0;
 }
 
+.card-block-front {
+  transform: rotateX(-180deg);
+  z-index: 1;
+  opacity: 0;;
+}
+
+.card-block-front.open {
+    z-index: 2;
+    opacity: 1;
+}
 
 .card-title,
 .rules-description-title {
-    font-size: 1em;
-    color: #0e1632;
-    font-weight: 700;
+  font-size: 1em;
+  color: #0e1632;
+  font-weight: 700;
 }
 .card-value {
-    font-size: 0.9em;
+  font-size: 0.9em;
 }
 
 .card-text {
-    font-size: 0.8em;
-    text-align: justify;
+  font-size: 0.8em;
+  text-align: justify;
 }
 
 .rules-description-block {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .rules-description-block:last-child {
-    margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 
 .rules-description-text {
-    text-align: justify;
+  text-align: justify;
 }
-

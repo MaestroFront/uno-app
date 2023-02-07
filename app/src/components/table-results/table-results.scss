@@ -1,0 +1,37 @@
+.results-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    height: 80%;
+    background-color: ghostwhite;
+    padding: 10px;
+    border: 1px solid black;
+    filter: drop-shadow(2px 4px 6px black);
+    border-radius: 10px;
+    overflow: auto;
+}
+
+.results-container::-webkit-scrollbar {
+    width: 0px;
+}
+
+.results-list {
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+}
+
+.results-item {
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.results-title {
+    border-bottom: 1px solid black;
+}
