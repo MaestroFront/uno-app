@@ -14,7 +14,6 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    height: 100%; 
     gap: 10px;
     cursor: pointer;
 }
@@ -36,7 +35,7 @@
 .cards-description {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: stretch;
     justify-content: space-between;
     gap: 25px 0px;
     flex-wrap: wrap;

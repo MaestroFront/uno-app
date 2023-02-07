@@ -29,8 +29,6 @@ const createCardsDescription = (): HTMLDivElement => {
   const multiCard = createCardBlock(renderMultiCard(0.3), langData.ru['multi-card-title'], langData.ru['black-card-points'], langData.ru['multi-card-descr']);
   cardsDescription.append(numberedCard, blockedCard, reverseCard, plusTwoCard, multiCard, plusFourCard);
 
-  cardsDescription.append();
-  cardsDescription.append();
   return cardsDescription;
 };
 
