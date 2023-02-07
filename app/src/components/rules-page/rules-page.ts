@@ -5,30 +5,18 @@ import { addButtonBackToMainPage, createButton, createElement, createParagraph }
 const flipCard = (e: Event): void => {
   const element = e.target as HTMLButtonElement;
   const parent = element.parentNode?.parentNode as HTMLDivElement;
-  // console.log(parent);
   parent.classList.toggle('open');
   parent.querySelector('.card-block-front')?.classList.toggle('open');
   parent.querySelector('.card-block-back')?.classList.toggle('open');
 };
 
-const createCardFront = (currCard: Element): HTMLDivElement => { //cardTitle: string, 
+const createCardFront = (currCard: Element): HTMLDivElement => {
   const cardFront = createElement('div', 'card-block-front') as HTMLDivElement;
   const cardImgWrapper = createElement('div', 'card-img-wrapper') as HTMLDivElement;
   cardImgWrapper.append(currCard);
-  // cardFront.classList.add(classNameCardFront);
 
-  const cardDescription = createElement('div', 'card-description') as HTMLDivElement;
-  
-  
-  //const title = createParagraph('card-title', cardTitle);
-  //
-  // 
-
-  //cardDescription.append(title, value);
-  
   const btnReadMore = createButton('btn-read', 'button', 'read more...');
-  //cardImgWrapper.append(btnReadMore);
-  cardFront.append(cardImgWrapper, cardDescription, btnReadMore); 
+  cardFront.append(cardImgWrapper, btnReadMore); 
 
   btnReadMore.addEventListener('click', (e) => {
     flipCard(e);
@@ -39,7 +27,6 @@ const createCardFront = (currCard: Element): HTMLDivElement => { //cardTitle: st
 
 const createCardBack = (cardTitle: string, cardValue: string, cardText: string): HTMLDivElement => {
   const cardBack = createElement('div', 'card-block-back') as HTMLDivElement;
-  // cardBack.classList.add(classNameCardBack);
   
   const btnFlip = createButton('btn-flip', 'button', 'flip card');
   const cardDescription = createElement('div', 'card-description') as HTMLDivElement;
@@ -48,7 +35,6 @@ const createCardBack = (cardTitle: string, cardValue: string, cardText: string):
   const text = createParagraph('card-text', cardText);
 
   cardDescription.append(title, value, text);
-  // cardBack.append(btnFlip);
 
   btnFlip.addEventListener('click', (e) => {
     flipCard(e);
@@ -60,44 +46,10 @@ const createCardBack = (cardTitle: string, cardValue: string, cardText: string):
 
 const createCardBlock  = (currCard: Element, cardTitle: string, cardValue: string, cardText: string): HTMLDivElement => {
   const container = createElement('div', 'card-container') as HTMLDivElement;
-  container.append(createCardFront(currCard), createCardBack(cardTitle, cardValue, cardText));  //, cardTitle, 
+  container.append(createCardFront(currCard), createCardBack(cardTitle, cardValue, cardText));
 
   return container;
 };
-
-// const createBackCardBlock  = (currCard: Element, cardTitle: string, cardValue: string, cardText: string, classNameCard: string, classNameCardFront: string): HTMLDivElement => {
-//   const container = createElement('div', 'card-container') as HTMLDivElement;
-
-//   const card = createElement('div', 'card-block') as HTMLDivElement;
-//   card.classList.add(classNameCard);
-//   const cardFront = createElement('div', 'card-block-front') as HTMLDivElement;
-//   const btnFlip = createButton('btn-flip', 'button', 'flip');
-//   cardFront.append(btnFlip);
-//   cardFront.classList.add(classNameCardFront);
-
-//   const cardImgWrapper = createElement('div', 'card-img-wrapper') as HTMLDivElement;
-//   const cardDescription = createElement('div', 'card-description') as HTMLDivElement;
-//   const btnShow = createButton('btn-show', 'button', 'show');
-  
-//   const title = createParagraph('card-title', cardTitle);
-//   const value = createParagraph('card-value', cardValue);
-//   const text = createParagraph('card-text', cardText);
-  
-//   cardImgWrapper.append(currCard);
-//   cardDescription.append(title, value, text);
-//   card.append(cardFront, cardImgWrapper, cardDescription, btnShow);
-//   container.append(card, cardFront);
-
-//   btnFlip.addEventListener('click', (e) => {
-//     flipCard(e);
-//   } );
-
-//   btnShow.addEventListener('click', (e) => {
-//     flipCard(e);
-//   } );
-
-//   return container;
-// };
 
 const createCardsDescription = (): HTMLDivElement => {
   const cardsDescription = createElement('div', 'cards-description') as HTMLDivElement;
@@ -140,22 +92,6 @@ export const createRulesPage = () => {
   const main = document.querySelector('.main') as HTMLDivElement;
   main.append(createRulesBlock());
 };
-
-// document.addEventListener('click', (e) => {
-//   const main = document.querySelector('.main') as HTMLDivElement;
-//   const element = e.target as HTMLButtonElement;
-//   if (element.closest('.btn-rules')) {
-//     main.innerHTML = '';
-//     addButtonBackToMainPage();
-//     createRulesPage();
-//   }
-//   // if (element.closest('.btn-show') || element.closest('.btn-flip')) {
-//   //   const parent = element.parentNode?.parentNode as HTMLDivElement;
-//   //   parent.classList.toggle('open');
-//   //   parent.querySelector('.card-block-front')?.classList.toggle('open');
-//   //   parent.querySelector('.card-block')?.classList.toggle('open');
-//   // }
-// });
 
 export const openRulesPage = () => {
   const main = document.querySelector('.main') as HTMLDivElement;
