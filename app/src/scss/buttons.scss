@@ -20,6 +20,7 @@
   -webkit-user-select: none;
   touch-action: manipulation;
   vertical-align: middle;
+  filter: drop-shadow(2px 4px 6px black);
 }
 
 .button:hover,
@@ -52,11 +53,6 @@
   right: 5%;
 }
 
-.btn-main-page {
-  position: absolute;
-  left: 5%;
-}
-
 .btn-developed,
 .btn-share {
   font-size: 8px;
@@ -65,4 +61,26 @@
 
 .btn-developed {
   margin-right: 10px;
+}
+
+.btn-start {
+  position: absolute;
+  right: 5%;
+  bottom: 5%;
+  opacity: .3;
+  pointer-events: none;
+}
+
+.btn-start.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.btn-show,
+.btn-flip {
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  padding: 5px;
+  font-size: 12px;
 }

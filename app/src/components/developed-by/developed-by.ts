@@ -1,4 +1,4 @@
-import { createElement, createParagraph, createImage, createButton, createLink } from '../helpers/helpers';
+import { createElement, createParagraph, createImage, createButton, createLink, hideDevelopedByBlock } from '../helpers/helpers';
 
 const createFooterLinksContainer = () => {
   const container = createElement('div', 'links-container');
@@ -28,3 +28,8 @@ export const createDevelopedByContainer = () => {
   hide.append(container);
   return hide;
 };
+
+document.addEventListener('click', (e) => {
+  const element = e.target as HTMLButtonElement;
+  if (element.closest('.developed-by .btn-cross')) hideDevelopedByBlock();
+});
