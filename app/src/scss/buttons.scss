@@ -76,11 +76,18 @@
   pointer-events: all;
 }
 
-.btn-show,
+.btn-read,
 .btn-flip {
-  position: absolute;
-  bottom: 5%;
-  right: 5%;
+  align-self: flex-end;
   padding: 5px;
-  font-size: 12px;
+  /* font-size: 12px;*/
+  position: absolute;
+bottom: 0%;
+right: 0%; 
+
+background: transparent;
+    border: 0px;
+    box-shadow: none;
+    text-transform: none;
+    font-size: 15px;
 }
