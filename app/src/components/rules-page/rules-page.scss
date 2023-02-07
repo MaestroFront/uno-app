@@ -15,7 +15,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid white;
   padding: 20px 10px;
   height: 100%;
   font-size: 1.4em;
@@ -23,19 +22,25 @@
 
 .cards-description {
   flex: 0 0 60%;
-  border: 1px solid white;
   height: 100%;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 3%;
-  
+ }
+
+.rules-description,
+.card-container {
+  background: #ffffff00;
+  border: 3px #ffffff45 solid;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 1px 25px rgba(0, 0, 0, 0.2);  
 }
 
 .card-container {
   display: flex;
   position: relative;
-  border: 1px solid white;
   flex: 1 0 30%;
   overflow: hidden;
   transform-style: preserve-3d;
@@ -54,9 +59,7 @@
   width: 100%;
   height: 100%;
   display: flex;
-  
   gap: 10px;
-  transition: 1s ease-in-out;
 }
 
 .card-block-front {
@@ -70,8 +73,6 @@
   align-items: center;
 }
 
-
-
 .card-block-front.open {
   opacity: 0;
 }
@@ -81,16 +82,17 @@
   z-index: 1;
   opacity: 0;
   padding: 10px 5px;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-block-back.open {
-    z-index: 2;
-    opacity: 1;
+  z-index: 2;
+  opacity: 1;
 }
 
 .card-title,
 .rules-description-title {
-/*font-size: 1em;*/
   color: #0e1632;
   font-weight: 700;
 }
@@ -101,16 +103,13 @@
     font-size: 1.4em;
     margin-bottom: 15px;
 }
-/*.card-value {
-  font-size: 0.9em;
-}*/
 
 .card-description {
   height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow: hidden;
   scroll-behavior: auto;
 }
 
