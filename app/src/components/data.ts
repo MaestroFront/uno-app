@@ -36,7 +36,7 @@ export const langData: ILangData = {
     'btn-eng': 'ENG',
     'btn-main-page': 'MAIN PAGE',
     'btn-rules-page': 'RULES',
-    'btn-winners-page': 'WINNERS',
+    'btn-winners-page': 'RESULTS',
   },
   'ru': {
     'rules-goal-title': 'Цель игры',
@@ -73,7 +73,7 @@ export const langData: ILangData = {
     'btn-eng': 'АНГ',
     'btn-main-page': 'ГЛАВНАЯ СТРАНИЦА',
     'btn-rules-page': 'ПРАВИЛА ИГРЫ',
-    'btn-winners-page': 'ПОБЕДИТЕЛИ',
+    'btn-winners-page': 'ТАБЛИЦА РЕЗУЛЬТАТОВ',
   },
 
 };
