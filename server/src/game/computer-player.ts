@@ -63,13 +63,7 @@ class ComputerPlayer {
   /* Makes a move on one of the possible options
   * returns 999 if there are no more cards to draw and the computer has no options  */
   getMove(deck: CardDeck, topCardId: number, currentColor?: string): number {
-    let options: number[] = this.selectPossibleOptionsForMove(topCardId, currentColor);
-    while (options.length === 0 && deck.isNoMoreCards()) {
-      this.takeCards(deck.getCards());
-      console.log(`${this.playersName} take a card`);
-      console.log(...this.cardsInHand);
-      options = this.selectPossibleOptionsForMove(topCardId);
-    }
+    const options: number[] = this.selectPossibleOptionsForMove(topCardId, currentColor);
     if (options.length > 0) {
       const randomCard: number = options[Math.floor(Math.random() * options.length)];
       this.cardsInHand.splice(this.cardsInHand.indexOf(randomCard), 1);
