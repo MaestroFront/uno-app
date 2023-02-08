@@ -1,13 +1,13 @@
 // import express from 'express';
-// import './chat';
-// import './database';
-//
+// // import './chat';
+// // import './database';
+// //
 // const app = express();
-// const port = 5000;
+// const port = 9001;
 // const urlencodedParser = express.urlencoded({ extended: false });
-// // app.get('/', (req, res) => {
-// //     res.send(`main page`);
-// // });
+// app.get('/', (req, res) => {
+//     res.send(`main page`);
+// });
 //
 // app.get('/', (req, res) => {
 //   res.send('main page');
@@ -28,8 +28,19 @@
 //   });
 // }
 // export default app;
-import UnoGame from './game/uno-game';
+// import UnoGame from './game/uno-game';
+//
+// const game = new UnoGame();
+//
+// game.startGame().then(()=> console.log('Run!')).catch(err => console.log(err));
+// app.post('/game', urlencodedParser, function (request, response) {
+//   if (!request.body) return response.sendStatus(400);
+//   console.log(JSON.parse(request.body));
+//   response.send('ok');
+// });
 
-const game = new UnoGame();
+// import UnoGame from './game/uno-game';
 
-game.startGame().then(()=> console.log('Run!')).catch(err => console.log(err));
+import WebsocketServer from './websocket';
+const wss = new WebsocketServer(9001);
+wss.start();
