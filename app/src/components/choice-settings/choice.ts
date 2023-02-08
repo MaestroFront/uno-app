@@ -1,6 +1,7 @@
 import { createGameField } from '../game-field/game-field';
 import { createButtonResults } from '../header/header';
 import { addButtonBackToMainPage, createButton, createElement, createImage, createParagraph } from '../helpers/helpers';
+import Controller from '../../controller';
 
 export const createChoiceContainer = () => {
   const main = document.querySelector('.main') as HTMLDivElement;
@@ -17,7 +18,7 @@ export const createChoiceContainer = () => {
   const difficultyBlock = createElement('div', 'choice-difficulty') as HTMLDivElement;
   const easyDifficulty = createButton('btn-easy', 'button', 'easy');
   const hardDifficulty = createButton('btn-hard', 'button', 'hard');
-  
+
   const cross = createButton('btn-cross', 'button', 'x');
   const btnStartGame = createButton('btn-start', 'button', 'start');
 
@@ -73,6 +74,7 @@ const goToGameField = () => {
   fillGameField(x);
   addButtonBackToMainPage();
   createButtonResults();
+  Controller.createNewGameWithComputer(x);
 };
 
 document.addEventListener('click', (e) => {

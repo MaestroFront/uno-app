@@ -3,11 +3,13 @@ import {
   createImage,
   createParagraph,
 } from '../helpers/helpers';
+import Controller from '../../controller';
 
 const playerField = (playerClassName: string, playerName: string) => {
   const block = createElement('div', playerClassName) as HTMLDivElement;
   const cardsBlock = createElement('div', 'cards');
   const title = createParagraph('player-name', playerName);
+  title.id = `name-${playerClassName}`;
   block.append(cardsBlock, title);
 
   return block;
@@ -33,24 +35,27 @@ const createRhomb = () => {
 export const createGameField = (quantity: number) => {
   const main = document.querySelector('.main') as HTMLDivElement;
   const container = createElement('div', 'game-field') as HTMLDivElement;
-  if (quantity === 2)
+  if (quantity === 2) {
     container.append(
       playerField('player-1', 'player 1'),
       playerField('player-2', 'player 2'),
     );
-  if (quantity === 3)
+  }
+  if (quantity === 3) {
     container.append(
       playerField('player-1', 'player 1'),
       playerField('player-2', 'player 2'),
       playerField('player-3', 'player 3'),
     );
-  if (quantity === 4)
+  }
+  if (quantity === 4) {
     container.append(
       playerField('player-1', 'player 1'),
       playerField('player-2', 'player 2'),
       playerField('player-3', 'player 3'),
       playerField('player-4', 'player 4'),
     );
+  }
   const field = createElement('div', 'field');
   const deck = createElement('div', 'deck');
   const currentCard = createElement('div', 'current-card');
@@ -60,4 +65,8 @@ export const createGameField = (quantity: number) => {
   container.append(field);
 
   main.append(container);
+  /* мои подключени */
+  deck.addEventListener('click', () => {
+    Controller.webSocket.send(JSON.stringify({ action: 'GET_CARD_BY_USER', data: '' }));
+  });
 };
