@@ -23,14 +23,25 @@ class Player {
     return this.cardsInHand;
   }
 
-  getFirstMove(cardId: number): number {
-    const cardInfo: CardInfo = CardDeck.getColorAndValue(cardId);
-    if (cardInfo.color !== CardDeck.colors[4]) {
-      this.cardsInHand.splice(this.cardsInHand.indexOf(cardId), 1);
-      return cardId;
-    } else {
-      return 999;
+  selectPossibleOptionsForMove(topCardId: number, currentColor?: string): boolean {
+    const topCardInfo = CardDeck.getColorAndValue(topCardId);
+    const optionsOfMove: number[] = [];
+    for (let i = 0; i < this.cardsInHand.length; i++) {
+      const cardInfo : CardInfo = CardDeck.getColorAndValue(this.cardsInHand[i]);
+      if (topCardInfo.color === CardDeck.colors[4]) {
+        if (cardInfo.color === currentColor || cardInfo.color === CardDeck.colors[4]) {
+          optionsOfMove.push(this.cardsInHand[i]);
+        }
+      } else if (cardInfo.color === topCardInfo.color || cardInfo.value === topCardInfo.value || cardInfo.color === CardDeck.colors[4]) {
+        optionsOfMove.push(this.cardsInHand[i]);
+      }
     }
+    return optionsOfMove.length > 0;
+  }
+
+  getMove(cardId: number): number {
+    this.cardsInHand.splice(this.cardsInHand.indexOf(cardId), 1);
+    return cardId;
   }
 
 }
