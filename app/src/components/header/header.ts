@@ -45,17 +45,21 @@ const createBtnsHeaderContainer = () => {
   return container;
 };
 
+export const createButtonResults = () => {
+  const mainPageButton = document.querySelector('.btn-main-page') as HTMLButtonElement;
+  const results = createButton('btn-results', 'button', 'table results');
+  mainPageButton.after(results);  
+};
+
 export const createHeader = (): HTMLDivElement => {
   const header = document.querySelector('.header') as HTMLDivElement;
+  const returnBlock = createElement('div', 'return-block') as HTMLDivElement;
   const settings = createImage(
     'settings',
     '../assets/img/settings.png',
     'settings',
   );
 
-  header.append(createBtnsHeaderContainer(), settings);
+  header.append(returnBlock, createBtnsHeaderContainer(), settings);
   return header;
 };
-
-
-  

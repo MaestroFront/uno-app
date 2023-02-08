@@ -58,3 +58,25 @@ export const createParagraph = (className: string, text: string) => {
   element.textContent = text;
   return element;
 };
+
+export const createSpan = (className: string, text: string) => {
+  const element = document.createElement('span');
+  element.classList.add(className);
+  element.textContent = text;
+  return element;
+};
+
+export const addButtonBackToMainPage = () => {
+  const btn = createButton('btn-main-page', 'button', 'main page');
+  const returnBlock = document.querySelector('.return-block') as HTMLDivElement;
+  returnBlock.append(btn);
+};
+
+export const hideDevelopedByBlock = () => {
+  (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
+    'show',
+  );
+  (document.querySelector('.developed-by') as HTMLDivElement).classList.remove(
+    'show',
+  );
+};
