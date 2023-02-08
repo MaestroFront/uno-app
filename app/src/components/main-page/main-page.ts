@@ -132,7 +132,7 @@ const fillGameField = (quantity: number) => {
     'show',
   );
   main.innerHTML = '';
-  createGameField(quantity);
+  void createGameField(quantity).then().catch();
 };
 
 const addButtonBackToMainPage = () => {
