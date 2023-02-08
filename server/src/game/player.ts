@@ -23,7 +23,7 @@ class Player {
     return this.cardsInHand;
   }
 
-  getMove(cardId: number): number {
+  getFirstMove(cardId: number): number {
     const cardInfo: CardInfo = CardDeck.getColorAndValue(cardId);
     if (cardInfo.color !== CardDeck.colors[4]) {
       this.cardsInHand.splice(this.cardsInHand.indexOf(cardId), 1);
