@@ -9,5 +9,5 @@ import { createPage } from './components/helpers/helpers';
 
 window.onload = () => {
   createPage();
-  Controller.start();
+  Controller.start(9001);
 };
