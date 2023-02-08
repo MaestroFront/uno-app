@@ -23,7 +23,7 @@ class CardDeck {
 
   /* Shuffles a deck of cards */
   shuffleDeck(): void {
-    this.deck.sort(() => Math.random() - 0.5);
+    this.deck.sort(() => Math.random() - 0.5).sort(() => Math.random() - 0.5);
   }
 
   /* returns an array with card numbers. If the deck runs out of cards,
@@ -61,7 +61,7 @@ class CardDeck {
 
   /* Returns the color and value of the card */
   static getColorAndValue(cardId: number): CardInfo {
-    const cardInfo: CardInfo = { color: CardDeck.colors[Math.floor(cardId / 25)], value: 0 };
+    const cardInfo: CardInfo = { id: cardId, color: CardDeck.colors[Math.floor(cardId / 25)], value: 0 };
     if (cardId < 100) {
       if (cardId % 25 < 19) {
         cardInfo.value = cardId % 25 < 10 ? cardId % 25 : ((cardId % 25) % 10) + 1;
@@ -78,7 +78,6 @@ class CardDeck {
   * 'true' if there are cards,
   * 'false' if there are no cards */
   isNoMoreCards(): boolean {
-    console.log(this.discardedCards.length > 0 || this.deck.length > 0);
     return this.discardedCards.length > 0 || this.deck.length > 0;
   }
 }
