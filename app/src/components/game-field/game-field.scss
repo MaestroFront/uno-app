@@ -44,12 +44,12 @@
 
 .player-3 {
     transform: rotate(-90deg) translate(25%, 0%);
-    left: 0%;
+    left: 0;
 }
 
 .player-4 {
     transform: rotate(90deg) translate(-25%, 0%);
-    right: 0%;
+    right: 0;
 }
 
 .player-name {
@@ -61,6 +61,10 @@
     border-radius: 5px;
     width: 80%;
     height: 60%;
+    /* TODO: maybe remove next 3 lines after switch on normal cards */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
 }
 
 .field {
