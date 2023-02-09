@@ -1,5 +1,6 @@
 import { createElement, createButton, createImage } from '../helpers/helpers';
 import { createChoiceContainer } from '../choice-settings/choice';
+import { openRulesPage } from '../rules-page/rules-page';
 
 const createChoiceGameContainer = () => {
   const container = createElement('div', 'choice-game');
@@ -15,6 +16,9 @@ const createChoiceGameContainer = () => {
   );
   const btnRules = createButton('btn-rules', 'button', 'learn, how to play');
   container.append(btnPlayWithComp, btnMultiplayer, btnRules);
+
+  btnRules.addEventListener('click', openRulesPage);
+
   return container;
 };
 
