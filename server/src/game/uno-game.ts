@@ -5,15 +5,21 @@ import Player from './player';
 class UnoGame {
   deck: CardDeck;
 
+  gameWinner: string;
+
+  gameResults: { player: string, total: number }[];
+
   players: Players[] = [];
 
   user: Client;
 
-  topCard = 999;
+  topCard: number;
 
-  currentColor = '';
+  currentColor: string;
 
-  currentPlayerId = 0;
+  reverse: boolean;
+
+  currentPlayerId: number;
 
   movesCount: number; // счетчик ходов
 
@@ -21,26 +27,44 @@ class UnoGame {
 
   constructor(numberOfPlayers: number, client: Client) {
     this.deck = new CardDeck();
+    this.gameWinner = '';
+    this.gameResults = [];
     this.user = client;
+    this.topCard = 999;
+    this.currentColor = '';
+    this.reverse = false;
+    this.currentPlayerId = 0;
+    this.movesCount = 0;
+    this.weNotHaveAWinner = true;
     this.players.push({ player: new Player(client.userName) });
     for (let i = 1; i < numberOfPlayers; i++) {
       this.players.push({ player: new ComputerPlayer(`Computer-${i}`) });
+      this.gameResults.push({ player: this.players[i].player?.playersName as string, total: 0 });
     }
-    this.movesCount = 0;
-    this.weNotHaveAWinner = true;
   }
 
-  computersMove(id: number) {
-    let move = (this.players[id].player as ComputerPlayer).getMove(this.deck, this.topCard, this.currentColor);
+  setNextPlayerID(): void {
+    if (this.reverse) {
+      if (this.currentPlayerId - 1 < 0) {
+        this.currentPlayerId = this.players.length - 1;
+      } else {
+        this.currentPlayerId--;
+      }
+    } else {
+      if (this.currentPlayerId + 1 === this.players.length) {
+        this.currentPlayerId = 0;
+      } else {
+        this.currentPlayerId++;
+      }
+    }
+  }
+
+  /* Move of computer player */
+  computersMove() {
+    let move = (this.players[this.currentPlayerId].player as ComputerPlayer).getMove(this.deck, this.topCard, this.currentColor);
     if (move === 999 && this.deck.isNoMoreCards()) {
-      this.sendMessage('Computer take card');
-      (this.players[id].player as ComputerPlayer).takeCards(this.deck.getCards());
-      this.user.socket.send(JSON.stringify({ action: 'UPDATE_CARD', data: `player-${this.currentPlayerId + 1}` }));
-      (this.players[this.currentPlayerId].player as ComputerPlayer).getYourCards().forEach(value => {
-        const dataForSend: string = JSON.stringify({ player: `player-${this.currentPlayerId + 1}`, card: CardDeck.getColorAndValue(value) });
-        this.user.socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend }));
-      });
-      move = (this.players[id].player as ComputerPlayer).getMove(this.deck, this.topCard, this.currentColor);
+      this.takeCards(1);
+      move = (this.players[this.currentPlayerId].player as ComputerPlayer).getMove(this.deck, this.topCard, this.currentColor);
     }
     if (move !== 999) {
       const cardInfo: CardInfo = CardDeck.getColorAndValue(move);
@@ -56,20 +80,16 @@ class UnoGame {
       }
       this.deck.discardCard(move);
     } else {
-      this.sendMessage(`${(this.players[id].player as ComputerPlayer).playersName} cant move and skip the turn!`);
-    }
-    this.movesCount++;
-    if (this.currentPlayerId + 1 >= this.players.length) {
-      this.currentPlayerId = 0;
-    } else {
-      this.currentPlayerId++;
+      this.sendMessage(`${(this.players[this.currentPlayerId].player as ComputerPlayer).playersName} cant move and skip the turn!`);
     }
   }
 
+  /* Send message to client */
   sendMessage(message: string): void {
     setTimeout(()=> this.user.socket.send(JSON.stringify({ action: 'MESSAGE', data: message })), 500);
   }
 
+  /* Checking the correctness of the player's move */
   checkUsersMove(cardId: number): boolean {
     const cardInfo: CardInfo = CardDeck.getColorAndValue(cardId);
     const topCardInfo: CardInfo = CardDeck.getColorAndValue(this.topCard);
@@ -84,6 +104,7 @@ class UnoGame {
     }
   }
 
+  /* Distribution of cards to the player */
   dealCardToUser(quantity: number):void {
     (this.players[0].player as Player).takeCards(this.deck.getCards(quantity));
     (this.players[0].player as Player).getYourCards().forEach(value => {
@@ -92,6 +113,7 @@ class UnoGame {
     });
   }
 
+  /* Distribution of cards to the computer player */
   dealCardToComputer(quantity: number): void {
     for (let i = 1; i < this.players.length; i++) {
       (this.players[i].player as ComputerPlayer).takeCards(this.deck.getCards(quantity));
@@ -102,56 +124,64 @@ class UnoGame {
     }
   }
 
+  /* Pause in milliseconds */
+  sleep(millis: number) {
+    const t = (new Date()).getTime();
+    let i = 0;
+    while (((new Date()).getTime() - t) < millis) {
+      i++;
+    }
+  }
+
+  /* Start of the computer player's turn */
   startComputersMoves(): void {
     if (this.weNotHaveAWinner) {
       do {
-        this.sendMessage(`Next move by ${this.players[this.currentPlayerId].player?.playersName as string}`);
-        this.computersMove(this.currentPlayerId);
+        this.sleep(1000);
+        this.sendMessage(`Move by ${this.players[this.currentPlayerId].player?.playersName as string}`);
+        this.computersMove();
+        this.movesCount++;
+        this.setNextPlayerID();
         this.checkOneCard();
         this.checkWinner();
         if (!this.weNotHaveAWinner) {
           break;
         }
       } while (this.currentPlayerId !== 0);
-      this.sendMessage('Move by User!');
     }
   }
 
+  /* Handling card action change direction, take +2, skip turn */
   funCardsActions() {
     const topCardInfo: CardInfo = CardDeck.getColorAndValue(this.topCard);
     if (topCardInfo.value === 11) {
       this.sendMessage('Lets reverse');
-      this.players.reverse();
+      this.reverse = !this.reverse;
     } else if (topCardInfo.value === 12 || topCardInfo.value === 10) {
-      if (this.currentPlayerId + 1 >= this.players.length) {
-        this.currentPlayerId = 0;
-      } else {
-        this.currentPlayerId++;
-      }
+      this.setNextPlayerID();
       if (topCardInfo.value === 10) {
-        this.sendMessage(`${this.players[this.currentPlayerId].player?.playersName as string} takes 2 card and skips a turn!`);
-        if (this.currentPlayerId === 0) {
-          (this.players[this.currentPlayerId].player as Player).takeCards(this.deck.getCards(2));
-          this.user.socket.send(JSON.stringify({ action: 'UPDATE_CARD', data: `player-${this.currentPlayerId + 1}` }));
-          (this.players[this.currentPlayerId].player as Player).getYourCards().forEach(value => {
-            const dataForSend: string = JSON.stringify({ player: `player-${this.currentPlayerId + 1}`, card: CardDeck.getColorAndValue(value) });
-            this.user.socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend }));
-          });
-        } else {
-          (this.players[this.currentPlayerId].player as ComputerPlayer).takeCards(this.deck.getCards(2));
-          this.user.socket.send(JSON.stringify({ action: 'UPDATE_CARD', data: `player-${this.currentPlayerId + 1}` }));
-          (this.players[this.currentPlayerId].player as ComputerPlayer).getYourCards().forEach(value => {
-            const dataForSend: string = JSON.stringify({ player: `player-${this.currentPlayerId + 1}`, card: CardDeck.getColorAndValue(value) });
-            this.user.socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend }));
-          });
-        }
+        this.takeCards(2);
       } else {
         this.sendMessage(`${this.players[this.currentPlayerId].player?.playersName as string} skips a turn!`);
       }
     }
-
   }
 
+  takeCards(quantity: number) {
+    this.sendMessage(`${this.players[this.currentPlayerId].player?.playersName as string} takes ${quantity} card and skips a turn!`);
+    this.user.socket.send(JSON.stringify({ action: 'UPDATE_CARD', data: `player-${this.currentPlayerId + 1}` }));
+    if (this.currentPlayerId === 0) {
+      this.dealCardToUser(quantity);
+    } else {
+      this.players[this.currentPlayerId].player?.takeCards(this.deck.getCards(quantity));
+      this.players[this.currentPlayerId].player?.getYourCards().forEach(value => {
+        const dataForSend: string = JSON.stringify({ player: `player-${this.currentPlayerId + 1}`, card: CardDeck.getColorAndValue(value) });
+        this.user.socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend }));
+      });
+    }
+  }
+
+  /* Handling the action of wild cards */
   wildCardActions() {
     const topCardInfo: CardInfo = CardDeck.getColorAndValue(this.topCard);
     if (this.currentPlayerId === 0) {
@@ -162,39 +192,49 @@ class UnoGame {
       this.sendMessage(`${(this.players[this.currentPlayerId].player as ComputerPlayer).playersName} choose ${this.currentColor} color!`);
       this.user.socket.send(JSON.stringify({ action: 'MOVE', data: JSON.stringify({ topCard: topCardInfo, currentColor: this.currentColor }) }));
       if (topCardInfo.value === 14) {
-        if (this.currentPlayerId + 1 >= this.players.length) {
-          this.currentPlayerId = 0;
-        } else {
-          this.currentPlayerId++;
-        }
-        this.sendMessage(`${this.players[this.currentPlayerId].player?.playersName as string} takes 4 card and skips a turn!`);
-        if (this.currentPlayerId === 0) {
-          (this.players[this.currentPlayerId].player as Player).takeCards(this.deck.getCards(4));
-          this.user.socket.send(JSON.stringify({ action: 'UPDATE_CARD', data: `player-${this.currentPlayerId + 1}` }));
-          (this.players[this.currentPlayerId].player as Player).getYourCards().forEach(value => {
-            const dataForSend: string = JSON.stringify({ player: `player-${this.currentPlayerId + 1}`, card: CardDeck.getColorAndValue(value) });
-            this.user.socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend }));
-          });
-        } else {
-          (this.players[this.currentPlayerId].player as ComputerPlayer).takeCards(this.deck.getCards(4));
-          this.user.socket.send(JSON.stringify({ action: 'UPDATE_CARD', data: `player-${this.currentPlayerId + 1}` }));
-          (this.players[this.currentPlayerId].player as ComputerPlayer).getYourCards().forEach(value => {
-            const dataForSend: string = JSON.stringify({ player: `player-${this.currentPlayerId + 1}`, card: CardDeck.getColorAndValue(value) });
-            this.user.socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend }));
-          });
-        }
+        this.setNextPlayerID();
+        this.takeCards(4);
       }
     }
   }
 
-  stopGame() {
-    this.calculatePoints();
+  /* Handling game end actions */
+  stopGame(): void {
+    const roundResult: { player: string, total: number } = this.calculatePoints();
+    this.gameResults.forEach(value => {
+      if (roundResult.player === value.player) {
+        value.total += roundResult.total;
+        if (value.total >= 250) {
+          this.gameWinner = value.player;
+        }
+      }
+    });
+    if (this.gameWinner !== '') {
+      this.sendMessage(`${this.gameWinner} win the game!`);
+    } else {
+      this.deck = new CardDeck();
+      this.topCard = 999;
+      this.currentColor = '';
+      this.reverse = false;
+      this.currentPlayerId = 0;
+      this.movesCount = 0;
+      this.weNotHaveAWinner = true;
+      for (let i = 1; i < this.players.length; i++) {
+        this.players[i] = { player: new ComputerPlayer(`Computer-${i}`) };
+        this.gameResults[i] = { player: this.players[i].player?.playersName as string, total: 0 };
+      }
+      (this.players[0].player as Player).clearDeck();
+      this.user.socket.send(JSON.stringify({ action: 'CLEAR_FIELD', data: '' }));
+      this.startGame();
+    }
   }
 
-  calculatePoints() {
-    const results: { players: string, points: number }[] = [];
+  /* Scoring at the end of the round */
+  calculatePoints(): { player: string, total: number } {
+    const results: { player: string, points: number }[] = [];
+    const total: { player: string, total: number } = { player: '', total: 0 };
     for (let i = 0; i < this.players.length; i++) {
-      const userResult: { players: string, points: number } = { players: this.players[i].player?.playersName as string, points: 0 };
+      const userResult: { player: string, points: number } = { player: this.players[i].player?.playersName as string, points: 0 };
       this.players[i].player?.getYourCards().forEach(value => {
         const cardInfo: CardInfo = CardDeck.getColorAndValue(value);
         switch (cardInfo.value) {
@@ -214,9 +254,18 @@ class UnoGame {
       });
       results.push(userResult);
     }
+    for (const us of results) {
+      if (us.points === 0) {
+        total.player = us.player;
+      } else {
+        total.total += us.points;
+      }
+    }
     this.user.socket.send(JSON.stringify({ action: 'RESULTS_OF_ROUND', data: JSON.stringify(results) }));
+    return total;
   }
 
+  /* Checking if there is a winner */
   checkWinner(): void {
     if (this.players.filter(value => { return value.player?.getNumberOfCardsInHand() === 0;}).length === 1) {
       this.sendMessage(`${this.players.filter(value => { return value.player?.getNumberOfCardsInHand() === 0;})[0].player?.playersName as string} is win this round!`);
@@ -225,22 +274,25 @@ class UnoGame {
     }
   }
 
+  /* Pressing the Uno Button */
   pushUnoButton() {
     for (let i = 1; i < this.players.length; i++) {
       setTimeout(() => this.user.socket.send(JSON.stringify({ action: 'PUSH_UNO_BUTTON', data: '' })), Math.floor(Math.random() * (7000 - 1000 + 1) + 1000));
     }
   }
 
+  /* Checking if one card is in hand */
   checkOneCard() {
     if (this.players[this.currentPlayerId].player?.getNumberOfCardsInHand() === 1) {
       this.pushUnoButton();
     }
   }
 
+  /* Launching the start of the game */
   startGame(): void {
     this.dealCardToUser(7);
     this.dealCardToComputer(7);
-    this.sendMessage('1st move by User!');
+    this.sendMessage(`Move by ${this.players[0].player?.playersName as string}`);
     this.user.socket.on('message', message => {
       const mes = JSON.parse(message.toString()) as WebSocketMessage;
       switch (mes.action) {
@@ -248,7 +300,6 @@ class UnoGame {
           if (this.weNotHaveAWinner) {
             const move = JSON.parse(mes.data) as { userName: string, cardId: string };
             if (this.checkUsersMove(parseInt(move.cardId))) {
-              this.movesCount++;
               this.topCard = (this.players[0].player as Player).getMove(parseInt(move.cardId));
               const cardInfo: CardInfo = CardDeck.getColorAndValue(this.topCard);
               if (cardInfo.color === CardDeck.colors[4]) {
@@ -256,15 +307,15 @@ class UnoGame {
               } else {
                 this.currentColor = cardInfo.color;
                 this.user.socket.send(JSON.stringify({ action: 'MOVE', data: JSON.stringify({ topCard: cardInfo, currentColor: this.currentColor }) }));
-                this.currentPlayerId++;
+                this.deck.discardCard(this.topCard);
+                this.movesCount++;
                 this.checkWinner();
                 if (cardInfo.value > 9 && cardInfo.value < 13) {
                   this.funCardsActions();
                 }
+                this.setNextPlayerID();
                 this.startComputersMoves();
               }
-              this.deck.discardCard(this.topCard);
-
             } else {
               this.sendMessage('Wrong move!');
             }
@@ -278,7 +329,7 @@ class UnoGame {
             this.user.socket.send(JSON.stringify({ action: 'UPDATE_CARD', data: `player-${1}` }));
             this.dealCardToUser(1);
             if (!(this.players[0].player as Player).selectPossibleOptionsForMove(this.topCard, this.currentColor)) {
-              this.currentPlayerId++;
+              this.setNextPlayerID();
               this.sendMessage('You cant options for move! You skip the turn!');
               this.startComputersMoves();
             }
@@ -296,21 +347,17 @@ class UnoGame {
           const cardInfo: CardInfo = CardDeck.getColorAndValue(this.topCard);
           this.user.socket.send(JSON.stringify({ action: 'MOVE', data: JSON.stringify({ topCard: cardInfo, currentColor: this.currentColor }) }));
           if (cardInfo.value === 14) {
-            this.currentPlayerId++;
-            this.sendMessage(`${(this.players[this.currentPlayerId].player as ComputerPlayer).playersName} take 2 cards and skip turn!`);
-            (this.players[this.currentPlayerId].player as ComputerPlayer).takeCards(this.deck.getCards(2));
-            this.user.socket.send(JSON.stringify({ action: 'UPDATE_CARD', data: `player-${this.currentPlayerId + 1}` }));
-            (this.players[this.currentPlayerId].player as ComputerPlayer).getYourCards().forEach(value => {
-              const dataForSend: string = JSON.stringify({ player: `player-${this.currentPlayerId + 1}`, card: CardDeck.getColorAndValue(value) });
-              this.user.socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend }));
-            });
+            this.setNextPlayerID();
+            this.takeCards(4);
           }
           if (this.currentPlayerId + 1 >= this.players.length) {
             this.currentPlayerId = 0;
           } else {
-            this.currentPlayerId++;
+            this.setNextPlayerID();
             this.checkWinner();
-            this.startComputersMoves();
+            if (this.currentPlayerId !== 0) {
+              this.startComputersMoves();
+            }
           }
           break;
         }
