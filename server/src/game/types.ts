@@ -1,13 +1,14 @@
 import ComputerPlayer from './computer-player';
 import Player from './player';
-import WebSocket from "ws";
-import UnoGame from "./uno-game";
+import WebSocket from 'ws';
+import UnoGame from './uno-game';
 
 export interface CardInfo {
   id: number,
   color: string,
   value: number
 }
+
 export interface Players {
   player: Player | ComputerPlayer | null;
 }

@@ -4,7 +4,7 @@ import { CardInfo } from './types';
 class Player {
   public playersName: string;
 
-  private cardsInHand: number[];
+  private readonly cardsInHand: number[];
 
   constructor(name: string) {
     this.playersName = name;
@@ -43,7 +43,6 @@ class Player {
     this.cardsInHand.splice(this.cardsInHand.indexOf(cardId), 1);
     return cardId;
   }
-
 }
 
 export default Player;

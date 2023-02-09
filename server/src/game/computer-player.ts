@@ -5,7 +5,7 @@ import { CardInfo } from './types';
 class ComputerPlayer {
   public readonly playersName: string;
 
-  private cardsInHand: number[];
+  private readonly cardsInHand: number[];
 
   constructor(name: string) {
     this.playersName = name;
