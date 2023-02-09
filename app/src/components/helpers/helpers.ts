@@ -66,7 +66,7 @@ export const createSpan = (className: string, text: string) => {
   return element;
 };
 
-export const addButtonBackToMainPage = () => {
+export const addButtonBackToMainPage = (): void => {
   const btn = createButton('btn-main-page', 'button', 'main page');
   const returnBlock = document.querySelector('.return-block') as HTMLDivElement;
   returnBlock.append(btn);
