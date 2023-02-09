@@ -1,28 +1,18 @@
 /* Accepts input and converts it to commands for the model or view. */
 
 import { createElement } from './components/helpers/helpers';
-
-export interface WebSocketMessage {
-  action: string,
-  data: string
-}
-
-export interface CardInfo {
-  id: number,
-  color: string,
-  value: number
-}
+import { CardInfo, WebSocketMessage } from './types';
 
 class Controller {
   static webSocket: WebSocket;
 
-  private static messages: string[] = ['CREATE_GAME', 'WHATS_MY_NAME'];
-
   private static myName: string;
 
+  /* Controller launch */
   static start(port: number): void {
     this.webSocket = new WebSocket(`ws://localhost:${port}`);
-    setTimeout(() => Controller.webSocket.send(JSON.stringify({ action: Controller.messages[1], data: '' })), 1000);
+    setTimeout(() => Controller.webSocket.send(JSON.stringify({ action: 'WHATS_MY_NAME', data: '' })), 1000);
+    //TODO: Remove this feature after switching to normal maps
     function createSimpleCard(id: number, color: string, value: number) {
       const div = createElement('div', 'simple-card');
       div.style.width = '25px';
@@ -38,6 +28,7 @@ class Controller {
       });
       return div;
     }
+    //TODO: Remove this feature after switching to a pretty window with popup messages
     function showColorSelectWindow():void {
       function sentChosenColor(color: string): void {
         Controller.webSocket.send(JSON.stringify({ action: 'USERS_SELECTED_COLOR', data: color }));
@@ -89,20 +80,23 @@ class Controller {
     Controller.webSocket.addEventListener('message', (message: MessageEvent<string>) => {
       const msg: WebSocketMessage = JSON.parse(message.data) as WebSocketMessage;
       switch (msg.action) {
+        /* Getting the username assigned on the server */
         case 'YOUR_NAME': {
           this.myName = msg.data;
           break;
         }
+        /* Получение карты с сервера */
         case 'GET_CARD': {
           const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
           (document.querySelector(`.${data.player}`) as HTMLElement).append(createSimpleCard(data.card.id, data.card.color, data.card.value));
           break;
         }
+        /* Receiving a message from the server */
         case 'MESSAGE': {
-          // eslint-disable-next-line no-alert
-          alert(msg.data);
+          console.log(msg.data);
           break;
         }
+        /* Processing a move */
         case 'MOVE': {
           const dataMove: { topCard: CardInfo, currentColor: string } = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
           (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
@@ -111,10 +105,12 @@ class Controller {
           (document.querySelector('.rhomb') as SVGElement).style.fill = dataMove.currentColor;
           break;
         }
+        /* Clears the user field with cards */
         case 'UPDATE_CARD': {
           (document.querySelector(`.${msg.data}`) as HTMLElement).innerHTML = '';
           break;
         }
+        /* Set the names of players and computers on the playing field */
         case 'SET_USERS_LIST': {
           const usersName: string[] = JSON.parse(msg.data) as string[];
           for (let i = 0; i < usersName.length; i++) {
@@ -122,14 +118,17 @@ class Controller {
           }
           break;
         }
+        /* User choice of color */
         case 'USER_MUST_CHOOSE_COLOR': {
           showColorSelectWindow();
           break;
         }
+        /* Pressing the UNO button */
         case 'PUSH_UNO_BUTTON': {
           (document.querySelector('.uno') as HTMLImageElement).click();
           break;
         }
+        /* Get round results */
         case 'RESULTS_OF_ROUND': {
           const results: { players: string, points: number }[] = JSON.parse(msg.data) as { players: string, points: number }[];
           console.log(results);
@@ -140,8 +139,9 @@ class Controller {
     });
   }
 
+  /* Sending commands to the server to create a new game */
   static createNewGameWithComputer(numberOfPlayers: number): void {
-    Controller.webSocket.send(JSON.stringify({ action: Controller.messages[0], data: JSON.stringify({ players: numberOfPlayers, online: false }) }));
+    Controller.webSocket.send(JSON.stringify({ action: 'CREATE_GAME', data: JSON.stringify({ players: numberOfPlayers, online: false }) }));
     Controller.webSocket.send(JSON.stringify({ action: 'GET_USERS_LIST', data: '' }));
   }
 }
