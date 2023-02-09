@@ -30,6 +30,7 @@ class UnoGame {
     this.weNotHaveAWinner = true;
   }
 
+  /* Move of computer player */
   computersMove(id: number) {
     let move = (this.players[id].player as ComputerPlayer).getMove(this.deck, this.topCard, this.currentColor);
     if (move === 999 && this.deck.isNoMoreCards()) {
@@ -66,10 +67,12 @@ class UnoGame {
     }
   }
 
+  /* Send message to client */
   sendMessage(message: string): void {
     setTimeout(()=> this.user.socket.send(JSON.stringify({ action: 'MESSAGE', data: message })), 500);
   }
 
+  /* Checking the correctness of the player's move */
   checkUsersMove(cardId: number): boolean {
     const cardInfo: CardInfo = CardDeck.getColorAndValue(cardId);
     const topCardInfo: CardInfo = CardDeck.getColorAndValue(this.topCard);
@@ -84,6 +87,7 @@ class UnoGame {
     }
   }
 
+  /* Distribution of cards to the player */
   dealCardToUser(quantity: number):void {
     (this.players[0].player as Player).takeCards(this.deck.getCards(quantity));
     (this.players[0].player as Player).getYourCards().forEach(value => {
@@ -92,6 +96,7 @@ class UnoGame {
     });
   }
 
+  /* Distribution of cards to the computer player */
   dealCardToComputer(quantity: number): void {
     for (let i = 1; i < this.players.length; i++) {
       (this.players[i].player as ComputerPlayer).takeCards(this.deck.getCards(quantity));
@@ -102,9 +107,20 @@ class UnoGame {
     }
   }
 
+  /* Pause in milliseconds */
+  sleep(millis) {
+    const t = (new Date()).getTime();
+    let i = 0;
+    while (((new Date()).getTime() - t) < millis) {
+      i++;
+    }
+  }
+
+  /* Start of the computer player's turn */
   startComputersMoves(): void {
     if (this.weNotHaveAWinner) {
       do {
+        this.sleep(1000);
         this.sendMessage(`Next move by ${this.players[this.currentPlayerId].player?.playersName as string}`);
         this.computersMove(this.currentPlayerId);
         this.checkOneCard();
@@ -117,6 +133,7 @@ class UnoGame {
     }
   }
 
+  /* Handling card action change direction, take +2, skip turn */
   funCardsActions() {
     const topCardInfo: CardInfo = CardDeck.getColorAndValue(this.topCard);
     if (topCardInfo.value === 11) {
@@ -152,6 +169,7 @@ class UnoGame {
 
   }
 
+  /* Handling the action of wild cards */
   wildCardActions() {
     const topCardInfo: CardInfo = CardDeck.getColorAndValue(this.topCard);
     if (this.currentPlayerId === 0) {
@@ -187,10 +205,12 @@ class UnoGame {
     }
   }
 
+  /* Handling game end actions */
   stopGame() {
     this.calculatePoints();
   }
 
+  /* Scoring at the end of the round */
   calculatePoints() {
     const results: { players: string, points: number }[] = [];
     for (let i = 0; i < this.players.length; i++) {
@@ -217,6 +237,7 @@ class UnoGame {
     this.user.socket.send(JSON.stringify({ action: 'RESULTS_OF_ROUND', data: JSON.stringify(results) }));
   }
 
+  /* Checking if there is a winner */
   checkWinner(): void {
     if (this.players.filter(value => { return value.player?.getNumberOfCardsInHand() === 0;}).length === 1) {
       this.sendMessage(`${this.players.filter(value => { return value.player?.getNumberOfCardsInHand() === 0;})[0].player?.playersName as string} is win this round!`);
@@ -225,18 +246,21 @@ class UnoGame {
     }
   }
 
+  /* Pressing the Uno Button */
   pushUnoButton() {
     for (let i = 1; i < this.players.length; i++) {
       setTimeout(() => this.user.socket.send(JSON.stringify({ action: 'PUSH_UNO_BUTTON', data: '' })), Math.floor(Math.random() * (7000 - 1000 + 1) + 1000));
     }
   }
 
+  /* Checking if one card is in hand */
   checkOneCard() {
     if (this.players[this.currentPlayerId].player?.getNumberOfCardsInHand() === 1) {
       this.pushUnoButton();
     }
   }
 
+  /* Launching the start of the game */
   startGame(): void {
     this.dealCardToUser(7);
     this.dealCardToComputer(7);
