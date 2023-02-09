@@ -11,6 +11,10 @@ class Player {
     this.cardsInHand = [];
   }
 
+  clearDeck(): void {
+    this.cardsInHand.length = 0;
+  }
+
   takeCards(cards: number[]): void {
     this.cardsInHand.push(...cards);
   }
