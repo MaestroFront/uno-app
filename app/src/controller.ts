@@ -16,7 +16,11 @@ class Controller {
     function createSimpleCard(id: number, color: string, value: number) {
       const div = createElement('div', 'simple-card');
       div.style.width = '25px';
-      div.style.height = '50px';
+      div.style.height = '25px';
+      div.style.padding = '3px';
+      div.style.display = 'flex';
+      div.style.borderRadius = '5px';
+      div.style.justifyContent = 'center';
       div.style.backgroundColor = color;
       div.style.color = 'white';
       div.innerText = value.toString();
@@ -88,7 +92,7 @@ class Controller {
         /* Получение карты с сервера */
         case 'GET_CARD': {
           const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
-          (document.querySelector(`.${data.player}`) as HTMLElement).append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+          ((document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement).append(createSimpleCard(data.card.id, data.card.color, data.card.value));
           break;
         }
         /* Receiving a message from the server */
@@ -107,7 +111,7 @@ class Controller {
         }
         /* Clears the user field with cards */
         case 'UPDATE_CARD': {
-          (document.querySelector(`.${msg.data}`) as HTMLElement).innerHTML = '';
+          ((document.querySelector(`.${msg.data}`) as HTMLElement).firstChild as HTMLElement).innerHTML = '';
           break;
         }
         /* Set the names of players and computers on the playing field */
@@ -134,7 +138,12 @@ class Controller {
           console.log(results);
           break;
         }
-
+        case 'CLEAR_FIELD': {
+          document.querySelectorAll('.card').forEach(value => value.innerHTML = '') ;
+          (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
+          (document.querySelector('.deck') as HTMLElement).innerHTML = '';
+          break;
+        }
       }
     });
   }
