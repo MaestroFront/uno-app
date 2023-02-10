@@ -135,7 +135,15 @@ class Controller {
         /* Получение карты с сервера */
         case 'GET_CARD': {
           const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
-          ((document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement).append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+          const cardsOnHand = (document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement;
+          cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+          const cards = cardsOnHand.getElementsByClassName('simple-card');
+          // console.log('get', Array.from(cards).length);
+          Array.from(cards).forEach((el, i) => { (el as HTMLElement).style.right = '0'; (el as HTMLElement).style.right = `${i * 7}%`; });
+          const cardsOnHandField = document.querySelector('.cards') as HTMLDivElement;
+          cardsOnHandField.style.left = `${(Array.from(cards).length) * 7}%`;
+          cardsOnHandField.style.width = `${(Array.from(cards).length) * 120}px`;
+
           break;
         }
         /* Receiving a message from the server */
@@ -147,6 +155,11 @@ class Controller {
         case 'MOVE': {
           const dataMove: { topCard: CardInfo, currentColor: string } = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
           (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
+          // const cardsOnHand = (document.querySelector('.current-card') as HTMLElement).parentElement as HTMLElement;
+          // const cards = cardsOnHand.getElementsByClassName('simple-card');
+          // Array.from(cards).forEach((el, i) => { (el as HTMLElement).style.right = '0'; (el as HTMLElement).style.right = `${i * 5}%`; });
+          // console.log('move', Array.from(cards).length);
+          // console.log(document.querySelector('.current-card') as HTMLElement);
           (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement).remove();
           (document.querySelector('.current-card') as HTMLElement).append(createSimpleCard(dataMove.topCard.id, dataMove.topCard.color, dataMove.topCard.value));
           (document.querySelector('.rhomb') as SVGElement).style.fill = dataMove.currentColor;
