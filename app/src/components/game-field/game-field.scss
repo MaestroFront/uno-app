@@ -59,11 +59,12 @@
 .cards {
     border: 1px solid rgba(255, 255, 255, .5);
     border-radius: 5px;
-    width: 80%;
-    height: 60%;
+    /*width: 80%;*/
+    /*height: 60%;*/
+    min-height: 215px;
     /* TODO: maybe remove next 3 lines after switch on normal cards */
     display: flex;
-    flex-wrap: wrap;
+    /*flex-wrap: wrap;*/
     gap: 3px;
 }
 
@@ -85,8 +86,8 @@
 .current-card {
     border: 1px solid rgba(255, 0, 0, .5);
     border-radius: 5px;
-    width: 20%;
-    height: 80%;
+    width: 25%;
+    height: 83%;
 }
 
 .deck {
@@ -114,4 +115,11 @@
 
 .uno:hover {
     transform: scale(.9);
+}
+
+/*active player's card*/
+.simple-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
