@@ -25,6 +25,10 @@ class UnoGame {
 
   weNotHaveAWinner: boolean; // флаг наличия победителя
 
+  client: Client;
+
+  numberOfPlayers: number;
+
   constructor(numberOfPlayers: number, client: Client) {
     this.deck = new CardDeck();
     this.gameWinner = '';
@@ -36,6 +40,8 @@ class UnoGame {
     this.currentPlayerId = 0;
     this.movesCount = 0;
     this.weNotHaveAWinner = true;
+    this.client = client;
+    this.numberOfPlayers = numberOfPlayers;
     this.players.push({ player: new Player(client.userName) });
     for (let i = 1; i < numberOfPlayers; i++) {
       this.players.push({ player: new ComputerPlayer(`Computer-${i}`) });
@@ -86,7 +92,7 @@ class UnoGame {
 
   /* Send message to client */
   sendMessage(message: string): void {
-    setTimeout(()=> this.user.socket.send(JSON.stringify({ action: 'MESSAGE', data: message })), 500);
+    this.user.socket.send(JSON.stringify({ action: 'MESSAGE', data: message }));
   }
 
   /* Checking the correctness of the player's move */
@@ -137,17 +143,17 @@ class UnoGame {
   startComputersMoves(): void {
     if (this.weNotHaveAWinner) {
       do {
-        this.sleep(1000);
         this.sendMessage(`Move by ${this.players[this.currentPlayerId].player?.playersName as string}`);
+        this.sleep(2000);
         this.computersMove();
         this.movesCount++;
         this.setNextPlayerID();
         this.checkOneCard();
-        this.checkWinner();
-        if (!this.weNotHaveAWinner) {
+        if (!this.checkWinner()) {
           break;
         }
       } while (this.currentPlayerId !== 0);
+      this.sendMessage(`${(this.players[0].player as Player).playersName} move!`);
     }
   }
 
@@ -168,7 +174,13 @@ class UnoGame {
   }
 
   takeCards(quantity: number) {
-    this.sendMessage(`${this.players[this.currentPlayerId].player?.playersName as string} takes ${quantity} card and skips a turn!`);
+    switch (quantity) {
+      case 1:
+        this.sendMessage(`${this.players[this.currentPlayerId].player?.playersName as string} takes ${quantity} card!`);
+        break;
+      default:
+        this.sendMessage(`${this.players[this.currentPlayerId].player?.playersName as string} takes ${quantity} card and skips a turn!`);
+    }
     this.user.socket.send(JSON.stringify({ action: 'UPDATE_CARD', data: `player-${this.currentPlayerId + 1}` }));
     if (this.currentPlayerId === 0) {
       this.dealCardToUser(quantity);
@@ -219,11 +231,8 @@ class UnoGame {
       this.currentPlayerId = 0;
       this.movesCount = 0;
       this.weNotHaveAWinner = true;
-      for (let i = 1; i < this.players.length; i++) {
-        this.players[i] = { player: new ComputerPlayer(`Computer-${i}`) };
-        this.gameResults[i] = { player: this.players[i].player?.playersName as string, total: 0 };
-      }
-      (this.players[0].player as Player).clearDeck();
+      this.players.forEach(value => value.player?.clearDeck());
+      this.sleep(5000);
       this.user.socket.send(JSON.stringify({ action: 'CLEAR_FIELD', data: '' }));
       this.startGame();
     }
@@ -266,12 +275,13 @@ class UnoGame {
   }
 
   /* Checking if there is a winner */
-  checkWinner(): void {
+  checkWinner(): boolean {
     if (this.players.filter(value => { return value.player?.getNumberOfCardsInHand() === 0;}).length === 1) {
       this.sendMessage(`${this.players.filter(value => { return value.player?.getNumberOfCardsInHand() === 0;})[0].player?.playersName as string} is win this round!`);
       this.stopGame();
-      this.weNotHaveAWinner = false;
+      return false;
     }
+    return true;
   }
 
   /* Pressing the Uno Button */
@@ -309,12 +319,13 @@ class UnoGame {
                 this.user.socket.send(JSON.stringify({ action: 'MOVE', data: JSON.stringify({ topCard: cardInfo, currentColor: this.currentColor }) }));
                 this.deck.discardCard(this.topCard);
                 this.movesCount++;
-                this.checkWinner();
-                if (cardInfo.value > 9 && cardInfo.value < 13) {
-                  this.funCardsActions();
+                if (this.checkWinner()) {
+                  if (cardInfo.value > 9 && cardInfo.value < 13) {
+                    this.funCardsActions();
+                  }
+                  this.setNextPlayerID();
+                  this.startComputersMoves();
                 }
-                this.setNextPlayerID();
-                this.startComputersMoves();
               }
             } else {
               this.sendMessage('Wrong move!');
@@ -354,9 +365,10 @@ class UnoGame {
             this.currentPlayerId = 0;
           } else {
             this.setNextPlayerID();
-            this.checkWinner();
-            if (this.currentPlayerId !== 0) {
-              this.startComputersMoves();
+            if (this.checkWinner()) {
+              if (this.currentPlayerId !== 0) {
+                this.startComputersMoves();
+              }
             }
           }
           break;

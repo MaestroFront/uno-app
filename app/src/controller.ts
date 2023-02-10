@@ -182,7 +182,7 @@ class Controller {
           break;
         }
         case 'CLEAR_FIELD': {
-          document.querySelectorAll('.card').forEach(value => value.innerHTML = '') ;
+          document.querySelectorAll('.cards').forEach(value => value.innerHTML = '') ;
           (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
           (document.querySelector('.deck') as HTMLElement).innerHTML = '';
           break;

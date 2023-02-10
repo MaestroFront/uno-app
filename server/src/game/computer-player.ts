@@ -50,6 +50,10 @@ class ComputerPlayer {
     return this.cardsInHand;
   }
 
+  clearDeck(): void {
+    this.cardsInHand.length = 0;
+  }
+
   /* Makes the first move */
   getFirstMove(): number {
     let randomCard: number = this.cardsInHand[Math.floor(Math.random() * this.cardsInHand.length)];
