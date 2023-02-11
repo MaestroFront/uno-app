@@ -4,6 +4,8 @@ import {
   createParagraph,
 } from '../helpers/helpers';
 import Controller from '../../controller';
+import { renderBackSide } from '../cards/cards';
+import { getCardFromDeck } from './game-animation';
 
 const playerField = (playerClassName: string, playerName: string) => {
   const block = createElement('div', playerClassName) as HTMLDivElement;
@@ -32,6 +34,22 @@ const createRhomb = () => {
   return rhomb;
 };
 
+
+const renderDeck = (): HTMLDivElement => {
+  const deck = createElement('div', 'deck') as HTMLDivElement;
+  const fullDeck = createElement('div', 'full-deck') as HTMLDivElement;
+  for (let i = 0; i < 5;) {
+    const card = createElement('div', 'card') as HTMLDivElement;
+    card.append(renderBackSide(0.4));
+    card.style.right = `${i * 5}px`;
+    fullDeck.append(card);
+    i++;
+  }
+
+  deck.append(fullDeck);
+  return deck;
+};
+
 export const createGameField = (quantity: number) => {
   const main = document.querySelector('.main') as HTMLDivElement;
   const container = createElement('div', 'game-field') as HTMLDivElement;
@@ -57,7 +75,7 @@ export const createGameField = (quantity: number) => {
     );
   }
   const field = createElement('div', 'field');
-  const deck = createElement('div', 'deck');
+  const deck = renderDeck();
   const currentCard = createElement('div', 'current-card');
   const uno = createImage('uno', '../assets/img/logo-UNO.png', 'uno');
 
@@ -66,7 +84,12 @@ export const createGameField = (quantity: number) => {
 
   main.append(container);
   /* мои подключени */
-  deck.addEventListener('click', () => {
+  deck.addEventListener('click', (e) => {
+    // console.log(e.target);
+    getCardFromDeck(e);
     Controller.webSocket.send(JSON.stringify({ action: 'GET_CARD_BY_USER', data: '' }));
   });
 };
+
+
+

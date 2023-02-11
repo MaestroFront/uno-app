@@ -247,9 +247,9 @@ export const renderMultiCard = (currScale = 1): HTMLElement => {
   return svg;
 };
   
-const renderBackSide = (currScale = 1): Element => {
+export const renderBackSide = (currScale = 1): Element => {
   const svg = document.createElementNS(ns, 'svg');
-  svg.classList.add('backSide');
+  svg.classList.add('back-side');
   svg.setAttributeNS(null, 'width', `${300 * currScale}`);
   svg.setAttributeNS(null, 'height', `${520 * currScale}`);
   svg.setAttributeNS(null, 'fill', 'black');
@@ -261,13 +261,13 @@ const renderBackSide = (currScale = 1): Element => {
         <ellipse cx="${-130 * currScale}" cy="${230 * currScale}" rx="${20 * currScale}" ry="${20 * currScale}" fill="black" stroke="black" stroke-dasharray="${6.7 * currScale}" d="M5 20 l215 0" d="M5 40 l215 0" stroke-width="${418 * currScale}" opacity="0.15" style="transform: rotate( -65deg);" />
       </svg>
     </symbol>
-    <use xlink:href="#backCard"></use>
+    <use xlink:href="#backCard" class="back-side"></use>
     <linearGradient id="Gradient2" x1="0" x2="0" y1="0" y2="1">
       <stop offset="0%" stop-color="white"/>
       <stop offset="55%" stop-color="gold"/>
       <stop offset="100%" stop-color="#806308"/>
     </linearGradient>
-    <text class="centerText" x="${-40 * currScale}" y="${300 * currScale}" font-size="${115 * currScale}" fill="url(#Gradient2)">UNO</text> 
+    <text class="centerText back-side" x="${-40 * currScale}" y="${300 * currScale}" font-size="${115 * currScale}" fill="url(#Gradient2)">UNO</text> 
   `;
   return svg;
 };  
