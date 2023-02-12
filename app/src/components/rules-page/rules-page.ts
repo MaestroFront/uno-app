@@ -44,7 +44,7 @@ const createCardBack = (cardTitle: string, cardValue: string, cardText: string):
   return cardBack;
 };
 
-const createCardBlock  = (currCard: Element, cardTitle: string, cardValue: string, cardText: string): HTMLDivElement => {
+export const createCardBlock  = (currCard: Element, cardTitle: string, cardValue: string, cardText: string): HTMLDivElement => {
   const container = createElement('div', 'card-container') as HTMLDivElement;
   container.append(createCardFront(currCard), createCardBack(cardTitle, cardValue, cardText));
 
