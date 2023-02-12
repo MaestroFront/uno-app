@@ -142,7 +142,7 @@
 }
 
 .simple-card:hover {
-    transform: rotate(-15deg) translateY(-1.5em);
+    transform: rotate(-5deg) translateY(-1.5em);
     transition: 0.3s ease-in-out;
 }
 
@@ -155,41 +155,29 @@
     transform: translateY(-0.5em);
 }
 
-.full-deck .card:hover:last-child {
+.full-deck .last-card {
+    right: 20px;
+}
+
+.full-deck .last-card:hover {
     transform: translateY(0.8em);
     transition: 0.3s ease-in-out;
 }
 
-.full-deck .card.move:last-child {
-    animation-duration: 2s, 1s;
-    animation-name: move, flip;
-    animation-iteration-count: 1, 1;
-    animation-fill-mode: forwards, forwards;
-    animation-delay: 0s, 2s;
+.full-deck .last-card.move {
+    animation-duration: 3s;
+    animation-name: move;
+    animation-fill-mode: none;
 }
 
 @keyframes move {
     from {
-    transform: translate(0%, 0%);
-    }
-    
-    to {
-    transform: translate(200%, 100%);
-    }
-}
-  
-  
-@keyframes flip {
-    from {
-    top: 100%;
-    left: 200%;
     transform: rotateY(0deg);
     }
-  
-    to {
-    top: 100%;
-    left: 200%;
-    transform: rotateY(180deg);
+    
+    to { 
+    transform: translate(200%, 100%) rotateY(180deg);
     }
 }
+
 

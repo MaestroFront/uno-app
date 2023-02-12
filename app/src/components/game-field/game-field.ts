@@ -46,6 +46,10 @@ const renderDeck = (): HTMLDivElement => {
     i++;
   }
 
+  const lastCard = createElement('div', 'last-card') as HTMLDivElement;
+  lastCard.append(renderBackSide(0.4));
+  
+  fullDeck.append(lastCard);
   deck.append(fullDeck);
   return deck;
 };
