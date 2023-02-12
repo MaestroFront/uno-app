@@ -4,6 +4,7 @@ import { createElement } from './components/helpers/helpers';
 import { CardInfo, WebSocketMessage } from './types';
 // import CardDeck, { cardDeck } from '../../server/src/game/сard_deck';
 import { blueColor, greenColor, redColor, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from './components/cards/cards';
+import { clickSoundPlay, getCardSoundPlay } from './components/header/sounds';
 
 class Controller {
   static webSocket: WebSocket;
@@ -59,6 +60,7 @@ class Controller {
       
       div.id = id.toString();
       div.addEventListener('click', evt => {
+        clickSoundPlay();
         //console.log((evt.target as HTMLDivElement).closest('.cardCenter'));
         const clickedEl = (evt.target as HTMLDivElement).closest('.cardCenter') as Element;
       
@@ -134,6 +136,7 @@ class Controller {
         }
         /* Получение карты с сервера */
         case 'GET_CARD': {
+          void getCardSoundPlay();
           const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
           const cardsOnHand = (document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement;
           cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
@@ -153,6 +156,7 @@ class Controller {
         }
         /* Processing a move */
         case 'MOVE': {
+          clickSoundPlay();
           const dataMove: { topCard: CardInfo, currentColor: string } = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
           (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
           // const cardsOnHand = (document.querySelector('.current-card') as HTMLElement).parentElement as HTMLElement;

@@ -1,6 +1,7 @@
 // import { body } from '../global-compomemts/constants';
 import { createElement, createImage, createButton } from '../helpers/helpers';
-import { musicPlay, musicStop } from './sounds';
+import { setBtnText } from '../local-storage';
+import { musicPlay, musicStop, offSounds, onSounds, setMusic, setSounds } from './sounds';
 
 const changeLanguage = (): void => {
   const btnLang = document.querySelector('.btn-lang') as HTMLButtonElement;
@@ -14,16 +15,16 @@ const changeLanguage = (): void => {
 const toggleMusic = () => {
   const btnMusicVolume = document.querySelector('.btn-music') as HTMLButtonElement;
   btnMusicVolume.classList.toggle('off');
+
   if (btnMusicVolume.classList.contains('off')) {
     btnMusicVolume.textContent = 'music OFF';
-    btnMusicVolume.value = 'off';
     void musicStop();
   } else {
     btnMusicVolume.textContent = 'music ON';
-    btnMusicVolume.value = 'on';
-   
     void musicPlay();
   }
+
+  localStorage.setItem('music', btnMusicVolume.textContent);
 };
 
 const toggleSounds = (): void => {
@@ -31,11 +32,13 @@ const toggleSounds = (): void => {
   btnSoundsVolume.classList.toggle('off');
   if (btnSoundsVolume.classList.contains('off')) {
     btnSoundsVolume.textContent = 'sound OFF';
-    btnSoundsVolume.value = 'off';
+    offSounds();
   } else {
     btnSoundsVolume.textContent = 'sound ON';
-    btnSoundsVolume.value = 'on';
+    onSounds();
   }
+
+  localStorage.setItem('sounds', btnSoundsVolume.textContent);
 };
 
 const createBtnsHeaderContainer = () => {
@@ -43,12 +46,18 @@ const createBtnsHeaderContainer = () => {
   const btnLang = createButton('btn-lang', 'button', 'en');
   btnLang.addEventListener('click', changeLanguage);
 
-  const btnMusicVolume = createButton('btn-music', 'button', 'music ON');
+  const btnMusicVolume = createButton('btn-music', 'button', '');
+  setBtnText(btnMusicVolume, 'music', 'music ON');
+  setMusic(btnMusicVolume);
+
   btnMusicVolume.addEventListener('click', () => {
     toggleMusic();
   });
 
   const btnSoundsVolume = createButton('btn-sounds', 'button', 'sound ON');
+  setBtnText(btnSoundsVolume, 'sounds', 'sound ON');
+  setSounds(btnSoundsVolume);
+
   btnSoundsVolume.addEventListener('click', () => {
     toggleSounds();
   });
