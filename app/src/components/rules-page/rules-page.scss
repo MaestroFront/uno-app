@@ -3,10 +3,10 @@
   align-items: flex-start;
   justify-content: space-between;
   color: white;
-  font-size: 1em;
+  font-size: 0.9em;
   gap: 40px;
-  transform: scale(0.9);
-  width: 100%;
+  /*transform: scale(0.9);*/
+  width: 90%;
   height: 100%;
 }
 
@@ -14,10 +14,10 @@
   flex: 0 0 40%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   padding: 20px 10px;
   height: 100%;
-  font-size: 1.4em;
+  font-size: 1.3em;
 }
 
 .cards-description {
@@ -34,7 +34,6 @@
   background: #ffffff00;
   border: 3px #ffffff45 solid;
   border-radius: 10px;
-  padding: 10px;
   box-shadow: 0 1px 25px rgba(0, 0, 0, 0.2);  
 }
 
@@ -42,7 +41,6 @@
   display: flex;
   position: relative;
   flex: 1 0 30%;
-  overflow: hidden;
   transform-style: preserve-3d;
   transition: transform 1s;
 }
@@ -54,41 +52,26 @@
 .card-block-back,
 .card-block-front {
   position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
   gap: 10px;
+  backface-visibility: hidden;
 }
 
 .card-block-front {
-  cursor: pointer;
-  backface-visibility: hidden;
-  z-index: 2;
-  opacity: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-}
-
-.card-block-front.open {
-  opacity: 0;
+  z-index: 1;
 }
 
 .card-block-back {
   transform: rotateY(-180deg);
-  z-index: 1;
-  opacity: 0;
   padding: 10px 5px;
   display: flex;
   flex-direction: column;
-}
-
-.card-block-back.open {
-  z-index: 2;
-  opacity: 1;
 }
 
 .card-title,
@@ -100,8 +83,8 @@
 .card-title, 
 .card-value {
   height: 15%;
-    font-size: 1.4em;
-    margin-bottom: 15px;
+  font-size: 1.4em;
+  margin-bottom: 15px;
 }
 
 .card-description {
@@ -110,7 +93,11 @@
   flex-direction: column;
   align-items: flex-start;
   overflow: hidden;
-  scroll-behavior: auto;
+}
+
+.card-container:last-child .card-text {
+  font-size: 0.9em;
+  line-height: 1.1;
 }
 
 .card-text {
