@@ -66,6 +66,14 @@ export const createSpan = (className: string, text: string) => {
   return element;
 };
 
+export const createInput = (className: string, type: string, placeholder: string) => {
+  const element = document.createElement('input');
+  element.classList.add(className);
+  element.type = type;
+  element.placeholder = placeholder;
+  return element;
+};
+
 export const addButtonBackToMainPage = (): void => {
   const btn = createButton('btn-main-page', 'button', 'main page');
   const returnBlock = document.querySelector('.return-block') as HTMLDivElement;

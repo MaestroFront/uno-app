@@ -1,5 +1,6 @@
 // import { body } from '../global-compomemts/constants';
 import { createElement, createImage, createButton } from '../helpers/helpers';
+import { createRegistrationContainer } from '../registration/registration';
 import { setBtnText } from '../local-storage';
 import { musicPlay, musicStop, offSounds, onSounds, setMusic, setSounds } from './sounds';
 
@@ -82,5 +83,6 @@ export const createHeader = (): HTMLDivElement => {
   );
 
   header.append(returnBlock, createBtnsHeaderContainer(), settings);
+  createRegistrationContainer();
   return header;
 };
