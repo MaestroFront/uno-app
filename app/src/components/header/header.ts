@@ -1,5 +1,6 @@
 // import { body } from '../global-compomemts/constants';
 import { createElement, createImage, createButton } from '../helpers/helpers';
+import { createRegistrationContainer } from '../registration/registration';
 
 const changeLanguage = (): void => {
   const btnLang = document.querySelector('.btn-lang') as HTMLButtonElement;
@@ -61,5 +62,6 @@ export const createHeader = (): HTMLDivElement => {
   );
 
   header.append(returnBlock, createBtnsHeaderContainer(), settings);
+  createRegistrationContainer();
   return header;
 };
