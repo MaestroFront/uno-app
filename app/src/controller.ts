@@ -140,13 +140,9 @@ class Controller {
           const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
           const cardsOnHand = (document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement;
           cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
-          const cards = cardsOnHand.getElementsByClassName('simple-card');
+          // const cards = cardsOnHand.getElementsByClassName('simple-card');
           // console.log('get', Array.from(cards).length);
-          Array.from(cards).forEach((el, i) => { (el as HTMLElement).style.right = '0'; (el as HTMLElement).style.right = `${i * 7}%`; });
-          const cardsOnHandField = document.querySelector('.cards') as HTMLDivElement;
-          cardsOnHandField.style.left = `${(Array.from(cards).length) * 7}%`;
-          cardsOnHandField.style.width = `${(Array.from(cards).length) * 120}px`;
-
+          // Array.from(cards).map((el, i, arr) => { if (i > 0) (el as HTMLElement).style.marginLeft = `-${arr.length * 2}%`; });
           break;
         }
         /* Receiving a message from the server */
