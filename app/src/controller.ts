@@ -4,6 +4,7 @@ import { createElement } from './components/helpers/helpers';
 import { CardInfo, WebSocketMessage } from './types';
 // import CardDeck, { cardDeck } from '../../server/src/game/сard_deck';
 import { blueColor, greenColor, redColor, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from './components/cards/cards';
+import { clickSoundPlay, getCardSoundPlay } from './components/header/sounds';
 
 class Controller {
   static webSocket: WebSocket;
@@ -59,6 +60,7 @@ class Controller {
       
       div.id = id.toString();
       div.addEventListener('click', evt => {
+        clickSoundPlay();
         //console.log((evt.target as HTMLDivElement).closest('.cardCenter'));
         const clickedEl = (evt.target as HTMLDivElement).closest('.cardCenter') as Element;
       
@@ -134,16 +136,13 @@ class Controller {
         }
         /* Получение карты с сервера */
         case 'GET_CARD': {
+          void getCardSoundPlay();
           const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
           const cardsOnHand = (document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement;
           cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
-          const cards = cardsOnHand.getElementsByClassName('simple-card');
+          // const cards = cardsOnHand.getElementsByClassName('simple-card');
           // console.log('get', Array.from(cards).length);
-          Array.from(cards).forEach((el, i) => { (el as HTMLElement).style.right = '0'; (el as HTMLElement).style.right = `${i * 7}%`; });
-          const cardsOnHandField = document.querySelector('.cards') as HTMLDivElement;
-          cardsOnHandField.style.left = `${(Array.from(cards).length) * 7}%`;
-          cardsOnHandField.style.width = `${(Array.from(cards).length) * 120}px`;
-
+          // Array.from(cards).map((el, i, arr) => { if (i > 0) (el as HTMLElement).style.marginLeft = `-${arr.length * 2}%`; });
           break;
         }
         /* Receiving a message from the server */
@@ -153,6 +152,7 @@ class Controller {
         }
         /* Processing a move */
         case 'MOVE': {
+          clickSoundPlay();
           const dataMove: { topCard: CardInfo, currentColor: string } = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
           (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
           // const cardsOnHand = (document.querySelector('.current-card') as HTMLElement).parentElement as HTMLElement;
