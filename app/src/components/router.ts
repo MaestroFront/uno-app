@@ -6,20 +6,39 @@ class Router {
 
   constructor() {
     Router.url = new URL(window.location.href);
-    if (Router.url.searchParams.toString() === '') Router.setState('home');
-    if (Router.url.searchParams.toString() === 'rules') Router.setState('rules');
-    if (Router.url.searchParams.toString() === 'single-player') Router.setState('single-player');
+    switch (Router.url.hash) {
+      case '': {
+        Router.setState('home');
+        break;
+      }
+      case '#home': {
+        Router.setState('home');
+        break;
+      }
+      case '#rules': {
+        Router.setState('rules');
+        break;
+      }
+      case '#single-player': {
+        Router.setState('single-player');
+        break;
+      }
+      default: {
+        Router.setState('404');
+        break;
+      }
+    }
     Router.checkPage();
   }
 
   static setState(state: string) {
-    Router.url.searchParams.set(state, '');
-    window.history.pushState(state, '', Router.url.searchParams.toString().concat(Router.url.hash));
+    Router.url.hash = state;
+    window.history.pushState(state, '', Router.url.hash);
   }
 
   static checkPage() {
     switch (window.history.state) {
-      case 'home' || '': {
+      case 'home': {
         createPage();
         break;
       }
@@ -34,6 +53,15 @@ class Router {
         break;
       }
       case 'multiplayer': {
+        break;
+      }
+      case '404': {
+        createPage();
+        break;
+      }
+      default: {
+        Router.setState('404');
+        Router.checkPage();
         break;
       }
     }
