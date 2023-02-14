@@ -28,7 +28,14 @@ const createChoiceGameContainer = () => {
 export const createMainPage = () => {
   const main = document.querySelector('.main') as HTMLDivElement;
   const logo = createImage('logo', '../assets/img/logo-UNO.png', 'logo');
-  main?.append(logo, createChoiceGameContainer());
+  if ('404' !== window.history.state) {
+    main?.append(logo, createChoiceGameContainer());
+  } else {
+    const div = document.createElement('div');
+    div.className = 'page-404';
+    div.innerText = '404';
+    main?.append(logo, div);
+  }
 
   return main;
 };
