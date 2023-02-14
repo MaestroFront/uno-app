@@ -4,11 +4,12 @@ import {
   createParagraph,
 } from '../helpers/helpers';
 import Controller from '../../controller';
-import { renderBackSide } from '../cards/cards';
+import { renderBackSide, renderCardWithNumber, yellowColor } from '../cards/cards';
 import { getCardFromDeck } from './game-animation';
 
 const playerField = (playerClassName: string, playerName: string) => {
   const block = createElement('div', playerClassName) as HTMLDivElement;
+  block.id = playerClassName;
   const cardsBlock = createElement('div', 'cards');
   const title = createParagraph('player-name', playerName);
   title.id = `name-${playerClassName}`;
@@ -34,6 +35,24 @@ const createRhomb = () => {
   return rhomb;
 };
 
+const renderOneCard = (element: Element) => {
+  const card = createElement('div', 'get-card') as HTMLDivElement;
+  card.id = 'get-card';
+
+  card.style.display = 'flex';
+  card.style.position = 'relative';
+  card.style.transformStyle = 'preserve-3d';
+  card.style.transition = 'transform 1s';
+  card.style.right = '20px';
+
+
+  const front = createElement('div', 'front') as HTMLDivElement;
+  const back = createElement('div', 'back') as HTMLDivElement;
+  back.append(renderBackSide(0.4));
+  front.append(element);
+  card.append(back, front);
+  return card;
+};
 
 const renderDeck = (): HTMLDivElement => {
   const deck = createElement('div', 'deck') as HTMLDivElement;
@@ -46,8 +65,8 @@ const renderDeck = (): HTMLDivElement => {
     i++;
   }
 
-  const lastCard = createElement('div', 'last-card') as HTMLDivElement;
-  lastCard.append(renderBackSide(0.4));
+  const lastCard = renderOneCard(renderCardWithNumber('8', yellowColor, 0.4));
+  // lastCard.classList.add('last-card');
   
   fullDeck.append(lastCard);
   deck.append(fullDeck);
@@ -89,7 +108,6 @@ export const createGameField = (quantity: number) => {
   main.append(container);
   /* мои подключени */
   deck.addEventListener('click', (e) => {
-    // console.log(e.target);
     getCardFromDeck(e);
     Controller.webSocket.send(JSON.stringify({ action: 'GET_CARD_BY_USER', data: '' }));
   });
