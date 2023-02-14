@@ -32,3 +32,10 @@ export interface CreateGameMessage {
   players: number,
   online: boolean
 }
+
+export interface DBUsers {
+  UserId: number,
+  UserName: string,
+  UserPassword: string,
+  Email: string
+}
