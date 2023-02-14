@@ -6,10 +6,11 @@ export const chatSound = new Audio('../../assets/music/chat.mp3');
 
 
 export const musicPlay = () => {
-  music.autoplay = true;
+  // music.autoplay = true;
   if (music.readyState) {
     void music.play();
   }
+  music.loop = true;
 };
 export const musicStop = () => {
   void music.pause();
