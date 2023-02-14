@@ -10,6 +10,7 @@ export const createElement = (tagName: string, className: string) => {
 };
 
 export const createPage = () => {
+  document.body.innerHTML = '';
   const body = document.querySelector('.body') as HTMLDivElement;
   const header = createElement('header', 'header') as HTMLDivElement;
   const main = createElement('main', 'main') as HTMLDivElement;

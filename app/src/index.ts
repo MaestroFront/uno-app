@@ -7,9 +7,12 @@ import './components/header/header';
 import './components/table-results/table-results';
 import './components/choice-settings/choice';
 
-import { createPage } from './components/helpers/helpers';
+import Router from './components/router';
+
+const router = new Router();
+console.log(router);
 
 window.onload = () => {
-  createPage();
   Controller.start(9001);
+  Router.checkPage();
 };
