@@ -1,7 +1,9 @@
 import { createButton, createElement, createImage } from '../helpers/helpers';
+import { chatSound } from '../sounds';
 
 const openChat = () => {
   (document.querySelector('.chat') as HTMLDivElement).classList.add('open');
+  void chatSound.play();
 };
 
 export const renderChat = () => {

@@ -1,4 +1,4 @@
-import { getCardSoundPlay } from '../header/sounds';
+import { getCardSoundPlay } from '../sounds';
 
 export const moveCurrCard = (e: Event) => {
   const el = e.target as Element;

@@ -4,7 +4,7 @@ import { createElement } from './components/helpers/helpers';
 import { CardInfo, WebSocketMessage } from './types';
 // import CardDeck, { cardDeck } from '../../server/src/game/сard_deck';
 import { blueColor, greenColor, redColor, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from './components/cards/cards';
-import { clickSoundPlay, getCardSoundPlay } from './components/header/sounds';
+import { clickSoundPlay, getCardSoundPlay } from './components/sounds';
 import { moveCurrCard } from './components/game-field/game-animation';
 
 class Controller {

@@ -2,7 +2,7 @@
 import { createElement, createImage, createButton } from '../helpers/helpers';
 import { createRegistrationContainer } from '../registration/registration';
 import { setBtnText } from '../local-storage';
-import { musicPlay, musicStop, offSounds, onSounds, setMusic, setSounds } from './sounds';
+import { musicPlay, musicStop, offSounds, onSounds, setMusic, setSounds } from '../sounds';
 
 const changeLanguage = (): void => {
   const btnLang = document.querySelector('.btn-lang') as HTMLButtonElement;
