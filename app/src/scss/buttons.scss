@@ -1,4 +1,5 @@
 .button {
+  position: relative;
   background: #ff4742;
   border: 1px solid #ff4742;
   border-radius: 6px;
@@ -21,6 +22,7 @@
   touch-action: manipulation;
   vertical-align: middle;
   filter: drop-shadow(2px 4px 6px black);
+  z-index: 2;
 }
 
 .button:hover,
