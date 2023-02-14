@@ -30,6 +30,42 @@ export const createRegOrLogWindow = (method: string) => {
 
   const cross = createButton('btn-cross', 'button', 'x');
   const submit = createButton(`btn-submit-${method}`, 'submit', `${method}`);
+  if (method === 'reg') {
+    submit.addEventListener('click', async (ev) => {
+      ev.preventDefault();
+      const name = (document.querySelector('.input-reg-name') as HTMLInputElement).value;
+      const pass = (document.querySelector('.input-reg-password') as HTMLInputElement).value;
+      const mail = (document.querySelector('.input-mail') as HTMLInputElement).value;
+      const data = { userName: name, password: pass, email: mail } as { userName: string, password: string, email: string };
+      const fetchOptions = {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      };
+      await fetch('http://localhost:9002/registration', fetchOptions)
+        .then(res=>res.json())
+        .then(obj=>console.log(obj)).catch();
+    });
+  } else {
+    submit.addEventListener('click', async (ev) => {
+      ev.preventDefault();
+      const name = (document.querySelector('.input-log-name') as HTMLInputElement).value;
+      const pass = (document.querySelector('.input-log-password') as HTMLInputElement).value;
+      const data = { userName: name, password: pass } as { userName: string, password: string };
+      const fetchOptions = {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      };
+      await fetch('http://localhost:9002/login', fetchOptions)
+        .then(res=>res.json())
+        .then(obj=>console.log(obj)).catch();
+    });
+  }
 
   nameBlock.append(nameTitle, inputName);
   passwordBlock.append(passwordTitle, inputPassword);
