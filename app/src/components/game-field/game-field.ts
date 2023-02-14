@@ -43,7 +43,7 @@ const renderOneCard = (element: Element) => {
   card.style.position = 'relative';
   card.style.transformStyle = 'preserve-3d';
   card.style.transition = 'transform 1s';
-  card.style.right = '20px';
+  card.style.right = '-20px';
 
 
   const front = createElement('div', 'front') as HTMLDivElement;
@@ -108,7 +108,7 @@ export const createGameField = (quantity: number) => {
   main.append(container);
   /* мои подключени */
   deck.addEventListener('click', (e) => {
-    getCardFromDeck(e);
+    getCardFromDeck(e, 'bottom');//TODO..анимация карты в зависимости от позиции игрока: top, bottom, left, right
     Controller.webSocket.send(JSON.stringify({ action: 'GET_CARD_BY_USER', data: '' }));
   });
 };
