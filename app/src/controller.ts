@@ -5,6 +5,7 @@ import { CardInfo, WebSocketMessage } from './types';
 // import CardDeck, { cardDeck } from '../../server/src/game/сard_deck';
 import { blueColor, greenColor, redColor, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from './components/cards/cards';
 import { clickSoundPlay, getCardSoundPlay } from './components/header/sounds';
+import { moveCurrCard } from './components/game-field/game-animation';
 
 class Controller {
   static webSocket: WebSocket;
@@ -153,6 +154,14 @@ class Controller {
         /* Processing a move */
         case 'MOVE': {
           clickSoundPlay();
+          const cardsOnHand = (document.getElementById('player-1') as HTMLDivElement).getElementsByClassName('simple-card');
+          Array.from(cardsOnHand).forEach(card => {
+            card.addEventListener('click', (e) => {
+              // console.log(e.target);
+              moveCurrCard(e);
+            });
+          });
+          (document.querySelector('#last-card') as HTMLDivElement).classList.remove('move');
           const dataMove: { topCard: CardInfo, currentColor: string } = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
           (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
           // const cardsOnHand = (document.querySelector('.current-card') as HTMLElement).parentElement as HTMLElement;
