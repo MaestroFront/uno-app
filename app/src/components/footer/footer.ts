@@ -1,4 +1,6 @@
+import { renderChatButton } from '../chat/chat';
 import { createButton } from '../helpers/helpers';
+
 
 export const createFooter = () => {
   const footer = document.querySelector('.footer') as HTMLDivElement;
@@ -20,5 +22,5 @@ export const createFooter = () => {
         .catch((error) => console.log('Не удалось поделиться', error));
     }
   };
-  footer.append(btnDevelopedBy, btnShare);
+  footer.append(btnDevelopedBy, btnShare, renderChatButton());
 };

@@ -7,6 +7,7 @@ import './components/header/header';
 import './components/table-results/table-results';
 import './components/choice-settings/choice';
 import './components/local-storage';
+import './components/chat/chat';
 
 import { createPage } from './components/helpers/helpers';
 

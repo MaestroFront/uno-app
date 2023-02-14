@@ -1,6 +1,7 @@
 import { createElement, createButton, createImage } from '../helpers/helpers';
 import { createChoiceContainer } from '../choice-settings/choice';
 import { openRulesPage } from '../rules-page/rules-page';
+import { renderChat } from '../chat/chat';
 
 const createChoiceGameContainer = () => {
   const container = createElement('div', 'choice-game');
@@ -25,7 +26,7 @@ const createChoiceGameContainer = () => {
 export const createMainPage = () => {
   const main = document.querySelector('.main') as HTMLDivElement;
   const logo = createImage('logo', '../assets/img/logo-UNO.png', 'logo');
-  main?.append(logo, createChoiceGameContainer());
+  main?.append(logo, createChoiceGameContainer(), renderChat());
 
   return main;
 };
