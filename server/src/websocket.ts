@@ -61,6 +61,17 @@ class WebsocketServer {
           });
           break;
         }
+        case 'CHAT_MESSAGE': {
+          const userSay = this.clients.filter(value => {return value.socket === connection;})[0].userName;
+          this.clients.forEach(value => {
+            value.socket.send(JSON.stringify(
+              { action: 'INCOME_CHAT_MESSAGE',
+                data: JSON.stringify({ user: userSay, userMessage: msg.data }),
+              }));
+          });
+          console.log(`${this.clients.filter(value => {return value.socket === connection;})[0].userName} say ${msg.data}`);
+          break;
+        }
       }
     });
   }
