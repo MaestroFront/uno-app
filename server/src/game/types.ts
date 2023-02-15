@@ -39,3 +39,9 @@ export interface DBUsers {
   UserPassword: string,
   Email: string
 }
+
+export interface UserInfo {
+  userName: string,
+  password: string,
+  email: string
+}
