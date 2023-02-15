@@ -2,6 +2,7 @@ import { createGameField, moveCardToPlayer, showDistributionCardsForPlayers } fr
 import { createButtonResults } from '../header/header';
 import { addButtonBackToMainPage, createButton, createElement, createImage, createParagraph } from '../helpers/helpers';
 import Controller from '../../controller';
+import { removeRegistrationContainer } from '../registration/registration';
 
 export const createChoiceContainer = () => {
   const main = document.querySelector('.main') as HTMLDivElement;
@@ -104,6 +105,7 @@ document.addEventListener('click', (e) => {
   }
   if (element.closest('.btn-start')) {
     goToGameField();
+    removeRegistrationContainer();
     showDistributionCardsForPlayers(+(localStorage.getItem('players') as string));
     moveCardToPlayer();
   }
