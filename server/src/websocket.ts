@@ -52,6 +52,15 @@ class WebsocketServer {
           connection.send(JSON.stringify({ action: 'YOUR_NAME', data: this.findClient(connection).userName }));
           break;
         }
+        case 'UPDATE_NAME': {
+          this.clients.forEach(value => {
+            if (value.socket === connection) {
+              console.log(chalk.bgBlue(`User ${value.userName} update nickname on ${msg.data}`));
+              value.userName = msg.data;
+            }
+          });
+          break;
+        }
       }
     });
   }

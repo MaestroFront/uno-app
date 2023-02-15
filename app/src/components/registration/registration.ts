@@ -1,5 +1,6 @@
 import { createElement, createButton, createInput, createParagraph } from '../helpers/helpers';
 import Router from '../router';
+import Controller from '../../controller';
 
 export const createRegistrationContainer = () => {
   const header = document.querySelector('.header') as HTMLDivElement;
@@ -99,6 +100,7 @@ export const createRegOrLogWindow = (method: string) => {
           if (obj?.status) {
             document.cookie = obj.data;
             const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
+            Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
             Router.setState('home');
             Router.checkPage();
             // eslint-disable-next-line no-alert
