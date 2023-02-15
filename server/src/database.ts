@@ -1,12 +1,12 @@
 import { Database, OPEN_READONLY, OPEN_READWRITE } from 'sqlite3';
-// import path from 'path';
+import path from 'path';
 import { DBUsers } from './game/types';
 import chalk from 'chalk';
 
 class DBUno {
   static db: Database;
 
-  static path = 'F:\\projects\\uno-app\\server\\src\\db\\db.sqlite';//path.join(__dirname, 'db/db.sqllite');
+  static path = path.resolve(__dirname, 'db/db.sqlite');
 
   static async readAllUsers(): Promise<void> {
     await DBUno.openDB().then(() => {
