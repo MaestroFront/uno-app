@@ -1,4 +1,4 @@
-import { createGameField } from '../game-field/game-field';
+import { createGameField, moveCardToPlayer, showDistributionCardsForPlayers } from '../game-field/game-field';
 import { createButtonResults } from '../header/header';
 import { addButtonBackToMainPage, createButton, createElement, createImage, createParagraph } from '../helpers/helpers';
 import Controller from '../../controller';
@@ -82,14 +82,17 @@ document.addEventListener('click', (e) => {
   if (element.closest('.choice-quantity .two')) {
     addMark(element);
     showStartGameBtn();
+    localStorage.setItem('players', '2');
   }
   if (element.closest('.choice-quantity .three')) {
     addMark(element);
     showStartGameBtn();
+    localStorage.setItem('players', '3');
   }
   if (element.closest('.choice-quantity .four')) {
     addMark(element);
     showStartGameBtn();
+    localStorage.setItem('players', '4');
   }
   if (element.closest('.btn-easy')) {
     choiceDifficulty(element, '.btn-hard');
@@ -99,5 +102,9 @@ document.addEventListener('click', (e) => {
     choiceDifficulty(element, '.btn-easy');
     showStartGameBtn();
   }
-  if (element.closest('.btn-start')) goToGameField();
+  if (element.closest('.btn-start')) {
+    goToGameField();
+    showDistributionCardsForPlayers(+(localStorage.getItem('players') as string));
+    moveCardToPlayer();
+  }
 });
