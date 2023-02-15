@@ -72,7 +72,8 @@ export const createRegOrLogWindow = (method: string) => {
           if (obj.status) {
             // eslint-disable-next-line no-alert
             alert('registered!');
-            (document.querySelector('.btn-cross') as HTMLButtonElement).click();
+            Router.setState('home');
+            Router.checkPage();
           } else {
             // eslint-disable-next-line no-alert
             alert('user with this nickname already exist!');
