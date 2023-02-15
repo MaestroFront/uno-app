@@ -4,7 +4,7 @@ import { showChoiceContainer } from './main-page/main-page';
 class Router {
   static url: URL;
 
-  constructor() {
+  static initialize(): void {
     Router.url = new URL(window.location.href);
     switch (Router.url.hash) {
       case '': {
@@ -39,6 +39,7 @@ class Router {
   static checkPage() {
     switch (window.history.state) {
       case 'home': {
+        document.body.innerHTML = '';
         createPage();
         break;
       }
