@@ -1,3 +1,4 @@
+import { showRandomColor } from '../animated-items/animated-items';
 import { createButton, createElement, createImage } from '../helpers/helpers';
 import { chatSound } from '../sounds';
 
@@ -36,5 +37,7 @@ export const renderChatButton = (): HTMLButtonElement => {
   chatBtn.append(chatLogo);
 
   chatBtn.addEventListener('click', openChat);
+  chatBtn.addEventListener('click', showRandomColor);
+  
   return chatBtn;
 };

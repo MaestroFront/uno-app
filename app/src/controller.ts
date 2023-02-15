@@ -20,27 +20,13 @@ class Controller {
     //TODO: Remove this feature after switching to normal maps
     function createSimpleCard(id: number, color: string, value: number) {
       const div = createElement('div', 'simple-card');
-      //div.style.width = '50px';
-      //div.style.height = '150px';
-      // div.style.padding = '3px';
-      // div.style.display = 'flex';
-      // div.style.borderRadius = '5px';
-      // div.style.justifyContent = 'center';
-      // div.style.backgroundColor = color;
-      // div.style.color = 'white';
-      // div.innerText = value.toString();
-      // div.id = id.toString();
-      // div.addEventListener('click', evt => {
-      //   const user: string = ((evt.target as HTMLDivElement).parentElement as HTMLElement).className;
-      //   const dataForSent = JSON.stringify({ userName: user, cardId: (evt.target as HTMLDivElement).id });
-      //   Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
-      // });
-      // return div;
 
-      if (color === 'blue') color = blueColor;
-      if (color === 'red') color = redColor;
-      if (color === 'green') color = greenColor;
-      if (color === 'yellow') color = yellowColor;
+      switch (color) {
+        case 'blue': {color = blueColor;} break;
+        case 'red': {color = redColor;} break;
+        case 'green': {color = greenColor;} break;
+        default: {color = yellowColor;} break;
+      }
 
       if (id < 100) {
         const idNum  = id % 25;
@@ -62,7 +48,6 @@ class Controller {
       div.id = id.toString();
       div.addEventListener('click', evt => {
         clickSoundPlay();
-        //console.log((evt.target as HTMLDivElement).closest('.cardCenter'));
         const clickedEl = (evt.target as HTMLDivElement).closest('.cardCenter') as Element;
       
         if (clickedEl) {

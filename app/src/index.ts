@@ -8,6 +8,7 @@ import './components/table-results/table-results';
 import './components/choice-settings/choice';
 import './components/local-storage';
 import './components/chat/chat';
+import './components/animated-items/animated-items';
 
 import { createPage } from './components/helpers/helpers';
 
