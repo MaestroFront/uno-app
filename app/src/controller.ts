@@ -4,7 +4,7 @@ import { createElement } from './components/helpers/helpers';
 import { CardInfo, WebSocketMessage } from './types';
 // import CardDeck, { cardDeck } from '../../server/src/game/сard_deck';
 import { blueColor, greenColor, redColor, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from './components/cards/cards';
-import { clickSoundPlay, getCardSoundPlay } from './components/header/sounds';
+import { clickSoundPlay, getCardSoundPlay } from './components/sounds';
 import { moveCurrCard } from './components/game-field/game-animation';
 
 class Controller {
@@ -45,18 +45,18 @@ class Controller {
       if (id < 100) {
         const idNum  = id % 25;
         if (idNum < 19) {
-          div.append(renderCardWithNumber(value.toString(), color, 0.4));
+          div.append(renderCardWithNumber(value.toString(), color, 0.25));
         } else if (idNum < 21) {
-          div.append(renderPlusTwoCard(color, 0.4));
+          div.append(renderPlusTwoCard(color, 0.25));
         } else if (idNum < 23) {
-          div.append(renderReverseCard(color, 0.4));
+          div.append(renderReverseCard(color, 0.25));
         } else {
-          div.append(renderBlockedCard(color, 0.4));
+          div.append(renderBlockedCard(color, 0.25));
         }      
       } else if (id > 104) {
-        div.append(renderPlusFourCard(0.4));
+        div.append(renderPlusFourCard(0.25));
       } else {
-        div.append(renderMultiCard(0.4));
+        div.append(renderMultiCard(0.25));
       }
       
       div.id = id.toString();

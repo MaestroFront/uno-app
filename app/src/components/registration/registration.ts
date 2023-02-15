@@ -116,7 +116,7 @@ export const createRegOrLogWindow = (method: string) => {
   const mailBlock = createElement('div', 'mail-block') as HTMLDivElement;
   if (method === 'reg') {
     const mailTitle = createParagraph('mail-title', 'Edit your Email');
-    const mail = createInput('input-mail', 'mail', 'ivanovivan@mail.ru');
+    const mail = createInput('input-mail', 'mail', 'ivanovivan@mail.ru') as HTMLDivElement;
     mailBlock.append(mailTitle, mail);
     form.append(mailBlock);
   }
@@ -152,3 +152,8 @@ document.addEventListener('click', (e) => {
     document.querySelector('.log-window')?.remove();
   }
 });
+
+export const removeRegistrationContainer = () => {
+  const container  = document.querySelector('.registration-container') as HTMLDivElement;
+  container.remove();
+};

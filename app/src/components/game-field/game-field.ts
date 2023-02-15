@@ -6,6 +6,7 @@ import {
 import Controller from '../../controller';
 import { renderBackSide, renderCardWithNumber, yellowColor } from '../cards/cards';
 import { getCardFromDeck } from './game-animation';
+import { renderChat } from '../chat/chat';
 
 const playerField = (playerClassName: string, playerName: string) => {
   const block = createElement('div', playerClassName) as HTMLDivElement;
@@ -43,12 +44,12 @@ const renderOneCard = (element: Element) => {
   card.style.position = 'relative';
   card.style.transformStyle = 'preserve-3d';
   card.style.transition = 'transform 1s';
-  card.style.right = '-20px';
+  card.style.right = '-18px';
 
 
   const front = createElement('div', 'front') as HTMLDivElement;
   const back = createElement('div', 'back') as HTMLDivElement;
-  back.append(renderBackSide(0.4));
+  back.append(renderBackSide(0.25));
   front.append(element);
   card.append(back, front);
   return card;
@@ -59,13 +60,13 @@ const renderDeck = (): HTMLDivElement => {
   const fullDeck = createElement('div', 'full-deck') as HTMLDivElement;
   for (let i = 0; i < 5;) {
     const card = createElement('div', 'card') as HTMLDivElement;
-    card.append(renderBackSide(0.4));
+    card.append(renderBackSide(0.25));
     card.style.right = `${i * 5}px`;
     fullDeck.append(card);
     i++;
   }
 
-  const lastCard = renderOneCard(renderCardWithNumber('8', yellowColor, 0.4));
+  const lastCard = renderOneCard(renderCardWithNumber('8', yellowColor, 0.25));
   // lastCard.classList.add('last-card');
   
   fullDeck.append(lastCard);
@@ -105,7 +106,7 @@ export const createGameField = (quantity: number) => {
   field.append(deck, currentCard, createRhomb(), uno);
   container.append(field);
 
-  main.append(container);
+  main.append(container, renderChat());
   /* мои подключени */
   deck.addEventListener('click', (e) => {
     getCardFromDeck(e, 'bottom');//TODO..анимация карты в зависимости от позиции игрока: top, bottom, left, right
@@ -113,5 +114,84 @@ export const createGameField = (quantity: number) => {
   });
 };
 
+export const showDistributionCardsForPlayers = (quantityOfPlayers: number): void => {
 
+  const deck = document.querySelector('.deck') as HTMLDivElement;
+  const container = createElement('div', 'cards-container') as HTMLDivElement;
 
+  for (let i = 0; i < quantityOfPlayers * 7; i++) {
+    const card = createElement('div', 'card-distribution') as HTMLDivElement;
+    card.append(renderBackSide(0.25));
+    container.append(card);
+  }
+
+  deck.append(container);
+
+};
+
+function sliceIntoChunks(arr: NodeListOf<HTMLDivElement>, chunkSize: number) {
+  const res = [];
+  for (let i = 0; i < arr.length; i += chunkSize) {
+    const chunk = Array.from(arr).slice(i, i + chunkSize);
+    res.push(chunk);
+  }
+  return res;
+}
+
+const hideDistributionCards = () => {
+  const cards = document.querySelectorAll('.card-distribution');
+  cards.forEach((card) => card.classList.add('hide-card'));
+  setTimeout(() => document.querySelector('.cards-container')?.remove(), 3000);
+};
+
+const showCards = () => {
+  const cards = document.querySelectorAll('.cards');
+  cards?.forEach((card) => card.classList.add('show'));
+};
+
+const showPlayersNames = (): void => {
+  const names = document.querySelectorAll('.player-name');
+  names.forEach((name) => name.classList.add('show'));
+};
+
+export const moveCardToPlayer = (): void => {
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  const cards = document.querySelectorAll('.card-distribution') as NodeListOf<HTMLDivElement>;
+  const newCards = sliceIntoChunks(cards, 7);
+
+  newCards[0].reverse().forEach((card, index) => {
+    setTimeout(() => {
+      card.style.transform = `translate(${index * 90 - 162}%, 156%) rotateZ(720deg)`;
+    }, index * 300);
+  });
+
+  newCards[1].reverse().forEach((card, index) => {
+    setTimeout(() => {
+      card.style.transform = `translate(-410%, ${index * 50 - 154}%) rotateZ(720deg) rotate(270deg)`;
+    }, index * 300);
+  });
+
+  if (newCards[2]) {
+    newCards[2].reverse().forEach((card, index) => {
+      setTimeout(() => {
+        card.style.transform = `translate(${index * 90 - 165}%, -140%) rotateZ(720deg)`;
+      }, index * 300);
+    });
+  }
+
+  if (newCards[3]) {
+    newCards[3].reverse().forEach((card, index) => {
+      setTimeout(() => {
+        card.style.transform = `translate(625%, ${index * 50 - 145}%) rotateZ(720deg) rotate(90deg)`;
+      }, index * 300);
+    });
+  }
+
+  setTimeout(() => {
+    hideDistributionCards();
+    showCards();
+    showPlayersNames();
+  }, 5000);
+
+};

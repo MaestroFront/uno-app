@@ -1,5 +1,7 @@
 import { createElement, createButton, createImage } from '../helpers/helpers';
 import { createChoiceContainer } from '../choice-settings/choice';
+import { renderChat } from '../chat/chat';
+import { createRegistrationContainer } from '../registration/registration';
 import Router from '../router';
 
 const createChoiceGameContainer = () => {
@@ -28,6 +30,7 @@ const createChoiceGameContainer = () => {
 export const createMainPage = () => {
   const main = document.querySelector('.main') as HTMLDivElement;
   const logo = createImage('logo', '../assets/img/logo-UNO.png', 'logo');
+  main?.append(logo, createChoiceGameContainer(), renderChat());
   if ('404' !== window.history.state) {
     main?.append(logo, createChoiceGameContainer());
   } else {
@@ -102,5 +105,8 @@ document.addEventListener('click', (e) => {
     Router.url.searchParams.delete('numberOfPlayers');
     Router.setState('home');
   }
-  if (element.closest('.btn-main-page')) goToMainPage(main, element);
+  if (element.closest('.btn-main-page')) {
+    goToMainPage(main, element);
+    if (!document.querySelector('.registration-container')) createRegistrationContainer();
+  }
 });

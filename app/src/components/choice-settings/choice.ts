@@ -1,7 +1,8 @@
-import { createGameField } from '../game-field/game-field';
+import { createGameField, moveCardToPlayer, showDistributionCardsForPlayers } from '../game-field/game-field';
 import { createButtonResults } from '../header/header';
 import { addButtonBackToMainPage, createButton, createElement, createImage, createParagraph } from '../helpers/helpers';
 import Controller from '../../controller';
+import { removeRegistrationContainer } from '../registration/registration';
 import Router from '../router';
 
 export const createChoiceContainer = () => {
@@ -85,18 +86,21 @@ document.addEventListener('click', (e) => {
     Router.setState('single-player');
     addMark(element);
     showStartGameBtn();
+    localStorage.setItem('players', '2');
   }
   if (element.closest('.choice-quantity .three')) {
     Router.url.searchParams.set('numberOfPlayers', '3');
     Router.setState('single-player');
     addMark(element);
     showStartGameBtn();
+    localStorage.setItem('players', '3');
   }
   if (element.closest('.choice-quantity .four')) {
     Router.url.searchParams.set('numberOfPlayers', '4');
     Router.setState('single-player');
     addMark(element);
     showStartGameBtn();
+    localStorage.setItem('players', '4');
   }
   if (element.closest('.btn-easy')) {
     Router.url.searchParams.set('difficult', 'easy');
@@ -110,5 +114,10 @@ document.addEventListener('click', (e) => {
     choiceDifficulty(element, '.btn-easy');
     showStartGameBtn();
   }
-  if (element.closest('.btn-start')) goToGameField();
+  if (element.closest('.btn-start')) {
+    goToGameField();
+    removeRegistrationContainer();
+    showDistributionCardsForPlayers(+(localStorage.getItem('players') as string));
+    moveCardToPlayer();
+  }
 });

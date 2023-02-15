@@ -2,13 +2,15 @@
 const music = new Audio('../../assets/music/melody.mp3');
 const click = new Audio('../../assets/music/click.mp3');
 const getCard = new Audio('../../assets/music/one_card.mp3');
+export const chatSound = new Audio('../../assets/music/chat.mp3');
 
 
 export const musicPlay = () => {
-  music.autoplay = true;
+  // music.autoplay = true;
   if (music.readyState) {
     void music.play();
   }
+  music.loop = true;
 };
 export const musicStop = () => {
   void music.pause();
@@ -37,10 +39,12 @@ export const getCardSoundPlay = () => {
 export const onSounds = () => {
   click.volume = 1;
   getCard.volume = 1;
+  chatSound.volume = 1;
 };
 export const offSounds = () => {
   click.volume = 0;
   getCard.volume = 0;
+  chatSound.volume = 0;
 };
 
 export const setSounds = (el:HTMLButtonElement ) => {
