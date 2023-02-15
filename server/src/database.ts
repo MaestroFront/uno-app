@@ -35,30 +35,5 @@ class DBUno {
       }
     });
   }
-
-  // static async checkUsersExist(userName: string):void {
-  //   // await DBUno.openDB();
-  //   // console.log(DBUno.db.get('SELECT * FROM Users', () => {}).);
-  //   // return new Promise((resolve, reject) => {
-  //   //   DBUno.db.get('SELECT * FROM Users where UserName = ', function (err, row)  {
-  //   //     if (err) reject('Read error: ' + err.message);
-  //   //     else {
-  //   //       resolve(row as Promise<DBUsers>);
-  //   //     }
-  //   //   });
-  //   // });
-  // }
-
-  // static async addUserToDB(user: DBUsers): Promise<DBUsers> {
-  //   DBUno.openDB('write')
-  //   return new Promise(function (resolve, reject) {
-  //     DBUno.db.get(`SELECT * FROM Users where UserName = '${userName}'`, function (err, row)  {
-  //       if (err) reject('Read error: ' + err.message);
-  //       else {
-  //         resolve(row as Promise<DBUsers>);
-  //       }
-  //     });
-  //   });
-  // }
 }
 export default DBUno;
