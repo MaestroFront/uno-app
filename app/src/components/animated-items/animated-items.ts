@@ -3,6 +3,7 @@
 
 import { blueColor, greenColor, redColor, yellowColor } from '../cards/cards';
 import { createElement, getRandomInt } from '../helpers/helpers';
+import { getColorSound } from '../sounds';
 
 export const renderDiamond = (): HTMLDivElement => {
   const diamond = createElement('div', 'diamond-container') as HTMLDivElement;
@@ -32,11 +33,11 @@ export const getColorAnimation = () => {
         (el as HTMLDivElement).style.boxShadow = 'none';
       });
       Array.from(document.getElementsByClassName('diamond')).forEach(el => el.classList.remove('shy'));
-    }, 4000);
+    }, 2000);
 
     setTimeout(() => {
       (document.querySelector('.diamond-container') as HTMLDivElement).classList.remove('show');
-    }, 6000);
+    }, 2500);
 
     setTimeout(() => {
       (document.getElementById('red-diamond') as HTMLDivElement).style.backgroundColor = '#eca4a4';
@@ -47,11 +48,14 @@ export const getColorAnimation = () => {
       (document.getElementById('yellow-diamond') as HTMLDivElement).style.boxShadow = 'inset 1px 1px 22px 16px #FFC300';
       (document.getElementById('green-diamond') as HTMLDivElement).style.backgroundColor = '#a4eca7';
       (document.getElementById('green-diamond') as HTMLDivElement).style.boxShadow = 'inset 1px 1px 22px 16px #258f37';
-    }, 6500);
+    }, 3000);
   }
 };
 
 export const showRandomColor = () => {
   (document.querySelector('.diamond-container') as HTMLDivElement).classList.add('show');
   getColorAnimation();
+  void getColorSound.play();
 };
+
+//------------------------get random color

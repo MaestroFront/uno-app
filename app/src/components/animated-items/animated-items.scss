@@ -113,17 +113,10 @@
   #blue-diamond.shy .cover,
   #green-diamond.shy .cover,
   #yellow-diamond.shy .cover {
-    animation-duration: 2s;
+    animation-duration: 1s;
     animation-name: shying;
     animation-fill-mode: none;
-    animation-iteration-count: 2;
-  }
-
-  #red-diamond.shy,
-  #blue-diamond.shy,
-  #green-diamond.shy,
-  #yellow-diamond.shy {
-    /*box-shadow: none;*/
+    animation-iteration-count: 1;
   }
 
   #red-diamond.shy .cover {
