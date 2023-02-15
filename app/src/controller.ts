@@ -45,18 +45,18 @@ class Controller {
       if (id < 100) {
         const idNum  = id % 25;
         if (idNum < 19) {
-          div.append(renderCardWithNumber(value.toString(), color, 0.4));
+          div.append(renderCardWithNumber(value.toString(), color, 0.3));
         } else if (idNum < 21) {
-          div.append(renderPlusTwoCard(color, 0.4));
+          div.append(renderPlusTwoCard(color, 0.3));
         } else if (idNum < 23) {
-          div.append(renderReverseCard(color, 0.4));
+          div.append(renderReverseCard(color, 0.3));
         } else {
-          div.append(renderBlockedCard(color, 0.4));
+          div.append(renderBlockedCard(color, 0.3));
         }      
       } else if (id > 104) {
-        div.append(renderPlusFourCard(0.4));
+        div.append(renderPlusFourCard(0.3));
       } else {
-        div.append(renderMultiCard(0.4));
+        div.append(renderMultiCard(0.3));
       }
       
       div.id = id.toString();

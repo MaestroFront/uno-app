@@ -60,7 +60,7 @@ const renderDeck = (): HTMLDivElement => {
   const fullDeck = createElement('div', 'full-deck') as HTMLDivElement;
   for (let i = 0; i < 5;) {
     const card = createElement('div', 'card') as HTMLDivElement;
-    card.append(renderBackSide(0.4));
+    card.append(renderBackSide(0.3));
     card.style.right = `${i * 5}px`;
     fullDeck.append(card);
     i++;
@@ -114,5 +114,83 @@ export const createGameField = (quantity: number) => {
   });
 };
 
+export const showDistributionCardsForPlayers = (quantityOfPlayers: number) => {
 
+  const deck = document.querySelector('.deck') as HTMLDivElement;
+  const container = createElement('div', 'cards-container') as HTMLDivElement;
 
+  for (let i = 0; i < quantityOfPlayers * 7; i++) {
+    const card = createElement('div', 'card-distribution') as HTMLDivElement;
+    card.append(renderBackSide(0.3));
+    container.append(card);
+  }
+
+  deck.append(container);
+
+};
+
+function sliceIntoChunks(arr: NodeListOf<HTMLDivElement>, chunkSize: number) {
+  const res = [];
+  for (let i = 0; i < arr.length; i += chunkSize) {
+    const chunk = Array.from(arr).slice(i, i + chunkSize);
+    res.push(chunk);
+  }
+  return res;
+}
+
+const hideDistributionCards = () => {
+  const cards = document.querySelectorAll('.card-distribution');
+  cards.forEach((card) => {
+    card.classList.add('hide-card');
+  });
+};
+
+const showCards = () => {
+  const cards = document.querySelectorAll('.cards');
+  cards?.forEach((card) => card.classList.add('show'));
+};
+
+export const moveCardToPlayer = () => {
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  const cards = document.querySelectorAll('.card-distribution') as NodeListOf<HTMLDivElement>;
+  const newCards = sliceIntoChunks(cards, 7);
+
+  newCards[0].forEach((card, index) => {
+    setTimeout(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      card.style.transform = `translate(${index * 70 - 200}%, 125%) rotateZ(720deg)`;
+    }, index * 100);
+  });
+
+  newCards[1].forEach((card, index) => {
+    setTimeout(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      card.style.transform = `translate(-495%, ${index * 35 - 105}%) rotateZ(720deg) rotate(270deg)`;
+    }, index * 100);
+  });
+
+  if (newCards[2]) {
+    newCards[2].forEach((card, index) => {
+      setTimeout(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        card.style.transform = `translate(${index * 70 - 170}%, -160%) rotateZ(720deg)`;
+      }, index * 100);
+    });
+  }
+
+  if (newCards[3]) {
+    newCards[3].forEach((card, index) => {
+      setTimeout(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        card.style.transform = `translate(664%, ${index * 35 - 125}%) rotateZ(720deg) rotate(90deg)`;
+      }, index * 100);
+    });
+  }
+
+  setTimeout(() => {
+    hideDistributionCards();
+    showCards();
+  }, 4000);
+
+};
