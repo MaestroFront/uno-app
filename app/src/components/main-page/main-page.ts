@@ -2,6 +2,7 @@ import { createElement, createButton, createImage } from '../helpers/helpers';
 import { createChoiceContainer } from '../choice-settings/choice';
 import { openRulesPage } from '../rules-page/rules-page';
 import { renderChat } from '../chat/chat';
+import { createRegistrationContainer } from '../registration/registration';
 
 const createChoiceGameContainer = () => {
   const container = createElement('div', 'choice-game');
@@ -85,5 +86,8 @@ document.addEventListener('click', (e) => {
   if (element.closest('.settings')) showSettings(element);
   if (element.closest('.btn-computer')) showChoiceContainer();
   if (element.closest('.choice-container .btn-cross')) removeChoiceContainer();
-  if (element.closest('.btn-main-page')) goToMainPage(main, element);
+  if (element.closest('.btn-main-page')) {
+    goToMainPage(main, element);
+    if (!document.querySelector('.registration-container')) createRegistrationContainer();
+  }
 });
