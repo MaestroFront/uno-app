@@ -1,0 +1,18 @@
+.exit-container {
+    z-index: 4;
+    background-color: white;
+    width: 30%;
+    height: 30%;
+    position: fixed;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+
+}
+.question {
+    white-space: break-spaces;
+    text-align: center;
+}
