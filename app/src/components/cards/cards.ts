@@ -1,3 +1,4 @@
+
 import { renderCardTemplate, renderSmallSymbol, 
   renderGradient, renderRectangle, setClassName, checkColorForGradient } from './cards-helpers';
 import { body } from '../global-components/constants';
