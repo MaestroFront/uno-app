@@ -98,3 +98,25 @@ export const openRulesPage = () => {
   createRulesPage();
 };
 
+
+
+//----------------------------RULES WINDOW
+export const createRulesWindow = () => {
+  const rulesWindow = createElement('div', 'rules-window') as HTMLDivElement;
+  const button = createButton('btn-cross', 'button', 'x'); 
+  rulesWindow.append(createCardsDescription(), button);
+  rulesWindow.style.display = 'none';
+
+  button.addEventListener('click', () => {
+    rulesWindow.style.display = 'none';
+    rulesWindow.classList.remove('open');
+  } );
+  return rulesWindow;
+};
+
+export const openRulesWindow = () => {
+  const rulesWindow = document.querySelector('.rules-window') as HTMLDivElement;
+  rulesWindow.style.display = 'flex';
+  rulesWindow.classList.add('open');
+};
+
