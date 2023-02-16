@@ -10,8 +10,8 @@ export const createRegistrationContainer = () => {
     div.className = 'user-logged';
     const p = document.createElement('p');
     p.innerText = `LOGIN AS ${document.cookie.split(';').filter(value => {return value.includes('user=');})[0].replace('user=', '')}`;
-    const button = document.createElement('button');
-    button.innerText = 'SIGN OUT';
+    const button = createButton('button', 'button', 'sign out');
+    // button.innerText = 'SIGN OUT';
     button.addEventListener('click', () => {
       document.cookie = document.cookie.split(';').map(value => {
         return value.includes('user=')
