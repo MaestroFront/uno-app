@@ -85,7 +85,7 @@ class Controller {
       });
       console.log('ann - chosen color', chosenColor); //---------------ПУСТО???
       sentChosenColor(chosenColor);
-      
+
 
       // const div = document.createElement('div');
       // div.id = 'popup_choose_color';
@@ -207,7 +207,7 @@ class Controller {
         case 'INCOME_CHAT_MESSAGE': {
           const data = JSON.parse(msg.data) as { user: string, userMessage: string };
           const div = document.createElement('div');
-          div.style.display = 'flex';
+          div.className = 'thought';
           let p = document.createElement('p');
           p.innerText = `${data.user} - `;
           p.style.display = 'flex';

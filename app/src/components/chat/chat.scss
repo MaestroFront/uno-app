@@ -96,3 +96,44 @@
     border-radius: 20px;
     border: 3px solid #41144e;
   }
+
+.thought {
+  display:flex;
+  background-color: #e2bf26;
+  padding:5px;
+  border-radius:30px;
+  min-width:20px;
+  max-width:220px;
+  min-height:40px;
+  margin:20px;
+  position:relative;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.thought:before,
+.thought:after {
+  content:"";
+  background-color: #e2bf26;
+  border-radius:50%;
+  display:block;
+  position:absolute;
+  z-index:-1;
+}
+.thought:before {
+  width:44px;
+  height:44px;
+  top:-12px;
+  left:28px;
+  box-shadow:-50px 30px 0 -12px #e2bf26;
+}
+.thought:after {
+  bottom:-10px;
+  right:26px;
+  width:30px;
+  height:30px;
+  box-shadow:40px -34px 0 0 #e2bf26,
+  -28px -6px 0 -2px #e2bf26,
+  -24px 17px 0 -6px #e2bf26,
+  -5px 25px 0 -10px #e2bf26;
+}
