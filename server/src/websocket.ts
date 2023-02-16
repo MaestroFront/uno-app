@@ -27,14 +27,20 @@ class WebsocketServer {
 
   connectionOnClose(connection: WebSocket) {
     connection.on('close', () => {
-      const client: Client = this.clients.filter(value => {return value.socket === connection;})[0];
+      const client: Client = this.clients.filter(value => {
+        return value.socket === connection;
+      })[0];
       console.log(chalk.bgRedBright(`${client.userName} is disconnected!`));
-      this.clients = this.clients.filter(value => {return value.socket !== connection;});
+      this.clients = this.clients.filter(value => {
+        return value.socket !== connection;
+      });
     });
   }
 
   findClient(connection: WebSocket): Client {
-    return this.clients.filter(value => {return value.socket === connection;})[0];
+    return this.clients.filter(value => {
+      return value.socket === connection;
+    })[0];
   }
 
   connectionOnMessage(connection: WebSocket) {
@@ -43,7 +49,10 @@ class WebsocketServer {
       switch (msg.action) {
         case 'CREATE_GAME': {
           const settings: CreateGameMessage = JSON.parse(msg.data) as CreateGameMessage;
-          const newGame: Game = { id: this.games.length + 1, game: new UnoGame(settings.players, this.findClient(connection)) };
+          const newGame: Game = {
+            id: this.games.length + 1,
+            game: new UnoGame(settings.players, this.findClient(connection)),
+          };
           this.games.push(newGame);
           newGame.game.startGame();
           break;
@@ -62,14 +71,22 @@ class WebsocketServer {
           break;
         }
         case 'CHAT_MESSAGE': {
-          const userSay = this.clients.filter(value => {return value.socket === connection;})[0].userName;
+          const date = new Date();
+          const userSay = this.clients.filter(value => {
+            return value.socket === connection;
+          })[0].userName;
           this.clients.forEach(value => {
             value.socket.send(JSON.stringify(
-              { action: 'INCOME_CHAT_MESSAGE',
-                data: JSON.stringify({ user: userSay, userMessage: msg.data }),
+              {
+                action: 'INCOME_CHAT_MESSAGE',
+                data: JSON.stringify(
+                  {
+                    user: userSay,
+                    userMessage: msg.data,
+                    time: `${date.getHours() < 10 ? '0'.concat(date.getHours().toString()) : date.getHours()}:${date.getMinutes() < 10 ? '0'.concat(date.getMinutes().toString()) : date.getMinutes()}:${date.getSeconds() < 10 ? '0'.concat(date.getSeconds().toString()) : date.getSeconds()}`,
+                  }),
               }));
           });
-          console.log(`${this.clients.filter(value => {return value.socket === connection;})[0].userName} say ${msg.data}`);
           break;
         }
       }

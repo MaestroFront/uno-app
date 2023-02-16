@@ -26,7 +26,11 @@ export const renderChat = () => {
         data: (document.querySelector('.message-input') as HTMLInputElement).value }));
     (document.querySelector('.message-input') as HTMLInputElement).value = '';
   });
-
+  messageInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter' && (document.querySelector('.message-input') as HTMLInputElement).value.length > 0) {
+      button.click();
+    }
+  });
   chatInput.append(messageInput, button);
   chatWindow.append(messageList);
   header.append(headerBtn);
@@ -48,6 +52,6 @@ export const renderChatButton = (): HTMLButtonElement => {
   // chatBtn.addEventListener('click', () => {
   //   showReverseAnimation(false);
   // });
-  
+
   return chatBtn;
 };
