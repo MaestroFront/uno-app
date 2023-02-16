@@ -15,7 +15,6 @@ export const moveCurrCard = (e: Event) => {
     const moveCardAnimation = new Animation(currCardKeyframes, document.timeline);
     moveCardAnimation.play();
   }
-  
 };
 
 
@@ -40,16 +39,11 @@ export const getCardFromDeck = (e: Event, playerNumber: string ) => {
 
   }
   if (clickedCard.closest('.back-side')) {
-    // card.classList.toggle('move');
     const currCardKeyframes = new KeyframeEffect(
       card, 
       [
         { transform: 'translate(0%, 0%) rotateY(0deg) rotateX(90deg)' },
         player,
-        // { transform: 'translate(100%, 90%) rotateY(-180deg)' }, bottom
-        // { transform: 'translate(100%, -90%) rotate(180deg)' }, //top
-        // { transform: 'translate(-250%, 0%) rotate(90deg)' }, //left
-        // { transform: 'translate(300%, 0%) rotate(90deg)' }, //right
       ], 
       { duration: 1000, fill: 'none' },
     );
@@ -58,3 +52,4 @@ export const getCardFromDeck = (e: Event, playerNumber: string ) => {
     void getCardSoundPlay();
   }
 };
+

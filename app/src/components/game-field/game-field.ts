@@ -7,6 +7,7 @@ import Controller from '../../controller';
 import { renderBackSide, renderCardWithNumber, yellowColor } from '../cards/cards';
 import { getCardFromDeck } from './game-animation';
 import { renderChat } from '../chat/chat';
+import { renderDiamond, renderReverseMessage } from '../animated-items/animated-items';
 
 const playerField = (playerClassName: string, playerName: string) => {
   const block = createElement('div', playerClassName) as HTMLDivElement;
@@ -162,7 +163,7 @@ export const createGameField = (quantity: number) => {
   field.append(deck, currentCard, createRhomb(), uno);
   container.append(field);
 
-  main.append(container, renderChat());
+  main.append(container, renderChat(), renderDiamond(), renderReverseMessage());
   /* мои подключени */
   deck.addEventListener('click', (e) => {
     getCardFromDeck(e, 'bottom');//TODO..анимация карты в зависимости от позиции игрока: top, bottom, left, right

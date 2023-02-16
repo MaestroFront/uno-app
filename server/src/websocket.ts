@@ -2,6 +2,7 @@ import WebSocket from 'ws';
 import * as http from 'http';
 import { Client, CreateGameMessage, Game, WebSocketMessage } from './game/types';
 import UnoGame from './game/uno-game';
+import chalk from 'chalk';
 
 class WebsocketServer {
   private readonly ws: WebSocket.Server<WebSocket>;
@@ -20,14 +21,14 @@ class WebsocketServer {
     });
     this.ws = new WebSocket.Server({ server });
     server.listen(port, () => {
-      console.log(`Listen port ${port}`);
+      console.log(chalk.bgCyan(`Listen port ${port}`));
     });
   }
 
   connectionOnClose(connection: WebSocket) {
     connection.on('close', () => {
       const client: Client = this.clients.filter(value => {return value.socket === connection;})[0];
-      console.log(`${client.userName} is disconnected!`);
+      console.log(chalk.bgRedBright(`${client.userName} is disconnected!`));
       this.clients = this.clients.filter(value => {return value.socket !== connection;});
     });
   }
@@ -51,6 +52,26 @@ class WebsocketServer {
           connection.send(JSON.stringify({ action: 'YOUR_NAME', data: this.findClient(connection).userName }));
           break;
         }
+        case 'UPDATE_NAME': {
+          this.clients.forEach(value => {
+            if (value.socket === connection) {
+              console.log(chalk.bgBlue(`User ${value.userName} update nickname on ${msg.data}`));
+              value.userName = msg.data;
+            }
+          });
+          break;
+        }
+        case 'CHAT_MESSAGE': {
+          const userSay = this.clients.filter(value => {return value.socket === connection;})[0].userName;
+          this.clients.forEach(value => {
+            value.socket.send(JSON.stringify(
+              { action: 'INCOME_CHAT_MESSAGE',
+                data: JSON.stringify({ user: userSay, userMessage: msg.data }),
+              }));
+          });
+          console.log(`${this.clients.filter(value => {return value.socket === connection;})[0].userName} say ${msg.data}`);
+          break;
+        }
       }
     });
   }
@@ -60,7 +81,7 @@ class WebsocketServer {
       this.unregisteredUsersCounter++;
       const client: Client = { socket: connection, userName: `User-${this.unregisteredUsersCounter}` };
       this.clients.push(client);
-      console.log(`New user ${client.userName} is connected!`);
+      console.log(chalk.bgYellow(`New user ${client.userName} is connected!`));
       this.connectionOnClose(connection);
       this.connectionOnMessage(connection);
     });

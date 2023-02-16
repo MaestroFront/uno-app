@@ -1,11 +1,33 @@
+
 import { createElement, createButton, createInput, createParagraph } from '../helpers/helpers';
+import Router from '../router';
+import Controller from '../../controller';
 
 export const createRegistrationContainer = () => {
   const header = document.querySelector('.header') as HTMLDivElement;
   const container = createElement('div', 'registration-container') as HTMLDivElement;
-  const registrationBtn = createButton('btn-reg', 'button', 'registration');
-  const loginBtn = createButton('btn-log', 'button', 'login');
-  container.append(registrationBtn, loginBtn);
+  if (document.cookie.includes('user=')) {
+    const div = createElement('div', 'user-logged');
+    const p = document.createElement('p');
+    p.innerText = `LOGIN AS ${document.cookie.split(';').filter(value => {return value.includes('user=');})[0].replace('user=', '')}`;
+    const button = createButton('button', 'button', 'sign out');
+    button.addEventListener('click', () => {
+      document.cookie = document.cookie.split(';').map(value => {
+        return value.includes('user=')
+          ? value.concat(';max-age=-1;')
+          : value;
+      }).join('');
+      Router.setState('home');
+      Router.checkPage();
+    });
+    div.append(p, button);
+    container.append(div);
+
+  } else {
+    const registrationBtn = createButton('btn-reg', 'button', 'registration');
+    const loginBtn = createButton('btn-log', 'button', 'login');
+    container.append(registrationBtn, loginBtn);
+  }
 
   header.prepend(container);
 };
@@ -30,6 +52,65 @@ export const createRegOrLogWindow = (method: string) => {
 
   const cross = createButton('btn-cross', 'button', 'x');
   const submit = createButton(`btn-submit-${method}`, 'submit', `${method}`);
+  if (method === 'reg') {
+    submit.addEventListener('click', async (ev) => {
+      ev.preventDefault();
+      const name = (document.querySelector('.input-reg-name') as HTMLInputElement).value;
+      const pass = (document.querySelector('.input-reg-password') as HTMLInputElement).value;
+      const mail = (document.querySelector('.input-mail') as HTMLInputElement).value;
+      const data = { userName: name, password: pass, email: mail } as { userName: string, password: string, email: string };
+      const fetchOptions = {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      };
+      await fetch('http://localhost:9002/registration', fetchOptions)
+        .then(res=>res.json() as Promise<{ status: boolean }>)
+        .then(obj => {
+          if (obj.status) {
+            // eslint-disable-next-line no-alert
+            alert('registered!');
+            Router.setState('home');
+            Router.checkPage();
+          } else {
+            // eslint-disable-next-line no-alert
+            alert('user with this nickname already exist!');
+          }
+        }).catch();
+    });
+  } else {
+    submit.addEventListener('click', async (ev) => {
+      ev.preventDefault();
+      const name = (document.querySelector('.input-log-name') as HTMLInputElement).value;
+      const pass = (document.querySelector('.input-log-password') as HTMLInputElement).value;
+      const data = { userName: name, password: pass } as { userName: string, password: string };
+      const fetchOptions = {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      };
+      await fetch('http://localhost:9002/login', fetchOptions)
+        .then(res => res.json() as Promise<{ status: boolean, data: string }>)
+        .then(obj => {
+          if (obj?.status) {
+            document.cookie = obj.data;
+            const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
+            Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
+            Router.setState('home');
+            Router.checkPage();
+            // eslint-disable-next-line no-alert
+            alert(`You signed in as ${cookie[0].replace('user=', '')}`);
+          } else {
+            // eslint-disable-next-line no-alert
+            alert('Wrong name or password');
+          }
+        }).catch();
+    });
+  }
 
   nameBlock.append(nameTitle, inputName);
   passwordBlock.append(passwordTitle, inputPassword);

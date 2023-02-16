@@ -1,6 +1,5 @@
 import './style.scss';
 import Controller from './controller';
-
 import './components/cards/cards';
 import './components/rules-page/rules-page';
 import './components/header/header';
@@ -8,10 +7,10 @@ import './components/table-results/table-results';
 import './components/choice-settings/choice';
 import './components/local-storage';
 import './components/chat/chat';
-
-import { createPage } from './components/helpers/helpers';
+import './components/animated-items/animated-items';
+import Router from './components/router';
 
 window.onload = () => {
-  createPage();
+  Router.initialize();
   Controller.start(9001);
 };
