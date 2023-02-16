@@ -10,7 +10,7 @@ const changeLanguage = (): void => {
     btnLang.classList.remove('off'); btnLang.textContent = 'en';
   } else {
     btnLang.classList.add('off'); btnLang.textContent = 'ru';
-  } 
+  }
 };
 
 const toggleMusic = () => {
@@ -70,7 +70,7 @@ const createBtnsHeaderContainer = () => {
 export const createButtonResults = () => {
   const mainPageButton = document.querySelector('.btn-main-page') as HTMLButtonElement;
   const results = createButton('btn-results', 'button', 'table results');
-  mainPageButton.after(results);  
+  mainPageButton.after(results);
 };
 
 export const createHeader = (): HTMLDivElement => {
@@ -83,6 +83,6 @@ export const createHeader = (): HTMLDivElement => {
   );
 
   header.append(returnBlock, createBtnsHeaderContainer(), settings);
-  createRegistrationContainer();
+  void createRegistrationContainer();
   return header;
 };

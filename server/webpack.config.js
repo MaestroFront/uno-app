@@ -1,6 +1,7 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const WebpackShellPluginNext = require('webpack-shell-plugin-next');
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
     entry: './src/server.ts',
@@ -21,6 +22,11 @@ module.exports = {
                 blocking: false,
                 parallel: true
             }
+        }),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: "./src/db/", to: "./db/" },
+            ],
         })
     ],
     module: {
