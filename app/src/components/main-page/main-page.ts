@@ -3,6 +3,7 @@ import { createChoiceContainer } from '../choice-settings/choice';
 import { renderChat } from '../chat/chat';
 import { createRegistrationContainer } from '../registration/registration';
 import Router from '../router';
+import { createExitWindow } from '../exit-window/exit-window';
 
 const createChoiceGameContainer = () => {
   const container = createElement('div', 'choice-game');
@@ -22,6 +23,7 @@ const createChoiceGameContainer = () => {
   btnRules.addEventListener('click', () => {
     Router.setState('rules');
     Router.checkPage();
+    document.querySelector('.registration-container')?.remove();
   });
 
   return container;
@@ -87,6 +89,8 @@ const goToMainPage = (main: HTMLDivElement, element: HTMLButtonElement) => {
   main.innerHTML = '';
   element.remove();
   createMainPage();
+  Router.setState('home');
+  Router.checkPage();
 };
 
 document.addEventListener('click', (e) => {
@@ -105,7 +109,27 @@ document.addEventListener('click', (e) => {
     Router.setState('home');
   }
   if (element.closest('.btn-main-page')) {
+    if (document.querySelector('.game-field')) {
+      (document.querySelector('.opacity') as HTMLDivElement).classList.add(
+        'show',
+      );
+      createExitWindow();
+    } else {
+      goToMainPage(main, element);
+      if (!document.querySelector('.registration-container')) createRegistrationContainer();
+    }
+  }
+  if (element.closest('.btn-yes')) {
+    (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
+      'show',
+    );
     goToMainPage(main, element);
     if (!document.querySelector('.registration-container')) createRegistrationContainer();
+  }
+  if (element.closest('.btn-no')) {
+    (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
+      'show',
+    );
+    element.parentElement?.parentElement?.remove();
   }
 });
