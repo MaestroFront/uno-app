@@ -35,7 +35,7 @@ export const getCardFromDeck = (e: Event, playerNumber: string ) => {
       player = { transform: 'translate(300%, 0%) rotate(90deg)' };
     } break;
     default: {
-      player = { transform: 'translate(100%, 90%) rotateY(-180deg)' };
+      player = { transform: 'translate(100%, 160%) rotateY(-180deg)' };
     } break;
 
   }
