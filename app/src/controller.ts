@@ -85,7 +85,7 @@ class Controller {
       });
       console.log('ann - chosen color', chosenColor); //---------------ПУСТО???
       sentChosenColor(chosenColor);
-      
+
 
       // const div = document.createElement('div');
       // div.id = 'popup_choose_color';
@@ -205,19 +205,20 @@ class Controller {
           break;
         }
         case 'INCOME_CHAT_MESSAGE': {
-          const data = JSON.parse(msg.data) as { user: string, userMessage: string };
+          const data = JSON.parse(msg.data) as { user: string, userMessage: string, time: string };
           const div = document.createElement('div');
-          div.style.display = 'flex';
+          div.className = 'chat-message';
           let p = document.createElement('p');
-          p.innerText = `${data.user} - `;
-          p.style.display = 'flex';
-          p.style.fontWeight = '600';
-          p.style.paddingRight = '10px';
+          p.innerText = data.userMessage;
+          p.className = 'chat-message-message';
           div.append(p);
           p = document.createElement('p');
-          p.innerText = data.userMessage;
-          p.style.display = 'flex';
-          p.style.fontStyle = 'oblique';
+          p.innerText = `${data.time}`;
+          p.className = 'chat-message-time';
+          div.append(p);
+          p = document.createElement('p');
+          p.innerText = `${data.user}`;
+          p.className = 'chat-message-nickname';
           div.append(p);
           (document.querySelector('.chat-window') as HTMLElement).append(div);
           break;
