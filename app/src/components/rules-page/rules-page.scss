@@ -30,7 +30,8 @@
  }
 
 .rules-description,
-.card-container {
+.card-container, 
+.rules-window .cards-description {
   background: #ffffff00;
   border: 3px #ffffff45 solid;
   border-radius: 10px;
@@ -114,4 +115,33 @@
 
 .rules-description-text {
   text-align: justify;
+}
+
+//-----------------------rules window
+.rules-window {
+  display: none;
+}
+
+.rules-window.open {
+  display: flex;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 20%;
+  font-size: 0.8em;
+}
+
+.rules-window .cards-description {
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.rules-window .card-container {
+  background: #e7a271;
+}
+
+.rules-window .btn-cross {
+  right: 15%;
+  top: 0%;
 }
