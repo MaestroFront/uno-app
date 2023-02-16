@@ -19,6 +19,62 @@ const playerField = (playerClassName: string, playerName: string) => {
   return block;
 };
 
+const randomInteger = (min: number, max: number) => {
+  // получить случайное число от (min-0.5) до (max+0.5)
+  const rand = min - 0.5 + Math.random() * (max - min + 1);
+  return Math.round(rand);
+};
+
+interface IPlayer {
+  first_name: string,
+  height_feet: null,
+  height_inches: null,
+  id: number,
+  last_name: string,
+  position: string,
+  team: {
+    abbreviation: string,
+    city: string,
+    conference: string,
+    division: string,
+    full_name: string,
+    id: number,
+    name: string,
+  },
+  weight_pounds: null,
+}
+
+interface IMeta {
+  current_page: number,
+  next_page: number,
+  per_page: number,
+  total_count: number,
+  total_pages: number,
+}
+
+interface INBAPlayers {
+  data: IPlayer[],
+  met: IMeta,
+}
+
+export const searchCompName = () => {
+  const index = randomInteger(0, 100);
+  const options = {
+    method: 'GET',
+    headers: {
+      'X-RapidAPI-Key': 'f08c55ce57mshc3c9f532922130dp1f003bjsne89605faeaff',
+      'X-RapidAPI-Host': 'free-nba.p.rapidapi.com',
+    },
+  };
+
+  fetch('https://free-nba.p.rapidapi.com/players?page=0&per_page=100', options)
+    .then((response) => response.json())
+    .then((response: INBAPlayers) => localStorage.setItem('player', `${response.data[index].first_name + ' ' + response.data[index].last_name}`))
+    .catch((err) => console.error(err));
+
+  return localStorage.getItem('player');
+};
+
 const createRhomb = () => {
   const xmlns = 'http://www.w3.org/2000/svg';
   const rhomb = document.createElementNS(xmlns, 'svg');
@@ -162,20 +218,20 @@ export const moveCardToPlayer = (): void => {
 
   newCards[0].reverse().forEach((card, index) => {
     setTimeout(() => {
-      card.style.transform = `translate(${index * 90 - 162}%, 156%) rotateZ(720deg)`;
+      card.style.transform = `translate(${index * 70 - 90}%, 165%) rotateZ(720deg)`;
     }, index * 300);
   });
 
   newCards[1].reverse().forEach((card, index) => {
     setTimeout(() => {
-      card.style.transform = `translate(-410%, ${index * 50 - 154}%) rotateZ(720deg) rotate(270deg)`;
+      card.style.transform = `translate(-345%, ${index * 38 - 115}%) rotateZ(720deg) rotate(270deg)`;
     }, index * 300);
   });
 
   if (newCards[2]) {
     newCards[2].reverse().forEach((card, index) => {
       setTimeout(() => {
-        card.style.transform = `translate(${index * 90 - 165}%, -140%) rotateZ(720deg)`;
+        card.style.transform = `translate(${index * 70 - 90}%, -142%) rotateZ(720deg)`;
       }, index * 300);
     });
   }
@@ -183,7 +239,7 @@ export const moveCardToPlayer = (): void => {
   if (newCards[3]) {
     newCards[3].reverse().forEach((card, index) => {
       setTimeout(() => {
-        card.style.transform = `translate(625%, ${index * 50 - 145}%) rotateZ(720deg) rotate(90deg)`;
+        card.style.transform = `translate(558%, ${index * 38 - 115}%) rotateZ(720deg) rotate(90deg)`;
       }, index * 300);
     });
   }
