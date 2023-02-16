@@ -83,6 +83,6 @@ export const createHeader = (): HTMLDivElement => {
   );
 
   header.append(returnBlock, createBtnsHeaderContainer(), settings);
-  void createRegistrationContainer();
+  if (!location.hash.includes('rules')) createRegistrationContainer();
   return header;
 };
