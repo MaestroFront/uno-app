@@ -1,3 +1,4 @@
+
 import { createElement, createButton, createInput, createParagraph } from '../helpers/helpers';
 import Router from '../router';
 import Controller from '../../controller';
@@ -6,12 +7,10 @@ export const createRegistrationContainer = () => {
   const header = document.querySelector('.header') as HTMLDivElement;
   const container = createElement('div', 'registration-container') as HTMLDivElement;
   if (document.cookie.includes('user=')) {
-    const div = document.createElement('div');
-    div.className = 'user-logged';
+    const div = createElement('div', 'user-logged');
     const p = document.createElement('p');
     p.innerText = `LOGIN AS ${document.cookie.split(';').filter(value => {return value.includes('user=');})[0].replace('user=', '')}`;
-    const button = document.createElement('button');
-    button.innerText = 'SIGN OUT';
+    const button = createButton('button', 'button', 'sign out');
     button.addEventListener('click', () => {
       document.cookie = document.cookie.split(';').map(value => {
         return value.includes('user=')
