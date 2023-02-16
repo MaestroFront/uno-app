@@ -16,8 +16,14 @@ class Controller {
   /* Controller launch */
   static start(port: number): void {
     this.webSocket = new WebSocket(`ws://localhost:${port}`);
-    setTimeout(() => Controller.webSocket.send(JSON.stringify({ action: 'WHATS_MY_NAME', data: '' })), 1000);
-    
+    setTimeout(() => {
+      if (document.cookie.includes('user=')) {
+        const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
+        Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
+      } else {
+        Controller.webSocket.send(JSON.stringify({ action: 'WHATS_MY_NAME', data: '' }));
+      }
+    }, 1000);
     //TODO: Remove this feature after switching to normal maps
     function createSimpleCard(id: number, color: string, value: number) {
       const div = createElement('div', 'simple-card');
@@ -39,23 +45,23 @@ class Controller {
           div.append(renderReverseCard(color, 0.25));
         } else {
           div.append(renderBlockedCard(color, 0.25));
-        }      
+        }
       } else if (id > 104) {
         div.append(renderPlusFourCard(0.25));
       } else {
         div.append(renderMultiCard(0.25));
       }
-      
+
       div.id = id.toString();
       div.addEventListener('click', evt => {
         clickSoundPlay();
         const clickedEl = (evt.target as HTMLDivElement).closest('.cardCenter') as Element;
-      
+
         if (clickedEl) {
           clickedEl.id = id.toString();
           //console.log(clickedEl.id);
         }
-        
+
         const user: string = ((evt.target as HTMLDivElement).parentElement as HTMLElement).className;
         const dataForSent = JSON.stringify({ userName: user, cardId: (evt.target as HTMLDivElement).id });
         Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
@@ -63,7 +69,7 @@ class Controller {
       return div;
     }
 
-    
+
     //TODO: Remove this feature after switching to a pretty window with popup messages
     function showColorSelectWindow():void {
       function sentChosenColor(color: string): void {
@@ -196,6 +202,24 @@ class Controller {
           document.querySelectorAll('.cards').forEach(value => value.innerHTML = '') ;
           (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
           (document.querySelector('.deck') as HTMLElement).innerHTML = '';
+          break;
+        }
+        case 'INCOME_CHAT_MESSAGE': {
+          const data = JSON.parse(msg.data) as { user: string, userMessage: string };
+          const div = document.createElement('div');
+          div.style.display = 'flex';
+          let p = document.createElement('p');
+          p.innerText = `${data.user} - `;
+          p.style.display = 'flex';
+          p.style.fontWeight = '600';
+          p.style.paddingRight = '10px';
+          div.append(p);
+          p = document.createElement('p');
+          p.innerText = data.userMessage;
+          p.style.display = 'flex';
+          p.style.fontStyle = 'oblique';
+          div.append(p);
+          (document.querySelector('.chat-window') as HTMLElement).append(div);
           break;
         }
       }

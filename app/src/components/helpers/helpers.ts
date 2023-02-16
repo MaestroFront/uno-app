@@ -2,6 +2,7 @@ import { createDevelopedByContainer } from '../developed-by/developed-by';
 import { createHeader } from '../header/header';
 import { createMainPage } from '../main-page/main-page';
 import { createFooter } from '../footer/footer';
+import Router from '../router';
 
 export const createElement = (tagName: string, className: string) => {
   const element = document.createElement(tagName);
@@ -10,6 +11,7 @@ export const createElement = (tagName: string, className: string) => {
 };
 
 export const createPage = () => {
+  document.body.innerHTML = '';
   const body = document.querySelector('.body') as HTMLDivElement;
   const header = createElement('header', 'header') as HTMLDivElement;
   const main = createElement('main', 'main') as HTMLDivElement;
@@ -76,6 +78,10 @@ export const createInput = (className: string, type: string, placeholder: string
 
 export const addButtonBackToMainPage = (): void => {
   const btn = createButton('btn-main-page', 'button', 'main page');
+  btn.addEventListener('click', () => {
+    Router.setState('home');
+    Router.checkPage();
+  });
   const returnBlock = document.querySelector('.return-block') as HTMLDivElement;
   returnBlock.append(btn);
 };
