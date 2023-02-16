@@ -1,3 +1,4 @@
+
 import { renderCardTemplate, renderSmallSymbol, 
   renderGradient, renderRectangle, setClassName, checkColorForGradient } from './cards-helpers';
 import { body } from '../global-components/constants';
@@ -12,7 +13,7 @@ export const yellowColor = '#FFC300' as string;
 const renderCentralSymbolNumber = (cardSymbol: string, color: string, currScale: number) => {
   const g = document.createElementNS(ns, 'g');
   g.innerHTML = `
-      <text x="${80 * currScale}" y="${315 * currScale}" font-family="Arial" font-size="${208 * currScale}" font-style="italic" font-weight="bold" fill=${color}>${cardSymbol}</text>
+      <text class="cardCenter" x="${80 * currScale}" y="${315 * currScale}" font-family="Arial" font-size="${208 * currScale}" font-style="italic" font-weight="bold" fill=${color}>${cardSymbol}</text>
       `;
   return g;
 };
@@ -39,7 +40,9 @@ const renderCentralSymbolReverse = (color: string, currScale: number): Element =
   const pathPart2G = document.createElementNS(ns, 'g');
 
   pathPart1G.setAttribute('transform', `scale(${currScale})`);
-  pathPart2G.setAttribute('transform', `scale(${currScale})`);  
+  pathPart2G.setAttribute('transform', `scale(${currScale})`);
+  pathPart1.classList.add('cardCenter');
+  pathPart2.classList.add('cardCenter');
 
   pathPart1.setAttribute(
     'd',
@@ -111,6 +114,7 @@ const renderCentralSymbolBlock = (color: string, currScale: number): Element => 
     'd',
     'm145.17068,151.36242c-20.98242,-0.02733 -42.04457,7.92497 -58.0745,23.91302c-32.05986,31.97634 -32.14693,83.91833 -0.17054,115.97819c31.97634,32.05986 83.91833,32.14693 115.97819,0.17054c32.05986,-31.97634 32.14693,-83.91833 0.17054,-115.97819c-15.98817,-16.02993 -36.92129,-24.05644 -57.90369,-24.08384l0,0.00028zm-0.17054,27.32918c9.56455,0.01093 19.17263,2.51478 27.67079,7.51552l-74.81362,74.81362c-12.35469,-20.97684 -9.49312,-48.45737 8.54037,-66.44406c10.68663,-10.65877 24.61419,-15.90329 38.60245,-15.88508l0.00001,0zm47.14283,26.81675c12.44008,20.99279 9.52908,48.59236 -8.54037,66.61486c-18.05202,18.00496 -45.49154,20.65146 -66.44406,8.19876l74.98443,-74.81362z');
   path.setAttribute('style', `fill:${color}`);
+  path.classList.add('cardCenter');
   g.append(path);
   g.setAttribute('transform', `scale(${currScale})`);
   return g;
@@ -206,6 +210,7 @@ const renderCentralMultiSymbol = (currScale: number): Element => {
   pathRed.setAttribute('stroke', 'white');
   pathRed.setAttribute('d', 'm198.40001,84.39999c78.99999,1 -12.79366,205.81348 -65.17329,175.01284c-52.37964,-30.80064 -90.03459,-22.73311 -73.03459,-59.73311c17,-37 59.20788,-116.27973 138.20788,-115.27973z');
   pathRed.setAttribute('fill', redColor);
+  pathRed.classList.add('cardCenter');
   gRed.append(pathRed);
   gRed.setAttribute('transform', `scale(${currScale})`);
   
@@ -213,18 +218,21 @@ const renderCentralMultiSymbol = (currScale: number): Element => {
   pathGreen.setAttribute('d', 'm150.0519,247.7688c0,0 -147.34031,134.24862 -70.3855,148.33064c76.95481,14.08202 158.60198,-118.28898 152.03268,-129.55461c-6.56931,-11.26562 -81.64718,-18.77603 -81.64718,-18.77603z');
   pathGreen.setAttribute('fill', greenColor);
   pathGreen.setAttribute('transform', 'rotate(-2.6154720783233643 144.7422790527318,322.457824707031)');
+  pathGreen.classList.add('cardCenter');
   gGreen.append(pathGreen);
   gGreen.setAttribute('transform', `scale(${currScale})`);
   
   pathBlue.setAttribute('stroke', 'white');
   pathBlue.setAttribute('d', 'm219.4,92.39999l-81.4,165.16183c0,0 30.4,127.46408 88.4,14.99576c58,-112.46832 0,-180.15758 -7,-180.15758z');
   pathBlue.setAttribute('fill', blueColor);
+  pathBlue.classList.add('cardCenter');
   gBlue.append(pathBlue);
   gBlue.setAttribute('transform', `scale(${currScale})`);
     
   pathYellow.setAttribute('stroke', 'white');
   pathYellow.setAttribute('d', 'm37.52665,246.52526c33.88023,-120.31747 102.95841,2.12685 103.47396,14.89692c0.51555,12.77007 -61.90296,138.46164 -69.12058,135.57034c-7.2176,-2.89131 -68.23361,-30.14979 -34.35338,-150.46726z');
   pathYellow.setAttribute('fill', yellowColor);
+  pathYellow.classList.add('cardCenter');
   gYellow.append(pathYellow);
   gYellow.setAttribute('transform', `scale(${currScale})`);
     
@@ -240,9 +248,9 @@ export const renderMultiCard = (currScale = 1): HTMLElement => {
   return svg;
 };
   
-const renderBackSide = (currScale = 1): Element => {
+export const renderBackSide = (currScale = 1): Element => {
   const svg = document.createElementNS(ns, 'svg');
-  svg.classList.add('backSide');
+  svg.classList.add('back-side');
   svg.setAttributeNS(null, 'width', `${300 * currScale}`);
   svg.setAttributeNS(null, 'height', `${520 * currScale}`);
   svg.setAttributeNS(null, 'fill', 'black');
@@ -254,13 +262,13 @@ const renderBackSide = (currScale = 1): Element => {
         <ellipse cx="${-130 * currScale}" cy="${230 * currScale}" rx="${20 * currScale}" ry="${20 * currScale}" fill="black" stroke="black" stroke-dasharray="${6.7 * currScale}" d="M5 20 l215 0" d="M5 40 l215 0" stroke-width="${418 * currScale}" opacity="0.15" style="transform: rotate( -65deg);" />
       </svg>
     </symbol>
-    <use xlink:href="#backCard"></use>
+    <use xlink:href="#backCard" class="back-side"></use>
     <linearGradient id="Gradient2" x1="0" x2="0" y1="0" y2="1">
       <stop offset="0%" stop-color="white"/>
       <stop offset="55%" stop-color="gold"/>
       <stop offset="100%" stop-color="#806308"/>
     </linearGradient>
-    <text class="centerText" x="${-40 * currScale}" y="${300 * currScale}" font-size="${115 * currScale}" fill="url(#Gradient2)">UNO</text> 
+    <text class="centerText back-side" x="${-40 * currScale}" y="${300 * currScale}" font-size="${115 * currScale}" fill="url(#Gradient2)">UNO</text> 
   `;
   return svg;
 };  

@@ -1,5 +1,9 @@
 import { createElement, createButton, createImage } from '../helpers/helpers';
 import { createChoiceContainer } from '../choice-settings/choice';
+import { renderChat } from '../chat/chat';
+import { createRegistrationContainer } from '../registration/registration';
+import Router from '../router';
+import { createExitWindow } from '../exit-window/exit-window';
 
 const createChoiceGameContainer = () => {
   const container = createElement('div', 'choice-game');
@@ -15,13 +19,27 @@ const createChoiceGameContainer = () => {
   );
   const btnRules = createButton('btn-rules', 'button', 'learn, how to play');
   container.append(btnPlayWithComp, btnMultiplayer, btnRules);
+
+  btnRules.addEventListener('click', () => {
+    Router.setState('rules');
+    Router.checkPage();
+    document.querySelector('.registration-container')?.remove();
+  });
+
   return container;
 };
 
 export const createMainPage = () => {
   const main = document.querySelector('.main') as HTMLDivElement;
   const logo = createImage('logo', '../assets/img/logo-UNO.png', 'logo');
-  main?.append(logo, createChoiceGameContainer());
+  if ('404' !== window.history.state) {
+    main?.append(logo, createChoiceGameContainer(), renderChat());
+  } else {
+    const div = document.createElement('div');
+    div.className = 'page-404';
+    div.innerText = '404';
+    main?.append(logo, div);
+  }
 
   return main;
 };
@@ -58,7 +76,7 @@ const removeChoiceContainer = () => {
   );
 };
 
-const showChoiceContainer = () => {
+export const showChoiceContainer = () => {
   (document.querySelector('.opacity') as HTMLDivElement).classList.add(
     'show',
   );
@@ -71,6 +89,8 @@ const goToMainPage = (main: HTMLDivElement, element: HTMLButtonElement) => {
   main.innerHTML = '';
   element.remove();
   createMainPage();
+  Router.setState('home');
+  Router.checkPage();
 };
 
 document.addEventListener('click', (e) => {
@@ -78,7 +98,38 @@ document.addEventListener('click', (e) => {
   const element = e.target as HTMLButtonElement;
   if (element.closest('.btn-developed')) showDevelopedByBlock();
   if (element.closest('.settings')) showSettings(element);
-  if (element.closest('.btn-computer')) showChoiceContainer();
-  if (element.closest('.choice-container .btn-cross')) removeChoiceContainer();
-  if (element.closest('.btn-main-page')) goToMainPage(main, element);
+  if (element.closest('.btn-computer')) {
+    Router.setState('single-player');
+    Router.checkPage();
+  }
+  if (element.closest('.choice-container .btn-cross')) {
+    removeChoiceContainer();
+    Router.url.searchParams.delete('difficult');
+    Router.url.searchParams.delete('numberOfPlayers');
+    Router.setState('home');
+  }
+  if (element.closest('.btn-main-page')) {
+    if (document.querySelector('.game-field')) {
+      (document.querySelector('.opacity') as HTMLDivElement).classList.add(
+        'show',
+      );
+      createExitWindow();
+    } else {
+      goToMainPage(main, element);
+      if (!document.querySelector('.registration-container')) createRegistrationContainer();
+    }
+  }
+  if (element.closest('.btn-yes')) {
+    (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
+      'show',
+    );
+    goToMainPage(main, element);
+    if (!document.querySelector('.registration-container')) createRegistrationContainer();
+  }
+  if (element.closest('.btn-no')) {
+    (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
+      'show',
+    );
+    element.parentElement?.parentElement?.remove();
+  }
 });

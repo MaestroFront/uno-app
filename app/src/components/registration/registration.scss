@@ -1,0 +1,41 @@
+.reg-window,
+.log-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    height: 50%;
+    background-color: white;
+    border-radius: 10px;
+    z-index: 4;
+    padding: 40px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.reg-name-title,
+.reg-password-title,
+.log-name-title,
+.log-password-title,
+.mail-title {
+    margin-bottom: 10px;
+}
+
+.reg-name-block,
+.log-name-block,
+.reg-password-block,
+.log-password-block,
+.mail-block {
+    width: 50%;
+}
+
+.user-logged {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: wheat;
+    gap: 15px;
+}

@@ -1,4 +1,7 @@
+// import { chooseColor } from '../animated-items/animated-items';
+import { renderChatButton } from '../chat/chat';
 import { createButton } from '../helpers/helpers';
+
 
 export const createFooter = () => {
   const footer = document.querySelector('.footer') as HTMLDivElement;
@@ -8,6 +11,7 @@ export const createFooter = () => {
     'developed by',
   );
   const btnShare = createButton('btn-share', 'button', 'share');
+  // const btnTest = createButton('btn-test', 'button', 'test'); //----------УДАЛИТЬ
   btnShare.onclick = () => {
     if (navigator.share) {
       navigator
@@ -20,5 +24,6 @@ export const createFooter = () => {
         .catch((error) => console.log('Не удалось поделиться', error));
     }
   };
-  footer.append(btnDevelopedBy, btnShare);
+  // btnTest.addEventListener('click', chooseColor); //----------УДАЛИТЬ
+  footer.append(btnDevelopedBy, btnShare, renderChatButton());
 };

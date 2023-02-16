@@ -10,13 +10,13 @@ export const renderCardTemplate = (
   svg.setAttributeNS(null, 'height', `${520 * currScale}`);
   svg.setAttributeNS(null, 'fill', color);
   svg.innerHTML = `
-      <symbol id="mySymbol" viewBox="0 0 ${300 * currScale} ${520 * currScale}" stroke="white" stroke-width="${11 * currScale}">
-            <rect class="mainCard" x="${15 * currScale}" y="${25 * currScale}" rx="${10 * currScale}" ry="${15 * currScale}" width="${250 * currScale}" height="${420 * currScale}"/>
-            <ellipse cx="${230 * currScale}" cy="${160 * currScale}" rx="${105 * currScale}" ry="${183 * currScale}"
+      <symbol class="cardCenter" id="mySymbol" viewBox="0 0 ${300 * currScale} ${520 * currScale}" stroke="white" stroke-width="${11 * currScale}">
+            <rect class="mainCard cardCenter" x="${15 * currScale}" y="${25 * currScale}" rx="${10 * currScale}" ry="${15 * currScale}" width="${250 * currScale}" height="${420 * currScale}"/>
+            <ellipse class="cardCenter" cx="${230 * currScale}" cy="${160 * currScale}" rx="${105 * currScale}" ry="${183 * currScale}"
       style="fill:white;stroke:white;stroke-width:${3 * currScale};transform: rotate(25deg);"/>
           </symbol>  
          
-        <use xlink:href="#mySymbol"></use>
+        <use xlink:href="#mySymbol" class="cardCenter"></use>
     `;
   return svg;
 };
@@ -25,7 +25,7 @@ export const renderCardTemplate = (
 export const renderSmallSymbol = (cardSymbol: string, x1: number, y1: number, deg: string, currScale: number): Element => {
   const g = document.createElementNS(ns, 'g');
   g.innerHTML = `
-      <text x=${x1 * currScale} y=${y1 * currScale} style="transform: rotate(${deg}deg)" font-family="Arial" font-size="${55 * currScale}" font-style="italic" font-weight="bold" fill="white">${cardSymbol}</text>
+      <text class="cardCenter" x=${x1 * currScale} y=${y1 * currScale} style="transform: rotate(${deg}deg)" font-family="Arial" font-size="${55 * currScale}" font-style="italic" font-weight="bold" fill="white">${cardSymbol}</text>
       `;
   return g;
 };
@@ -62,6 +62,7 @@ export const renderRectangle = (recId: string, x: number, y: number, currScale: 
   rect.setAttribute('fill', `url(#${recId})`);
   rect.setAttribute('stroke', 'white');
   rect.setAttribute('stroke-width', `${4 * currScale}`);
+  rect.classList.add('cardCenter');
     
   return rect;
 };  

@@ -1,4 +1,5 @@
 .button {
+  position: relative;
   background: #ff4742;
   border: 1px solid #ff4742;
   border-radius: 6px;
@@ -8,11 +9,11 @@
   cursor: pointer;
   display: inline-block;
   font-family: nunito, roboto, proxima-nova, "proxima nova", sans-serif;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 800;
-  line-height: 16px;
+  line-height: 12px;
   outline: 0;
-  padding: 12px 14px;
+  padding: 10px 12px;
   text-align: center;
   text-rendering: geometricprecision;
   text-transform: uppercase;
@@ -21,6 +22,7 @@
   touch-action: manipulation;
   vertical-align: middle;
   filter: drop-shadow(2px 4px 6px black);
+  z-index: 2;
 }
 
 .button:hover,
@@ -76,11 +78,49 @@
   pointer-events: all;
 }
 
-.btn-show,
+.btn-read,
 .btn-flip {
+  align-self: flex-end;
+  padding: 5px;
+  text-transform: none;
+  font-size: 15px;
+}
+
+.btn-read {
+  position: absolute;
+  bottom: 2%;
+  right: 3%;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.btn-flip {
+  position: relative;
+  right: 3%;
+}
+
+.btn-log {
+  margin-right: 15px;
+}
+
+.btn-submit-reg,
+.btn-submit-log {
   position: absolute;
   bottom: 5%;
   right: 5%;
-  padding: 5px;
-  font-size: 12px;
 }
+
+.btn-yes {
+  margin-right: 10px;
+}
+
+.btn-small-rules {
+  padding: 5px;
+  font-size: 16px;
+  position: absolute;
+  right: 25px;
+  bottom: 49%
+}
+
+

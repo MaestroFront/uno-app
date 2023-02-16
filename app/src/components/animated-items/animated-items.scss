@@ -1,0 +1,193 @@
+/*-------------------------------------DIAMOND COLOR----------*/
+.diamond-container { 
+    position: absolute;
+    width: 15%;
+    height: 15%;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    display: none;
+  }
+
+.diamond-container.show {
+    display: block;
+}
+
+  .diamonds {
+    position: absolute;
+    z-index: 5;
+    left: 0; right: 0;
+    top: 0; bottom: 0;
+    margin: auto;
+    width: 100%;
+    height: 0;
+    padding: 50% 0;
+    text-align: center;
+   transform: rotate(45deg);
+    box-shadow: 0px 8px 100px 100px #ffffff;
+  }
+  
+  .diamond {
+    position: absolute;
+    width: 49%;
+    height: 49%;
+    transition: .5s;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+  
+  .diamond .cover {
+    border-radius: inherit;
+    content: '';    
+    display: block;
+    height: 100%;
+    position: absolute;
+    top: -2px; left: -2px;
+    opacity: 0;
+    width: 100%;
+    box-sizing: content-box;
+    transition: opacity 0.45s;
+  }
+  
+  #red-diamond {
+    left: 0;
+    top: 0;
+    background: #eca4a4;
+    box-shadow: inset 1px 1px 22px 16px rgb(194 17 32);
+  }
+  
+  #red-diamond .cover {
+    background: rgb(194 17 32);
+  }
+
+  #yellow-diamond {
+    right: 0;
+    top: 0;
+    background: #ecd2a4;
+    box-shadow: inset 1px 1px 22px 16px #FFC300;
+  }
+
+  #yellow-diamond .cover,
+  #green-diamond .cover,
+  #red-diamond .cover,
+  #blue-diamond .cover {
+    border: 2px solid #ffffff;
+  }
+  
+  #yellow-diamond .cover {
+    background: #FFC300;
+  }
+  
+  #blue-diamond {
+    left: 0;
+    bottom: 0;
+    background: #a4a7ec;
+    box-shadow: inset 1px 1px 22px 16px darkblue;
+  }
+
+  #blue-diamond .cover {
+    background: darkblue;
+  }
+  
+  #green-diamond {
+    right: 0;
+    bottom: 0;
+    background: #a4eca7;
+    box-shadow: inset 1px 1px 22px 16px #258f37;
+  }
+
+  #green-diamond .cover {
+    background:#258f37;
+  }
+
+  #red-diamond.shy .cover,
+  #blue-diamond.shy .cover,
+  #green-diamond.shy .cover,
+  #yellow-diamond.shy .cover {
+    animation-duration: 1s;
+    animation-name: shying;
+    animation-fill-mode: none;
+    animation-iteration-count: 1;
+  }
+
+  #red-diamond.shy .cover {
+    animation-delay: 0s;
+  }
+  
+  #yellow-diamond.shy .cover {
+    animation-delay: 0.5s;
+  }
+  
+  #green-diamond.shy .cover {
+    animation-delay: 1s;
+  }
+  
+  #blue-diamond.shy .cover {
+    animation-delay: 1.5s;
+  }
+  
+  @keyframes shying {
+      0% {opacity: 0; }
+      10% {opacity: 1; }
+      100% {opacity: 0; }
+  }
+
+/*-------------------------------------choose color----------*/
+.diamond-container.choose-color {
+    display: block;
+}
+
+.diamond-container.choose-color .diamond:hover .cover {
+  opacity: 1;
+  cursor: pointer;
+  transform: scale(1.1);
+  transition: 0.3s ease-in-out;
+}
+
+
+
+
+/*-------------------------------------REVERSE----------*/
+.reverse-container {
+    width: 15%;
+    height: 15%;
+    display: none;
+    box-shadow: 0px 8px 100px 100px #ffffff;
+    background: #ffffff;
+  }
+  
+  .reverse-container.show {
+    display: block;
+  }
+  
+  .reverse-container,
+  .reverse-right,
+  .reverse-left {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    margin: auto;
+  }
+  
+  /*.reverse-right,*/
+  .reverse-left {
+    width: 230px;
+    display: none;
+  }
+
+  .reverse-right {
+    width: 230px;
+    display: none;
+  }
+  
+  .reverse-left.show {
+    display: block;
+  }
+
+  .reverse-right.show {
+    display: block;
+  }
