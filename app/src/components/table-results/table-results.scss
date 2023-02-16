@@ -5,12 +5,13 @@
     transform: translate(-50%, -50%);
     width: 60%;
     height: 80%;
-    background-color: ghostwhite;
     padding: 10px;
-    border: 1px solid black;
-    filter: drop-shadow(2px 4px 6px black);
     border-radius: 10px;
     overflow: auto;
+    z-index: 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .results-container::-webkit-scrollbar {
@@ -18,10 +19,10 @@
 }
 
 .results-list {
-    border: 1px solid black;
+    background-color: white;
     border-radius: 10px;
-    width: 100%;
-    height: 100%;
+    width: 80%;
+    height: 80%;
     padding: 5px;
 }
 
