@@ -7,7 +7,7 @@ export const createRegistrationContainer = () => {
   const header = document.querySelector('.header') as HTMLDivElement;
   const container = createElement('div', 'registration-container') as HTMLDivElement;
   if (document.cookie.includes('user=')) {
-    const div = createElement('div','user-logged');
+    const div = createElement('div', 'user-logged');
     const p = document.createElement('p');
     p.innerText = `LOGIN AS ${document.cookie.split(';').filter(value => {return value.includes('user=');})[0].replace('user=', '')}`;
     const button = createButton('button', 'button', 'sign out');
