@@ -1,16 +1,17 @@
 // import { chooseColor } from '../animated-items/animated-items';
 import { renderChatButton } from '../chat/chat';
+import { langData } from '../data';
 import { createButton } from '../helpers/helpers';
 
 
-export const createFooter = () => {
+export const createFooter = (lang: string) => {
   const footer = document.querySelector('.footer') as HTMLDivElement;
   const btnDevelopedBy = createButton(
     'btn-developed',
     'button',
-    'developed by',
+    langData[lang]['dev-by'],
   );
-  const btnShare = createButton('btn-share', 'button', 'share');
+  const btnShare = createButton('btn-share', 'button', langData[lang]['btn-share']);
   // const btnTest = createButton('btn-test', 'button', 'test'); //----------УДАЛИТЬ
   btnShare.onclick = () => {
     if (navigator.share) {

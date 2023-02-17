@@ -1,6 +1,7 @@
 import { createPage } from './helpers/helpers';
 import { openRulesPage } from './rules-page/rules-page';
 import { showChoiceContainer } from './main-page/main-page';
+import { language } from './local-storage';
 class Router {
   static url: URL;
 
@@ -40,24 +41,24 @@ class Router {
     switch (window.history.state) {
       case 'home': {
         document.body.innerHTML = '';
-        createPage();
+        createPage(language.chosen);
         break;
       }
       case 'rules': {
-        createPage();
-        openRulesPage();
+        createPage(language.chosen);
+        openRulesPage(language.chosen);
         break;
       }
       case 'single-player': {
-        createPage();
-        showChoiceContainer();
+        createPage(language.chosen);
+        showChoiceContainer(language.chosen);
         break;
       }
       case 'multiplayer': {
         break;
       }
       case '404': {
-        createPage();
+        createPage(language.chosen);
         break;
       }
       default: {

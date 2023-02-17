@@ -2,15 +2,17 @@
 import { createElement, createButton, createInput, createParagraph } from '../helpers/helpers';
 import Router from '../router';
 import Controller from '../../controller';
+import { langData } from '../data';
+import { language } from '../local-storage';
 
-export const createRegistrationContainer = () => {
+export const createRegistrationContainer = (lang: string) => {
   const header = document.querySelector('.header') as HTMLDivElement;
   const container = createElement('div', 'registration-container') as HTMLDivElement;
   if (document.cookie.includes('user=')) {
     const div = createElement('div', 'user-logged');
     const p = document.createElement('p');
     p.innerText = `LOGIN AS ${document.cookie.split(';').filter(value => {return value.includes('user=');})[0].replace('user=', '')}`;
-    const button = createButton('button', 'button', 'sign out');
+    const button = createButton('button', 'button', langData[lang]['btn-sign-out']);
     button.addEventListener('click', () => {
       document.cookie = document.cookie.split(';').map(value => {
         return value.includes('user=')
@@ -24,34 +26,36 @@ export const createRegistrationContainer = () => {
     container.append(div);
 
   } else {
-    const registrationBtn = createButton('btn-reg', 'button', 'registration');
-    const loginBtn = createButton('btn-log', 'button', 'login');
+    const registrationBtn = createButton('btn-reg', 'button', langData[lang]['btn-registr']);
+    const loginBtn = createButton('btn-log', 'button', langData[lang]['btn-login']);
     container.append(registrationBtn, loginBtn);
   }
 
   header.prepend(container);
 };
 
-export const createRegOrLogWindow = (method: string) => {
+export const createRegOrLogWindow = (method: string, lang: string) => {
   const main = document.querySelector('.main') as HTMLDivElement;
   const form = createElement('form', `${method}-window`) as HTMLDivElement;
   const nameBlock = createElement('div', `${method}-name-block`) as HTMLDivElement;
   const passwordBlock = createElement('div', `${method}-password-block`) as HTMLDivElement;
 
-  const nameTitle = createParagraph(`${method}-name-title`, 'Edit your nickname');
-  const inputName = createInput(`input-${method}-name`, 'text', '[5 - 10 letters]');
+  const nameTitle = createParagraph(`${method}-name-title`, langData[lang]['reg-nickname']);
+  const inputName = createInput(`input-${method}-name`, 'text', langData[lang]['reg-nickname-title']);
   inputName.pattern = '[A-Za-z]{5,10}';
   inputName.maxLength = 10;
   inputName.oninput = () => inputName.value = inputName.value.replace(/[^а-яa-zА-ЯA-Z]/g, '');
 
-  const passwordTitle = createParagraph(`${method}-password-title`, 'Edit your password');
-  const inputPassword = createInput(`input-${method}-password`, 'password', '[5 numbers]');
+  const passwordTitle = createParagraph(`${method}-password-title`, langData[lang]['reg-pass']);
+  const inputPassword = createInput(`input-${method}-password`, 'password', langData[lang]['reg-pass-title']);
   inputPassword.pattern = '[0-9]{5}';
   inputPassword.maxLength = 5;
   inputPassword.oninput = () => inputPassword.value = inputPassword.value.replace(/[^0-9]/g, '');
 
   const cross = createButton('btn-cross', 'button', 'x');
   const submit = createButton(`btn-submit-${method}`, 'submit', `${method}`);
+  submit.textContent = langData[lang]['reg-btn'];
+  
   if (method === 'reg') {
     submit.addEventListener('click', async (ev) => {
       ev.preventDefault();
@@ -117,8 +121,8 @@ export const createRegOrLogWindow = (method: string) => {
   form.append(nameBlock, passwordBlock, cross, submit);
   const mailBlock = createElement('div', 'mail-block') as HTMLDivElement;
   if (method === 'reg') {
-    const mailTitle = createParagraph('mail-title', 'Edit your Email');
-    const mail = createInput('input-mail', 'mail', 'ivanovivan@mail.ru') as HTMLDivElement;
+    const mailTitle = createParagraph('mail-title', langData[lang]['reg-email']);
+    const mail = createInput('input-mail', 'mail', langData[lang]['reg-email-title']) as HTMLDivElement;
     mailBlock.append(mailTitle, mail);
     form.append(mailBlock);
   }
@@ -133,7 +137,7 @@ document.addEventListener('click', (e) => {
     (document.querySelector('.opacity') as HTMLDivElement).classList.add(
       'show',
     );
-    createRegOrLogWindow('reg');
+    createRegOrLogWindow('reg', language.chosen);
   }
   if (element.closest('.reg-window .btn-cross')) {
     (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
@@ -145,7 +149,7 @@ document.addEventListener('click', (e) => {
     (document.querySelector('.opacity') as HTMLDivElement).classList.add(
       'show',
     );
-    createRegOrLogWindow('log');
+    createRegOrLogWindow('log', language.chosen);
   }
   if (element.closest('.log-window .btn-cross')) {
     (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
