@@ -133,7 +133,7 @@ const renderDeck = (): HTMLDivElement => {
   return deck;
 };
 
-export const createGameField = (quantity: number) => {
+export const createGameField = (quantity: number, lang: string) => {
   const main = document.querySelector('.main') as HTMLDivElement;
   const container = createElement('div', 'game-field') as HTMLDivElement;
   if (quantity === 2) {
@@ -168,7 +168,7 @@ export const createGameField = (quantity: number) => {
   const btnRules = createButton('btn-small-rules', 'button', '?');
   btnRules.addEventListener('click', openRulesWindow);
 
-  main.append(container, renderChat(), renderDiamond(), renderReverseMessage(), createRulesWindow(), btnRules);
+  main.append(container, renderChat(), renderDiamond(), renderReverseMessage(), createRulesWindow(lang), btnRules);
   /* мои подключени */
   deck.addEventListener('click', (e) => {
     getCardFromDeck(e, 'bottom');//TODO..анимация карты в зависимости от позиции игрока: top, bottom, left, right

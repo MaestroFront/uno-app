@@ -2,6 +2,7 @@ import { createDevelopedByContainer } from '../developed-by/developed-by';
 import { createHeader } from '../header/header';
 import { createMainPage } from '../main-page/main-page';
 import { createFooter } from '../footer/footer';
+import { langData } from '../data';
 
 export const createElement = (tagName: string, className: string) => {
   const element = document.createElement(tagName);
@@ -9,16 +10,16 @@ export const createElement = (tagName: string, className: string) => {
   return element;
 };
 
-export const createPage = () => {
+export const createPage = (lang: string) => {
   document.body.innerHTML = '';
   const body = document.querySelector('.body') as HTMLDivElement;
   const header = createElement('header', 'header') as HTMLDivElement;
   const main = createElement('main', 'main') as HTMLDivElement;
   const footer = createElement('footer', 'footer') as HTMLDivElement;
-  body.append(header, main, footer, createDevelopedByContainer());
-  createHeader();
-  createMainPage();
-  createFooter();
+  body.append(header, main, footer, createDevelopedByContainer(lang));
+  createHeader(lang);
+  createMainPage(lang);
+  createFooter(lang);
 };
 
 export const createImage = (className: string, src: string, alt: string) => {
@@ -75,8 +76,8 @@ export const createInput = (className: string, type: string, placeholder: string
   return element;
 };
 
-export const addButtonBackToMainPage = (): void => {
-  const btn = createButton('btn-main-page', 'button', 'main page');
+export const addButtonBackToMainPage = (lang: string): void => {
+  const btn = createButton('btn-main-page', 'button', langData[lang]['btn-main-page']);
   const returnBlock = document.querySelector('.return-block') as HTMLDivElement;
   returnBlock.append(btn);
 };

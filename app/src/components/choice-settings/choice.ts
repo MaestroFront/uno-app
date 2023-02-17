@@ -4,25 +4,27 @@ import { addButtonBackToMainPage, createButton, createElement, createImage, crea
 import Controller from '../../controller';
 import { removeRegistrationContainer } from '../registration/registration';
 import Router from '../router';
+import { language } from '../local-storage';
+import { langData } from '../data';
 
-export const createChoiceContainer = () => {
+export const createChoiceContainer = (lang: string) => {
   const main = document.querySelector('.main') as HTMLDivElement;
   const container = createElement('div', 'choice-container') as HTMLDivElement;
   const quantityPlayersBlock = createElement('div', 'choice-quantity') as HTMLDivElement;
-  const quantutyTitle = createParagraph('quantity-title', 'Choose quantity of players');
-  const twoPlayers = createImage('two', '../assets/img/two.png', 'two players');
-  const threePlayers = createImage('three', '../assets/img/three.png', 'three players');
-  const fourPlayers = createImage('four', '../assets/img/four.png', 'four players');
+  const quantutyTitle = createParagraph('quantity-title', langData[lang]['choose-quantity']);
+  const twoPlayers = createImage('two', '../assets/img/two.png', langData[lang]['choose-2-players']);
+  const threePlayers = createImage('three', '../assets/img/three.png', langData[lang]['choose-3-players']);
+  const fourPlayers = createImage('four', '../assets/img/four.png', langData[lang]['choose-4-players']);
 
   quantityPlayersBlock.append(twoPlayers, threePlayers, fourPlayers);
 
-  const difficultyTitle = createParagraph('difficulty-title', 'Choose difficulty');
+  const difficultyTitle = createParagraph('difficulty-title', langData[lang]['choose-difficulty']);
   const difficultyBlock = createElement('div', 'choice-difficulty') as HTMLDivElement;
-  const easyDifficulty = createButton('btn-easy', 'button', 'easy');
-  const hardDifficulty = createButton('btn-hard', 'button', 'hard');
+  const easyDifficulty = createButton('btn-easy', 'button', langData[lang]['choose-easy']);
+  const hardDifficulty = createButton('btn-hard', 'button', langData[lang]['choose-hard']);
 
   const cross = createButton('btn-cross', 'button', 'x');
-  const btnStartGame = createButton('btn-start', 'button', 'start');
+  const btnStartGame = createButton('btn-start', 'button', langData[lang]['choose-start']);
 
   difficultyBlock.append(easyDifficulty, hardDifficulty);
   container.append(quantutyTitle, quantityPlayersBlock, difficultyTitle, difficultyBlock, btnStartGame, cross);
@@ -53,16 +55,16 @@ const showStartGameBtn = () => {
   if (x === 2) startGameBtn?.classList.add('show');
 };
 
-const fillGameField = (quantity: number) => {
+const fillGameField = (quantity: number, lang: string) => {
   const main = document.querySelector('.main') as HTMLDivElement;
   (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
     'show',
   );
   main.innerHTML = '';
-  createGameField(quantity);
+  createGameField(quantity, lang);
 };
 
-const goToGameField = () => {
+const goToGameField = (lang: string) => {
   const main = document.querySelector('.main') as HTMLDivElement;
   let x = 0;
   (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
@@ -73,9 +75,9 @@ const goToGameField = () => {
   if ((document.querySelector('.four') as HTMLImageElement).classList.contains('mark')) x += 4;
 
   main.innerHTML = '';
-  fillGameField(x);
-  addButtonBackToMainPage();
-  createButtonResults();
+  fillGameField(x, lang);
+  addButtonBackToMainPage(lang);
+  createButtonResults(lang);
   Controller.createNewGameWithComputer(x);
 };
 
@@ -115,7 +117,7 @@ document.addEventListener('click', (e) => {
     showStartGameBtn();
   }
   if (element.closest('.btn-start')) {
-    goToGameField();
+    goToGameField(language.chosen);
     removeRegistrationContainer();
     showDistributionCardsForPlayers(+(localStorage.getItem('players') as string));
     moveCardToPlayer();
