@@ -8,8 +8,6 @@ export const setBtnText = (el: HTMLButtonElement, name: string, defaultName: str
   }
 };
 
-
-
 export const language = {
   chosen: 'en',
 };
@@ -18,5 +16,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if (localStorage.getItem('language')) {
     language.chosen = localStorage.getItem('language') as string;
   } else language.chosen = 'en';
+  
   console.log(language.chosen);
 });

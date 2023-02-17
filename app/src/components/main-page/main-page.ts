@@ -51,19 +51,19 @@ const showDevelopedByBlock = () => {
   );
 };
 
-const hideSettings = (element: HTMLButtonElement) => {
-  (
-    document.querySelector('.header .btns-container') as HTMLDivElement
-  ).classList.remove('show');
-  element.style.transform = 'scale(1)';
-};
+// const hideSettings = (element: HTMLButtonElement) => {
+//   (
+//     document.querySelector('.header .btns-container') as HTMLDivElement
+//   ).classList.remove('show');
+//   element.style.transform = 'scale(1)';
+// };
 
 const showSettings = (element: HTMLButtonElement) => {
   element.style.transform = 'scale(0)';
   (
     document.querySelector('.header .btns-container') as HTMLDivElement
   ).classList.add('show');
-  setTimeout(() => hideSettings(element), 5000);
+  // setTimeout(() => hideSettings(element), 5000);
 };
 
 const removeChoiceContainer = () => {
