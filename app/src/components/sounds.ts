@@ -1,4 +1,3 @@
-import { langData } from './data';
 
 const music = new Audio('../../assets/music/melody.mp3');
 const click = new Audio('../../assets/music/click.mp3');
@@ -15,12 +14,13 @@ export const musicPlay = () => {
     void music.play();
   }
   music.loop = true;
+  music.volume = 0.3;
 };
 export const musicStop = () => {
   void music.pause();
 };
 
-export const setMusic = (el:HTMLButtonElement, lang: string ) => {
+export const setMusic = (el:HTMLButtonElement) => {
   if (el.textContent === 'Music ON' || el.textContent === 'Музыка ВКЛ.') {
     musicPlay();
     el.classList.remove('off');
@@ -28,7 +28,6 @@ export const setMusic = (el:HTMLButtonElement, lang: string ) => {
     musicStop();
     el.classList.add('off');
   }
-  console.log('context / через ленг', el.textContent, langData[lang]['btn-music-on']);
 };
 
 
@@ -59,7 +58,7 @@ export const offSounds = () => {
 };
 
 export const setSounds = (el:HTMLButtonElement ) => {
-  if (el.value === 'on') {
+  if (el.textContent === 'Sound ON' || el.textContent === 'Звук ВКЛ.') {
     onSounds();
     el.classList.remove('off');
   } else {
