@@ -26,5 +26,5 @@ export const createFooter = (lang: string) => {
     }
   };
   // btnTest.addEventListener('click', chooseColor); //----------УДАЛИТЬ
-  footer.append(btnDevelopedBy, btnShare, renderChatButton());
+  if (footer) footer.append(btnDevelopedBy, btnShare, renderChatButton());
 };

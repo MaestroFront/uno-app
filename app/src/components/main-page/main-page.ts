@@ -4,6 +4,7 @@ import { renderChat } from '../chat/chat';
 import { createRegistrationContainer } from '../registration/registration';
 import Router from '../router';
 import { createExitWindow } from '../exit-window/exit-window';
+import { createErrorPage } from '../error-page/error-page';
 import { langData } from '../data';
 import { language } from '../local-storage';
 
@@ -36,12 +37,7 @@ export const createMainPage = (lang: string) => {
   const logo = createImage('logo', '../assets/img/logo-UNO.png', 'logo');
   if ('404' !== window.history.state) {
     main?.append(logo, createChoiceGameContainer(lang), renderChat());
-  } else {
-    const div = document.createElement('div');
-    div.className = 'page-404';
-    div.innerText = '404';
-    main?.append(logo, div);
-  }
+  } else createErrorPage();
 
   return main;
 };
@@ -88,7 +84,7 @@ export const showChoiceContainer = (lang: string) => {
 const goToMainPage = (main: HTMLDivElement, element: HTMLButtonElement, lang: string) => {
   const resultsBtn = document.querySelector('.btn-results') as HTMLButtonElement;
   if (resultsBtn) resultsBtn.remove();
-  main.innerHTML = '';
+  if (!window.location.href.includes('404')) main.innerHTML = '';
   element.remove();
   createMainPage(lang);
   Router.setState('home');
