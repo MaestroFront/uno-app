@@ -20,7 +20,7 @@ export const musicStop = () => {
 };
 
 export const setMusic = (el:HTMLButtonElement ) => {
-  if (el.textContent === 'music ON') {
+  if (el.value === 'on') {
     musicPlay();
     el.classList.remove('off');
   } else {
@@ -57,7 +57,7 @@ export const offSounds = () => {
 };
 
 export const setSounds = (el:HTMLButtonElement ) => {
-  if (el.textContent === 'sound ON') {
+  if (el.value === 'on') {
     onSounds();
     el.classList.remove('off');
   } else {
