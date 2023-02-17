@@ -135,8 +135,8 @@ export const langData: ILangData = {
     'choose-3-players': 'три игрока',
     'choose-4-players': 'четыре игрока',
     'choose-difficulty': 'Выберите сложность',
-    'choose-easy': 'легко',
-    'choose-hard': 'сложно',
+    'choose-easy': 'новичок',
+    'choose-hard': 'мастер',
     'choose-start': 'старт',
 
     'dev-kir': 'Кирилл',
