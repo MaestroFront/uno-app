@@ -24,7 +24,7 @@ app.use(function (req, res, next) {
 
 app.use(bodyParser.json(), cookieParser('UNOsecretCOOKIE'), cors({ credentials: true, origin: 'http://localhost:9000' }));
 
-app.post('/registration', async (req, res): void => {
+app.post('/registration', async (req, res) => {
   const user = req.body as UserInfo;
   await DBUno.openDB('write').then(() => {
     DBUno.db.get('SELECT * FROM Users where UserName = ?', [user.userName], (err, data: DBUsers) => {
@@ -43,7 +43,7 @@ app.post('/registration', async (req, res): void => {
   }).then(()=> DBUno.closeDB()).catch();
 });
 
-app.post('/login', async (req, res): void =>{
+app.post('/login', async (req, res): Promise<void> =>{
   const user = req.body as { userName: string, password: string };
   await DBUno.openDB().then(()=> {
     DBUno.db.get('SELECT * FROM Users where UserName = ?', [user.userName], (err, data: DBUsers) => {
