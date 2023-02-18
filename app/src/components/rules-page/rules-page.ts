@@ -49,15 +49,15 @@ export const createCardBlock  = (currCard: Element, cardTitle: string, cardValue
   return container;
 };
 
-const createCardsDescription = (lang: string): HTMLDivElement => {
+const createCardsDescription = (lang: string, size: number): HTMLDivElement => {
   const cardsDescription = createElement('div', 'cards-description') as HTMLDivElement;
   console.log('lang', lang);
-  const numberedCard = createCardBlock(renderCardWithNumber('8', greenColor, 0.5), langData[lang]['numbered-card-title'], langData[lang]['numbered-card-points'], langData[lang]['numbered-card-descr'], lang);
-  const plusTwoCard = createCardBlock(renderPlusTwoCard(blueColor, 0.5), langData[lang]['plustwo-card-title'], langData[lang]['action-card-points'], langData[lang]['plustwo-card-descr'], lang);
-  const reverseCard = createCardBlock(renderReverseCard(redColor, 0.5), langData[lang]['reverse-card-title'], langData[lang]['action-card-points'], langData[lang]['reverse-card-descr'], lang);
-  const blockedCard = createCardBlock(renderBlockedCard(yellowColor, 0.5), langData[lang]['blocked-card-title'], langData[lang]['action-card-points'], langData[lang]['blocked-card-descr'], lang);
-  const plusFourCard = createCardBlock(renderPlusFourCard(0.5), langData[lang]['plusfour-card-title'], langData[lang]['black-card-points'], langData[lang]['plusfour-card-descr'], lang);
-  const multiCard = createCardBlock(renderMultiCard(0.5), langData[lang]['multi-card-title'], langData[lang]['black-card-points'], langData[lang]['multi-card-descr'], lang);
+  const numberedCard = createCardBlock(renderCardWithNumber('8', greenColor, size), langData[lang]['numbered-card-title'], langData[lang]['numbered-card-points'], langData[lang]['numbered-card-descr'], lang);
+  const plusTwoCard = createCardBlock(renderPlusTwoCard(blueColor, size), langData[lang]['plustwo-card-title'], langData[lang]['action-card-points'], langData[lang]['plustwo-card-descr'], lang);
+  const reverseCard = createCardBlock(renderReverseCard(redColor, size), langData[lang]['reverse-card-title'], langData[lang]['action-card-points'], langData[lang]['reverse-card-descr'], lang);
+  const blockedCard = createCardBlock(renderBlockedCard(yellowColor, size), langData[lang]['blocked-card-title'], langData[lang]['action-card-points'], langData[lang]['blocked-card-descr'], lang);
+  const plusFourCard = createCardBlock(renderPlusFourCard(size), langData[lang]['plusfour-card-title'], langData[lang]['black-card-points'], langData[lang]['plusfour-card-descr'], lang);
+  const multiCard = createCardBlock(renderMultiCard(size), langData[lang]['multi-card-title'], langData[lang]['black-card-points'], langData[lang]['multi-card-descr'], lang);
   cardsDescription.append(numberedCard, blockedCard, reverseCard, plusTwoCard, multiCard, plusFourCard);
 
   return cardsDescription;
@@ -82,7 +82,7 @@ const createRulesDescription = (lang: string): HTMLDivElement => {
 
 const createRulesBlock = (lang: string): HTMLDivElement => {
   const rulesBlock = createElement('div', 'rules-wrapper') as HTMLDivElement;
-  rulesBlock.append(createRulesDescription(lang), createCardsDescription(lang));
+  rulesBlock.append(createRulesDescription(lang), createCardsDescription(lang, 0.5));
   return rulesBlock;
 };
 
@@ -104,10 +104,11 @@ export const openRulesPage = (lang: string) => {
 export const createRulesWindow = (lang: string) => {
   const rulesWindow = createElement('div', 'rules-window') as HTMLDivElement;
   const button = createButton('btn-cross', 'button', 'x'); 
-  rulesWindow.append(createCardsDescription(lang), button);
+  rulesWindow.append(createCardsDescription(lang, 0.4), button);
   rulesWindow.style.display = 'none';
 
   button.addEventListener('click', () => {
+    document.querySelector('.opacity')?.classList.remove('show');
     rulesWindow.style.display = 'none';
     rulesWindow.classList.remove('open');
   } );
