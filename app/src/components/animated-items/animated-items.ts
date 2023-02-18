@@ -25,7 +25,7 @@ export const getColorAnimation = () => {
   const colors = [blueColor, greenColor, yellowColor, redColor];
   const color = colors[getRandomInt(colors.length)];
   Array.from(document.getElementsByClassName('diamond')).forEach(el => el.classList.add('shy'));
-  
+
   if ((document.getElementById('red-diamond') as HTMLDivElement).classList.contains('shy')) {
     setTimeout(() => {
       Array.from(document.getElementsByClassName('diamond')).forEach((el) => {
@@ -73,24 +73,24 @@ const changeDirection = (reverse: boolean) => {
   let turn;
   const clockWise = document.querySelector('.reverse-right') as HTMLImageElement;
   const counterClockWise = document.querySelector('.reverse-left') as HTMLImageElement;
-    
-  if (reverse == true) {
-    direction = clockWise; turn = 2; 
+
+  if (reverse) {
+    direction = clockWise; turn = 2;
     clockWise.classList.add('show');
     counterClockWise.classList.remove('show');
   } else {
-    direction = counterClockWise; turn = -2; 
+    direction = counterClockWise; turn = -2;
     counterClockWise.classList.add('show');
     clockWise.classList.remove('show');
   }
-      
+
   const reverseKeyframes = new KeyframeEffect(
-    direction, 
+    direction,
     [
       { transform: 'rotate(0deg)' },
       { transform: `rotate(${turn}turn)` },
       { transform: 'scale(1.2)' },
-    ], 
+    ],
     { duration: 4000, fill: 'none', iterations: 1 },
   );
   const reverseCardAnimation = new Animation(reverseKeyframes, document.timeline);
@@ -100,7 +100,7 @@ const changeDirection = (reverse: boolean) => {
     (document.querySelector('.reverse-container') as HTMLDivElement).classList.remove('show');
   }, 4500);
 };
-  
+
 export const showReverseAnimation = (reverse: boolean) => {
   (document.querySelector('.reverse-container') as HTMLDivElement).classList.add('show');
   changeDirection(reverse);
