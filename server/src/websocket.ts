@@ -1,8 +1,10 @@
 import WebSocket from 'ws';
 import * as http from 'http';
-import { Client, CreateGameMessage, Game, WebSocketMessage } from './game/types';
+import { Client, CreateGameMessage, DBUsers, Game, UserInfo, WebSocketMessage } from './game/types';
 import UnoGame from './game/uno-game';
 import chalk from 'chalk';
+import DBUno from './database';
+import { hashPassword } from './express';
 
 class WebsocketServer {
   private readonly ws: WebSocket.Server<WebSocket>;
@@ -87,6 +89,44 @@ class WebsocketServer {
                   }),
               }));
           });
+          break;
+        }
+        case 'REGISTRATION': {
+          const user = JSON.parse(msg.data) as UserInfo;
+          const userWS = this.clients.filter(value => {return value.socket === connection;})[0].socket;
+          void DBUno.openDB('write').then(() => {
+            DBUno.db.get('SELECT * FROM Users where UserName = ?', [user.userName], (err, data: DBUsers) => {
+              if (data?.UserId !== undefined) {
+                console.log(chalk.yellow(`New user with nickname: '${user.userName}' try registered, but this nickname already exist...`));
+                userWS.send(JSON.stringify({ action: 'REGISTRATION', data: JSON.stringify({ status: false }) }));
+              } else {
+                user.password = hashPassword(user.password);
+                DBUno.db.run('INSERT INTO Users(UserName, UserPassword, Email) VALUES(?, ?, ?)',
+                  [user.userName, user.password, user.email],
+                  (er) => {if (err) console.log(er);});
+                console.log(chalk.green(`New user with nickname: '${user.userName}' successful registered!`));
+                userWS.send(JSON.stringify({ action: 'REGISTRATION', data: JSON.stringify({ status: true }) }));
+              }
+            });
+          }).then(()=> DBUno.closeDB()).catch();
+          break;
+        }
+        case 'LOGIN': {
+          const user = JSON.parse(msg.data) as { userName: string, password: string };
+          const userWS = this.clients.filter(value => {return value.socket === connection;})[0].socket;
+          void DBUno.openDB().then(()=> {
+            DBUno.db.get('SELECT * FROM Users where UserName = ?', [user.userName], (err, data: DBUsers) => {
+              if (data?.UserId !== undefined && data.UserPassword === hashPassword(user.password)) {
+                const d = new Date();
+                d.setTime(d.getTime() + (10 * 24 * 60 * 60 * 1000));
+                console.log(chalk.green(`A user with a nickname '${user.userName}' is logged into the site!`));
+                userWS.send(JSON.stringify({ action: 'LOGIN', data: JSON.stringify({ status: true, data: `user=${user.userName};expires=${d.toString()}` }) }));
+              } else {
+                console.log(chalk.red(`Try user with a nickname '${user.userName}' logged`));
+                userWS.send(JSON.stringify({ action: 'LOGIN', data: JSON.stringify({ status: false, data: '' }) }));
+              }
+            });
+          }).then(()=> DBUno.closeDB()).catch();
           break;
         }
       }

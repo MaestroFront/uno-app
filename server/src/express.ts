@@ -8,7 +8,7 @@ export const app = express();
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
-function hashPassword(pass: string): string {
+export function hashPassword(pass: string): string {
   const secret = '666UNOgameGAMEuno999';
   return createHmac('sha256', secret)
     .update(pass)
@@ -24,7 +24,7 @@ app.use(function (req, res, next) {
 
 app.use(bodyParser.json(), cookieParser('UNOsecretCOOKIE'), cors({ credentials: true, origin: 'http://localhost:9000' }));
 
-app.post('/registration', async (req, res)=>{
+app.post('/registration', async (req, res) => {
   const user = req.body as UserInfo;
   await DBUno.openDB('write').then(() => {
     DBUno.db.get('SELECT * FROM Users where UserName = ?', [user.userName], (err, data: DBUsers) => {
@@ -35,7 +35,7 @@ app.post('/registration', async (req, res)=>{
         user.password = hashPassword(user.password);
         DBUno.db.run('INSERT INTO Users(UserName, UserPassword, Email) VALUES(?, ?, ?)',
           [user.userName, user.password, user.email],
-          (err) => {if (err) console.log(err);});
+          (er) => {if (er) console.log(err);});
         console.log(chalk.green(`New user with nickname: '${user.userName}' successful registered!`));
         res.send(JSON.stringify({ status: true }));
       }
@@ -43,7 +43,7 @@ app.post('/registration', async (req, res)=>{
   }).then(()=> DBUno.closeDB()).catch();
 });
 
-app.post('/login', async (req, res)=>{
+app.post('/login', async (req, res): Promise<void> =>{
   const user = req.body as { userName: string, password: string };
   await DBUno.openDB().then(()=> {
     DBUno.db.get('SELECT * FROM Users where UserName = ?', [user.userName], (err, data: DBUsers) => {
