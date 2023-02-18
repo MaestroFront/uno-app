@@ -43,7 +43,7 @@ app.post('/registration', async (req, res): void => {
   }).then(()=> DBUno.closeDB()).catch();
 });
 
-app.post('/login', async (req, res): void=>{
+app.post('/login', async (req, res): void =>{
   const user = req.body as { userName: string, password: string };
   await DBUno.openDB().then(()=> {
     DBUno.db.get('SELECT * FROM Users where UserName = ?', [user.userName], (err, data: DBUsers) => {
