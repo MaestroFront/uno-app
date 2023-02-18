@@ -166,7 +166,7 @@ class Controller {
           });
           const dataMove: { topCard: CardInfo, currentColor: string } = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
           (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
-          (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement).remove();
+          (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement)?.remove();
           (document.querySelector('.current-card') as HTMLElement).append(createSimpleCard(dataMove.topCard.id, dataMove.topCard.color, dataMove.topCard.value));
           (document.querySelector('.rhomb') as SVGElement).style.fill = dataMove.currentColor;
           break;
