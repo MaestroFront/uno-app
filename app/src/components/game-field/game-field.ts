@@ -166,7 +166,10 @@ export const createGameField = (quantity: number, lang: string) => {
   container.append(field);
 
   const btnRules = createButton('btn-small-rules', 'button', '?');
-  btnRules.addEventListener('click', openRulesWindow);
+  btnRules.addEventListener('click', () => {
+    document.querySelector('.opacity')?.classList.add('show');
+    openRulesWindow();
+  });
 
   main.append(container, renderChat(), renderDiamond(), renderReverseMessage(), createRulesWindow(lang), btnRules);
   /* мои подключени */
