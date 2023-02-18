@@ -55,66 +55,91 @@ export const createRegOrLogWindow = (method: string, lang: string) => {
   const cross = createButton('btn-cross', 'button', 'x');
   const submit = createButton(`btn-submit-${method}`, 'submit', `${method}`);
   submit.textContent = langData[lang]['reg-btn'];
-  
-  if (method === 'reg') {
-    submit.addEventListener('click', async (ev) => {
-      ev.preventDefault();
-      const name = (document.querySelector('.input-reg-name') as HTMLInputElement).value;
-      const pass = (document.querySelector('.input-reg-password') as HTMLInputElement).value;
-      const mail = (document.querySelector('.input-mail') as HTMLInputElement).value;
-      const data = { userName: name, password: pass, email: mail } as { userName: string, password: string, email: string };
-      const fetchOptions = {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      };
-      await fetch('http://localhost:9002/registration', fetchOptions)
-        .then(res=>res.json() as Promise<{ status: boolean }>)
-        .then(obj => {
-          if (obj.status) {
-            // eslint-disable-next-line no-alert
-            alert('registered!');
-            Router.setState('home');
-            Router.checkPage();
-          } else {
-            // eslint-disable-next-line no-alert
-            alert('user with this nickname already exist!');
-          }
-        }).catch();
-    });
+  /* server run on deploy */
+  if (!Controller.webSocket.url.includes('localhost')) {
+    if (method === 'reg') {
+      submit.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        const name = (document.querySelector('.input-reg-name') as HTMLInputElement).value;
+        const pass = (document.querySelector('.input-reg-password') as HTMLInputElement).value;
+        const mail = (document.querySelector('.input-mail') as HTMLInputElement).value;
+        const data = { userName: name, password: pass, email: mail } as { userName: string, password: string, email: string };
+        Controller.webSocket.send(JSON.stringify({ action: 'REGISTRATION', data: JSON.stringify(data) }));
+      });
+    } else {
+      submit.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        const name = (document.querySelector('.input-log-name') as HTMLInputElement).value;
+        const pass = (document.querySelector('.input-log-password') as HTMLInputElement).value;
+        const data = { userName: name, password: pass } as { userName: string, password: string };
+        Controller.webSocket.send(JSON.stringify({ action: 'LOGIN', data: JSON.stringify(data) }));
+      });
+    }
+  /* server run local */
   } else {
-    submit.addEventListener('click', async (ev) => {
-      ev.preventDefault();
-      const name = (document.querySelector('.input-log-name') as HTMLInputElement).value;
-      const pass = (document.querySelector('.input-log-password') as HTMLInputElement).value;
-      const data = { userName: name, password: pass } as { userName: string, password: string };
-      const fetchOptions = {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      };
-      await fetch('http://localhost:9002/login', fetchOptions)
-        .then(res => res.json() as Promise<{ status: boolean, data: string }>)
-        .then(obj => {
-          if (obj?.status) {
-            document.cookie = obj.data;
-            const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
-            Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
-            Router.setState('home');
-            Router.checkPage();
-            // eslint-disable-next-line no-alert
-            alert(`You signed in as ${cookie[0].replace('user=', '')}`);
-          } else {
-            // eslint-disable-next-line no-alert
-            alert('Wrong name or password');
-          }
-        }).catch();
-    });
+    if (method === 'reg') {
+      submit.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        const name = (document.querySelector('.input-reg-name') as HTMLInputElement).value;
+        const pass = (document.querySelector('.input-reg-password') as HTMLInputElement).value;
+        const mail = (document.querySelector('.input-mail') as HTMLInputElement).value;
+        const data = { userName: name, password: pass, email: mail } as { userName: string, password: string, email: string };
+        const fetchOptions = {
+          method: 'post',
+          //mode: 'no-cors' as RequestMode,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        };
+        await fetch('http://localhost:9002/registration', fetchOptions)
+          .then(res=>res.json() as Promise<{ status: boolean }>)
+          .then(obj => {
+            if (obj.status) {
+              // eslint-disable-next-line no-alert
+              alert('registered!');
+              Router.setState('home');
+              Router.checkPage();
+            } else {
+              // eslint-disable-next-line no-alert
+              alert('user with this nickname already exist!');
+            }
+          }).catch();
+      });
+    } else {
+      submit.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        const name = (document.querySelector('.input-log-name') as HTMLInputElement).value;
+        const pass = (document.querySelector('.input-log-password') as HTMLInputElement).value;
+        const data = { userName: name, password: pass } as { userName: string, password: string };
+        const fetchOptions = {
+          method: 'post',
+          //mode: 'no-cors' as RequestMode,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        };
+        await fetch('http://localhost:9002/login', fetchOptions)
+          .then(res => res.json() as Promise<{ status: boolean, data: string }>)
+          .then(obj => {
+            if (obj?.status) {
+              document.cookie = obj.data;
+              const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
+              Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
+              Router.setState('home');
+              Router.checkPage();
+              // eslint-disable-next-line no-alert
+              alert(`You signed in as ${cookie[0].replace('user=', '')}`);
+            } else {
+              // eslint-disable-next-line no-alert
+              alert('Wrong name or password');
+            }
+          }).catch();
+      });
+    }
   }
+
 
   nameBlock.append(nameTitle, inputName);
   passwordBlock.append(passwordTitle, inputPassword);
@@ -137,7 +162,7 @@ document.addEventListener('click', (e) => {
     (document.querySelector('.opacity') as HTMLDivElement).classList.add(
       'show',
     );
-    createRegOrLogWindow('reg', language.chosen);
+    createRegOrLogWindow('reg', (language as { chosen: string }).chosen);
   }
   if (element.closest('.reg-window .btn-cross')) {
     (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
@@ -149,7 +174,7 @@ document.addEventListener('click', (e) => {
     (document.querySelector('.opacity') as HTMLDivElement).classList.add(
       'show',
     );
-    createRegOrLogWindow('log', language.chosen);
+    createRegOrLogWindow('log', (language as { chosen: string }).chosen );
   }
   if (element.closest('.log-window .btn-cross')) {
     (document.querySelector('.opacity') as HTMLDivElement).classList.remove(

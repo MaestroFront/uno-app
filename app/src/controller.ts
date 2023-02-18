@@ -7,6 +7,7 @@ import { blueColor, greenColor, redColor, renderBlockedCard, renderCardWithNumbe
 import { clickSoundPlay, getCardSoundPlay, getChooseSound } from './components/sounds';
 import { moveCurrCard } from './components/game-field/game-animation';
 import { chooseColorAnimation } from './components/animated-items/animated-items';
+import Router from './components/router';
 
 class Controller {
   static webSocket: WebSocket;
@@ -15,7 +16,8 @@ class Controller {
 
   /* Controller launch */
   static start(port: number): void {
-    this.webSocket = new WebSocket(`ws://localhost:${port}`);
+    const url = '194.158.205.78'; // 'localhost'
+    this.webSocket = new WebSocket(`ws://${url}:${port}`);
     setTimeout(() => {
       if (document.cookie.includes('user=')) {
         const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
@@ -161,7 +163,6 @@ class Controller {
               moveCurrCard(e);
             });
           });
-          (document.querySelector('#last-card') as HTMLDivElement).classList.remove('move');
           const dataMove: { topCard: CardInfo, currentColor: string } = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
           (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
           (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement).remove();
@@ -221,6 +222,35 @@ class Controller {
           p.className = 'chat-message-nickname';
           div.append(p);
           (document.querySelector('.chat-window') as HTMLElement).append(div);
+          break;
+        }
+        case 'LOGIN': {
+          const messageLogin = JSON.parse(msg.data) as { status: boolean, data: string };
+          document.cookie = messageLogin.data;
+          if (messageLogin.status) {
+            const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
+            Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
+            Router.setState('home');
+            Router.checkPage();
+            // eslint-disable-next-line no-alert
+            alert(`You signed in as ${cookie[0].replace('user=', '')}`);
+          } else {
+          // eslint-disable-next-line no-alert
+            alert('Wrong name or password');
+          }
+          break;
+        }
+        case 'REGISTRATION': {
+          const messageRegistration = JSON.parse(msg.data) as { status: boolean };
+          if (messageRegistration.status) {
+            // eslint-disable-next-line no-alert
+            alert('registered!');
+            Router.setState('home');
+            Router.checkPage();
+          } else {
+            // eslint-disable-next-line no-alert
+            alert('user with this nickname already exist!');
+          }
           break;
         }
       }
