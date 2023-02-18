@@ -18,14 +18,16 @@ class Controller {
   static start(port: number): void {
     const url = '194.158.205.78'; // 'localhost'
     this.webSocket = new WebSocket(`ws://${url}:${port}`);
-    setTimeout(() => {
+    this.webSocket.onopen = () => {
+      console.log('connect to WS server');
       if (document.cookie.includes('user=')) {
         const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
         Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
       } else {
         Controller.webSocket.send(JSON.stringify({ action: 'WHATS_MY_NAME', data: '' }));
       }
-    }, 1000);
+    };
+
     //TODO: Remove this feature after switching to normal maps
     function createSimpleCard(id: number, color: string, value: number) {
       const div = createElement('div', 'simple-card');
@@ -57,16 +59,18 @@ class Controller {
       div.id = id.toString();
       div.addEventListener('click', evt => {
         clickSoundPlay();
-        const clickedEl = (evt.target as HTMLDivElement).closest('.cardCenter') as Element;
+        moveCurrCard(evt);
+        setTimeout(() => {
+          const clickedEl = (evt.target as HTMLDivElement).closest('.cardCenter') as Element;
 
-        if (clickedEl) {
-          clickedEl.id = id.toString();
-          //console.log(clickedEl.id);
-        }
+          if (clickedEl) {
+            clickedEl.id = id.toString();
+          }
 
-        const user: string = ((evt.target as HTMLDivElement).parentElement as HTMLElement).className;
-        const dataForSent = JSON.stringify({ userName: user, cardId: (evt.target as HTMLDivElement).id });
-        Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
+          const user: string = ((evt.target as HTMLDivElement).parentElement as HTMLElement).className;
+          const dataForSent = JSON.stringify({ userName: user, cardId: (evt.target as HTMLDivElement).id });
+          Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
+        }, 1500);
       });
       return div;
     }
@@ -78,15 +82,12 @@ class Controller {
         Controller.webSocket.send(JSON.stringify({ action: 'USERS_SELECTED_COLOR', data: color }));
       }
 
-      let chosenColor = '';
       const diamond = document.querySelector('.diamond-container') as HTMLDivElement;
       diamond.classList.add('choose-color');
       diamond.addEventListener('click', (e: Event) => {
-        chosenColor = chooseColorAnimation(e);
         void getChooseSound.play();
+        sentChosenColor(chooseColorAnimation(e));
       });
-      console.log('ann - chosen color', chosenColor); //---------------ПУСТО???
-      sentChosenColor(chosenColor);
 
 
       // const div = document.createElement('div');
