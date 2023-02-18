@@ -9,18 +9,19 @@ export const getChooseSound = new Audio('../../assets/music/choose.mp3');
 
 
 export const musicPlay = () => {
-  // music.autoplay = true;
+  music.autoplay = true;
   if (music.readyState) {
     void music.play();
   }
   music.loop = true;
+  music.volume = 0.3;
 };
 export const musicStop = () => {
   void music.pause();
 };
 
-export const setMusic = (el:HTMLButtonElement ) => {
-  if (el.value === 'on') {
+export const setMusic = (el:HTMLButtonElement) => {
+  if (el.textContent === 'Music ON' || el.textContent === 'Музыка ВКЛ.') {
     musicPlay();
     el.classList.remove('off');
   } else {
@@ -57,7 +58,7 @@ export const offSounds = () => {
 };
 
 export const setSounds = (el:HTMLButtonElement ) => {
-  if (el.value === 'on') {
+  if (el.textContent === 'Sound ON' || el.textContent === 'Звук ВКЛ.') {
     onSounds();
     el.classList.remove('off');
   } else {
