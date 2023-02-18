@@ -1,6 +1,6 @@
 /* Accepts input and converts it to commands for the model or view. */
 
-import { createElement } from './components/helpers/helpers';
+import { createElement, createParagraph } from './components/helpers/helpers';
 import { CardInfo, WebSocketMessage } from './types';
 // import CardDeck, { cardDeck } from '../../server/src/game/сard_deck';
 import { blueColor, greenColor, redColor, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from './components/cards/cards';
@@ -207,21 +207,16 @@ class Controller {
         }
         case 'INCOME_CHAT_MESSAGE': {
           const data = JSON.parse(msg.data) as { user: string, userMessage: string, time: string };
-          const div = document.createElement('div');
-          div.className = 'chat-message';
-          let p = document.createElement('p');
-          p.innerText = data.userMessage;
-          p.className = 'chat-message-message';
-          div.append(p);
-          p = document.createElement('p');
-          p.innerText = `${data.time}`;
-          p.className = 'chat-message-time';
-          div.append(p);
-          p = document.createElement('p');
-          p.innerText = `${data.user}`;
-          p.className = 'chat-message-nickname';
-          div.append(p);
-          (document.querySelector('.chat-window') as HTMLElement).append(div);
+          const li = createElement('li', 'chat-message');
+          const userSettingsContainer = createElement('div', 'chat-message-info') as HTMLDivElement;
+          const messageContainer = createElement('div', 'message-container');
+          const userMessage = createParagraph('chat-message-message', data.userMessage);
+          const userNick = createParagraph('chat-message-nickname', data.user);
+          const userTime = createParagraph('chat-message-time', data.time);
+          messageContainer.append(userMessage);
+          userSettingsContainer.append(userNick, userTime);
+          li.append(messageContainer, userSettingsContainer);
+          (document.querySelector('.chat-window') as HTMLElement).append(li);
           break;
         }
         case 'LOGIN': {

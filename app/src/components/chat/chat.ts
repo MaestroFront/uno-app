@@ -14,23 +14,29 @@ export const renderChat = () => {
   const headerBtn = createButton('btn-cross', 'button', 'x');
   headerBtn.classList.add('chat-close-btn');
   header.textContent = 'Chat';
+
   const chatWindow = createElement('div', 'chat-window');
   const messageList = createElement('ul', 'message-list');
   const chatInput = createElement('div', 'chat-input');
   const messageInput = createElement('input', 'message-input') as HTMLInputElement;
   messageInput.type = 'text';
+  messageInput.maxLength = 25;
+
   const button = createButton('chat-send-btn', 'button', 'Send');
+
   button.addEventListener('click', () => {
     Controller.webSocket.send(JSON.stringify(
       { action: 'CHAT_MESSAGE',
         data: (document.querySelector('.message-input') as HTMLInputElement).value }));
     (document.querySelector('.message-input') as HTMLInputElement).value = '';
   });
+
   messageInput.addEventListener('keypress', (event) => {
     if (event.key === 'Enter' && (document.querySelector('.message-input') as HTMLInputElement).value.length > 0) {
       button.click();
     }
   });
+
   chatInput.append(messageInput, button);
   chatWindow.append(messageList);
   header.append(headerBtn);
