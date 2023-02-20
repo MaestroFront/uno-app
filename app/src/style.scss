@@ -37,21 +37,21 @@ div.loader {
   }
 }
 
-.yellow {
+.yellow-circle {
   background-color: #FFC300;
 }
 
-.red {
+.red-circle {
   background-color: #c01e1e;
   animation-delay: 0.1s;
 }
 
-.blue {
+.blue-circle {
   background-color: darkblue;
   animation-delay: 0.2s;
 }
 
-.green {
+.green-circle {
   background-color: #258f37;
   animation-delay: 0.3s;
 }
@@ -68,5 +68,45 @@ div.loader {
   75% {
     filter: blur(3px);
     transform: scale(1.4);
+  }
+}
+
+.current-player-move {
+  animation: 2s anim-popoutin ease infinite;
+}
+
+@keyframes anim-popoutin {
+  0% {
+    color: #ffffff;
+    transform: scale(0);
+    opacity: 0;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  }
+  25% {
+    color: #d5cb13;
+    transform: scale(2);
+    opacity: 1;
+    text-shadow: 3px 10px 5px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    color: black;
+    transform: scale(1);
+    opacity: 1;
+    text-shadow: 1px 0 0 rgba(0, 0, 0, 0);
+  }
+  100% {
+    /* animate nothing to add pause at the end of animation */
+    transform: scale(1);
+    opacity: 1;
+    text-shadow: 1px 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+@keyframes anim-fromtop {
+  0% { opacity: 0; transform: translateY(-100%);}
+  25% { opacity: 1; transform: translateY(0%);}
+  50% {
+  }
+  100% {
   }
 }

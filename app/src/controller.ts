@@ -154,6 +154,26 @@ class Controller {
         }
         /* Receiving a message from the server */
         case 'MESSAGE': {
+          if (msg.data.includes('Move by ')) {
+            document.querySelectorAll('.current-player-move').forEach(value => value.classList.remove('current-player-move'));
+            switch (msg.data.replace('Move by ', '')) {
+              case 'Computer-1': {
+                (document.querySelector('#name-player-2') as HTMLDivElement).classList.add('current-player-move');
+                break;
+              }
+              case 'Computer-2': {
+                (document.querySelector('#name-player-3') as HTMLDivElement).classList.add('current-player-move');
+                break;
+              }
+              case 'Computer-3': {
+                (document.querySelector('#name-player-4') as HTMLDivElement).classList.add('current-player-move');
+                break;
+              }
+              default : {
+                (document.querySelector('#name-player-1') as HTMLDivElement).classList.add('current-player-move');
+              }
+            }
+          }
           console.log(msg.data);
           break;
         }
