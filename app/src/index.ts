@@ -10,7 +10,23 @@ import './components/chat/chat';
 import './components/animated-items/animated-items';
 import Router from './components/router';
 
+export function createLoader() {
+  const div = document.createElement('div');
+  div.className = 'loader';
+  div.innerHTML = `
+    <div class="yellow"></div>
+    <div class="red"></div>
+    <div class="blue"></div>
+    <div class="green"></div>`;
+  document.body.append(div);
+}
+createLoader();
+void Controller.start(9001).then().catch();
+
 window.onload = () => {
   Router.initialize();
-  Controller.start(9001);
+  const loader = document.querySelector('.loader') as HTMLDivElement;
+  if (loader) {
+    loader.style.display = 'none';
+  }
 };

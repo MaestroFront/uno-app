@@ -15,19 +15,21 @@ class Controller {
   private static myName: string;
 
   /* Controller launch */
-  static start(port: number): void {
+  static async start(port: number): Promise<void> {
     const url = '194.158.205.78'; // 'localhost'
     this.webSocket = new WebSocket(`ws://${url}:${port}`);
-    this.webSocket.onopen = () => {
-      console.log('connect to WS server');
+    function WSWhenConnect() {
       if (document.cookie.includes('user=')) {
         const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
         Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
       } else {
         Controller.webSocket.send(JSON.stringify({ action: 'WHATS_MY_NAME', data: '' }));
       }
-    };
-
+    }
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    while (this.webSocket.readyState) {
+      await sleep(500).then(() => WSWhenConnect());
+    }
     //TODO: Remove this feature after switching to normal maps
     function createSimpleCard(id: number, color: string, value: number) {
       const div = createElement('div', 'simple-card');
@@ -166,7 +168,7 @@ class Controller {
           });
           const dataMove: { topCard: CardInfo, currentColor: string } = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
           (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
-          (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement).remove();
+          (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement)?.remove();
           (document.querySelector('.current-card') as HTMLElement).append(createSimpleCard(dataMove.topCard.id, dataMove.topCard.color, dataMove.topCard.value));
           (document.querySelector('.rhomb') as SVGElement).style.fill = dataMove.currentColor;
           break;
