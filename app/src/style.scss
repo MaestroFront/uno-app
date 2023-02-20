@@ -20,3 +20,53 @@ body{
   cursor: url('./assets/img/cursor.svg'), auto;
 }
 
+div.loader {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background-color: #999999;
+  & > div {
+    width: 3vw;
+    height: 3vw;
+    border-radius: 100%;
+    margin: 2vw;
+    background-image: linear-gradient(145deg, rgba(255,255,255,0.5) 0%, rgba(0,0,0,0) 100%);
+    animation: bounce 1.5s 0.5s linear infinite;
+  }
+}
+
+.yellow {
+  background-color: #FFC300;
+}
+
+.red {
+  background-color: #c01e1e;
+  animation-delay: 0.1s;
+}
+
+.blue {
+  background-color: darkblue;
+  animation-delay: 0.2s;
+}
+
+.green {
+  background-color: #258f37;
+  animation-delay: 0.3s;
+}
+
+@keyframes bounce {
+  0%, 50%, 100% {
+    transform: scale(1);
+    filter: blur(0px);
+  }
+  25% {
+    transform: scale(0.6);
+    filter: blur(3px);
+  }
+  75% {
+    filter: blur(3px);
+    transform: scale(1.4);
+  }
+}

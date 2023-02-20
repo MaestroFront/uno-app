@@ -2,6 +2,7 @@ import { createPage } from './helpers/helpers';
 import { openRulesPage } from './rules-page/rules-page';
 import { showChoiceContainer } from './main-page/main-page';
 import { language } from './local-storage';
+import { createLoader } from '../index';
 class Router {
   static url: URL;
 
@@ -38,6 +39,7 @@ class Router {
   }
 
   static checkPage() {
+    createLoader();
     switch (window.history.state) {
       case 'home': {
         document.body.innerHTML = '';
