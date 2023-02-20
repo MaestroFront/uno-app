@@ -49,7 +49,7 @@
   font-size: 1em;
   color: white;
   position: absolute;
-  bottom: 0%;
+  bottom: 0;
   right: 20%;
   opacity: 0;
   transition: all 1s ease-in-out;
@@ -137,6 +137,7 @@
 
 .uno:hover {
   transform: scale(0.9);
+  cursor: url('../../assets/img/pointer.webp'), pointer;
 }
 
 /*active player's card*/
@@ -166,6 +167,8 @@
 .player-1 .simple-card:hover {
   transform: rotate(-5deg) translateY(-1.5em);
   transition: 0.3s ease-in-out;
+  z-index: 999;
+  cursor: url('../../assets/img/pointer.webp'), pointer;
 }
 
 .player-1 .current-card .simple-card:hover {
@@ -254,6 +257,7 @@
 .get-card:hover {
   transform: translateY(0.8em);
   transition: 0.3s ease-in-out;
+  cursor: url('../../assets/img/pointer.webp'), pointer;
 }
 
 .back,
