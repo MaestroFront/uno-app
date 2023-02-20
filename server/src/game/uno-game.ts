@@ -153,7 +153,7 @@ class UnoGame {
           break;
         }
       } while (this.currentPlayerId !== 0);
-      this.sendMessage(`${(this.players[0].player as Player).playersName} move!`);
+      this.sendMessage(`Move by ${(this.players[0].player as Player).playersName}`);
     }
   }
 
