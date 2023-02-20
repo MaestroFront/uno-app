@@ -14,10 +14,10 @@ export function createLoader() {
   const div = document.createElement('div');
   div.className = 'loader';
   div.innerHTML = `
-    <div class="yellow"></div>
-    <div class="red"></div>
-    <div class="blue"></div>
-    <div class="green"></div>`;
+    <div class="yellow-circle"></div>
+    <div class="red-circle"></div>
+    <div class="blue-circle"></div>
+    <div class="green-circle"></div>`;
   document.body.append(div);
 }
 createLoader();
