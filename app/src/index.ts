@@ -9,7 +9,10 @@ import './components/local-storage';
 import './components/chat/chat';
 import './components/animated-items/animated-items';
 import Router from './components/router';
-
+export const imgLogo = new Image();
+imgLogo.src = './assets/img/UNO_Logo.svg';
+imgLogo.className = 'logo';
+imgLogo.alt = 'logo';
 export function createLoader() {
   const div = document.createElement('div');
   div.className = 'loader';

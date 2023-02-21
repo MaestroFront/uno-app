@@ -26,7 +26,10 @@ div.loader {
   height: 100vh;
   justify-content: center;
   align-items: center;
-  background-color: #999999;
+  background: #41144e;
+  background: -webkit-linear-gradient(to right, #c27e25, #41144e);
+  background: linear-gradient(to right, #c27e25, #41144e);
+  background-attachment: fixed;
   & > div {
     width: 3vw;
     height: 3vw;
