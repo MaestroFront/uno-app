@@ -23,13 +23,15 @@ export function createLoader() {
     <div class="green-circle"></div>`;
   document.body.append(div);
 }
-createLoader();
+if (history.state !== '404' || history.state !== null) {
+  createLoader();
+}
 void Controller.start(9001).then().catch();
 
 window.onload = () => {
   Router.initialize();
   const loader = document.querySelector('.loader') as HTMLDivElement;
-  if (loader) {
+  if (loader || history.state === '404' || history.state === null) {
     loader.style.display = 'none';
   }
 };

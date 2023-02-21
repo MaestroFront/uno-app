@@ -37,9 +37,10 @@ export const createMainPage = (lang: string) => {
   const main = document.querySelector('.main') as HTMLDivElement;
   if ('404' !== window.history.state) {
     main?.append(imgLogo, createChoiceGameContainer(lang), renderChat());
-  } else createErrorPage();
-
-  return main;
+    return main;
+  } else {
+    createErrorPage();
+  }
 };
 
 const showDevelopedByBlock = () => {
