@@ -1,4 +1,4 @@
-import { createElement, createButton, createImage } from '../helpers/helpers';
+import { createElement, createButton } from '../helpers/helpers';
 import { createChoiceContainer } from '../choice-settings/choice';
 import { renderChat } from '../chat/chat';
 import { createRegistrationContainer } from '../registration/registration';
@@ -7,6 +7,7 @@ import { createExitWindow } from '../exit-window/exit-window';
 import { createErrorPage } from '../error-page/error-page';
 import { langData } from '../data';
 import { language } from '../local-storage';
+import { imgLogo } from '../../index';
 
 const createChoiceGameContainer = (lang: string) => {
   const container = createElement('div', 'choice-game');
@@ -34,9 +35,8 @@ const createChoiceGameContainer = (lang: string) => {
 
 export const createMainPage = (lang: string) => {
   const main = document.querySelector('.main') as HTMLDivElement;
-  const logo = createImage('logo', '../assets/img/logo-UNO.png', 'logo');
   if ('404' !== window.history.state) {
-    main?.append(logo, createChoiceGameContainer(lang), renderChat());
+    main?.append(imgLogo, createChoiceGameContainer(lang), renderChat());
   } else createErrorPage();
 
   return main;
