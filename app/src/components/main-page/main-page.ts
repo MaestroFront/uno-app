@@ -21,6 +21,10 @@ const createChoiceGameContainer = (lang: string) => {
     'button',
     langData[lang]['btn-play-online'],
   );
+  btnMultiplayer.addEventListener('click', () => {
+    Router.setState('multiplayer');
+    Router.checkPage();
+  });
   const btnRules = createButton('btn-rules', 'button', langData[lang]['btn-rules']);
   container.append(btnPlayWithComp, btnMultiplayer, btnRules);
 
