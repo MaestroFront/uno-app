@@ -3,11 +3,15 @@ import { openRulesPage } from './rules-page/rules-page';
 import { showChoiceContainer } from './main-page/main-page';
 import { language } from './local-storage';
 import { createLoader } from '../index';
+import { createErrorPage } from './error-page/error-page';
 class Router {
   static url: URL;
 
   static initialize(): void {
     Router.url = new URL(window.location.href);
+    addEventListener('hashchange', () => {
+      Router.checkPage();
+    });
     switch (Router.url.hash) {
       case '': {
         Router.setState('home');
@@ -23,6 +27,10 @@ class Router {
       }
       case '#single-player': {
         Router.setState('single-player');
+        break;
+      }
+      case '#multiplayer': {
+        Router.setState('multiplayer');
         break;
       }
       default: {
@@ -57,10 +65,18 @@ class Router {
         break;
       }
       case 'multiplayer': {
+        createPage(language.chosen);
+        showChoiceContainer(language.chosen);
         break;
       }
       case '404': {
-        createPage(language.chosen);
+        createErrorPage();
+        Router.checkPage();
+        break;
+      }
+      case null: {
+        createErrorPage();
+        Router.checkPage();
         break;
       }
       default: {

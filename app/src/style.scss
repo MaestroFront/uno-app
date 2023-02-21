@@ -17,47 +17,60 @@
 @import url(../src/components/error-page/error-page.scss);
 body{
   user-select: none;
-  cursor: url('./assets/img/cursor.svg'), auto;
-}
+  cursor: url('./assets/img/cursor.png'), auto!important;
+  button {
+    cursor: url('./assets/img/pointer.png'), pointer!important;
+  }
 
-div.loader {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-  background: #41144e;
-  background: -webkit-linear-gradient(to right, #c27e25, #41144e);
-  background: linear-gradient(to right, #c27e25, #41144e);
-  background-attachment: fixed;
-  & > div {
-    width: 3vw;
-    height: 3vw;
-    border-radius: 100%;
-    margin: 2vw;
-    background-image: linear-gradient(145deg, rgba(255,255,255,0.5) 0%, rgba(0,0,0,0) 100%);
-    animation: bounce 1.5s 0.5s linear infinite;
+  img {
+    &.two,
+    &.three,
+    &.four {
+      cursor: url('./assets/img/pointer.png'), pointer!important;
+    }
+  }
+
+  div.loader {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background: #41144e;
+    background: -webkit-linear-gradient(to right, #c27e25, #41144e);
+    background: linear-gradient(to right, #c27e25, #41144e);
+    background-attachment: fixed;
+    & > div {
+      width: 3vw;
+      height: 3vw;
+      border-radius: 100%;
+      margin: 2vw;
+      background-image: linear-gradient(145deg, rgba(255,255,255,0.5) 0%, rgba(0,0,0,0) 100%);
+      animation: bounce 1.5s 0.5s linear infinite;
+    }
+  }
+
+  .yellow-circle {
+    background-color: #FFC300;
+  }
+
+  .red-circle {
+    background-color: #c01e1e;
+    animation-delay: 0.1s;
+  }
+
+  .blue-circle {
+    background-color: darkblue;
+    animation-delay: 0.2s;
+  }
+
+  .green-circle {
+    background-color: #258f37;
+    animation-delay: 0.3s;
   }
 }
 
-.yellow-circle {
-  background-color: #FFC300;
-}
 
-.red-circle {
-  background-color: #c01e1e;
-  animation-delay: 0.1s;
-}
-
-.blue-circle {
-  background-color: darkblue;
-  animation-delay: 0.2s;
-}
-
-.green-circle {
-  background-color: #258f37;
-  animation-delay: 0.3s;
-}
 
 @keyframes bounce {
   0%, 50%, 100% {

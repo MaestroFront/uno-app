@@ -280,6 +280,10 @@ class Controller {
     Controller.webSocket.send(JSON.stringify({ action: 'CREATE_GAME', data: JSON.stringify({ players: numberOfPlayers, online: false }) }));
     Controller.webSocket.send(JSON.stringify({ action: 'GET_USERS_LIST', data: '' }));
   }
+
+  static createNewMultiplayerGame(numberOfPlayers: number): void {
+    console.log(`multigame ${numberOfPlayers}`);
+  }
 }
 
 export default Controller;

@@ -21,6 +21,10 @@ const createChoiceGameContainer = (lang: string) => {
     'button',
     langData[lang]['btn-play-online'],
   );
+  btnMultiplayer.addEventListener('click', () => {
+    Router.setState('multiplayer');
+    Router.checkPage();
+  });
   const btnRules = createButton('btn-rules', 'button', langData[lang]['btn-rules']);
   container.append(btnPlayWithComp, btnMultiplayer, btnRules);
 
@@ -37,9 +41,10 @@ export const createMainPage = (lang: string) => {
   const main = document.querySelector('.main') as HTMLDivElement;
   if ('404' !== window.history.state) {
     main?.append(imgLogo, createChoiceGameContainer(lang), renderChat());
-  } else createErrorPage();
-
-  return main;
+    return main;
+  } else {
+    createErrorPage();
+  }
 };
 
 const showDevelopedByBlock = () => {
@@ -94,19 +99,19 @@ const goToMainPage = (main: HTMLDivElement, element: HTMLButtonElement, lang: st
 document.addEventListener('click', (e) => {
   const main = document.querySelector('.main') as HTMLDivElement;
   const element = e.target as HTMLButtonElement;
-  if (element.closest('.btn-developed')) showDevelopedByBlock();
-  if (element.closest('.settings')) showSettings(element);
-  if (element.closest('.btn-computer')) {
+  if (element.closest('.btn-developed')) {
+    showDevelopedByBlock();
+  } else if (element.closest('.settings')) {
+    showSettings(element);
+  } else if (element.closest('.btn-computer')) {
     Router.setState('single-player');
     Router.checkPage();
-  }
-  if (element.closest('.choice-container .btn-cross')) {
+  } else if (element.closest('.choice-container .btn-cross')) {
     removeChoiceContainer();
     Router.url.searchParams.delete('difficult');
     Router.url.searchParams.delete('numberOfPlayers');
     Router.setState('home');
-  }
-  if (element.closest('.btn-main-page')) {
+  } else if (element.closest('.btn-main-page')) {
     if (document.querySelector('.game-field')) {
       (document.querySelector('.opacity') as HTMLDivElement).classList.add(
         'show',
@@ -116,15 +121,13 @@ document.addEventListener('click', (e) => {
       goToMainPage(main, element, language.chosen);
       if (!document.querySelector('.registration-container')) createRegistrationContainer(language.chosen);
     }
-  }
-  if (element.closest('.btn-yes')) {
+  } else if (element.closest('.btn-yes')) {
     (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
       'show',
     );
     goToMainPage(main, element, language.chosen);
     if (!document.querySelector('.registration-container')) createRegistrationContainer(language.chosen);
-  }
-  if (element.closest('.btn-no')) {
+  } else if (element.closest('.btn-no')) {
     (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
       'show',
     );

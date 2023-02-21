@@ -3,7 +3,6 @@ import { createButtonResults } from '../header/header';
 import { addButtonBackToMainPage, createButton, createElement, createImage, createParagraph } from '../helpers/helpers';
 import Controller from '../../controller';
 import { removeRegistrationContainer } from '../registration/registration';
-import Router from '../router';
 import { language } from '../local-storage';
 import { langData } from '../data';
 
@@ -27,7 +26,12 @@ export const createChoiceContainer = (lang: string) => {
   const btnStartGame = createButton('btn-start', 'button', langData[lang]['choose-start']);
 
   difficultyBlock.append(easyDifficulty, hardDifficulty);
-  container.append(quantutyTitle, quantityPlayersBlock, difficultyTitle, difficultyBlock, btnStartGame, cross);
+  if (history.state !== 'multiplayer') {
+    container.append(quantutyTitle, quantityPlayersBlock, difficultyTitle, difficultyBlock, btnStartGame, cross);
+  } else {
+    container.append(quantutyTitle, quantityPlayersBlock, btnStartGame, cross);
+  }
+
   main.append(container);
 };
 
@@ -52,7 +56,8 @@ const showStartGameBtn = () => {
   difficultiesBtns.forEach(item => {
     if (item.classList.contains('off')) x += 1;
   });
-  if (x === 2) startGameBtn?.classList.add('show');
+  console.log(x);
+  if (x === 2 || (x === 1 && history.state === 'multiplayer')) startGameBtn?.classList.add('show');
 };
 
 const fillGameField = (quantity: number, lang: string) => {
@@ -78,45 +83,35 @@ const goToGameField = (lang: string) => {
   fillGameField(x, lang);
   addButtonBackToMainPage(lang);
   createButtonResults(lang);
-  Controller.createNewGameWithComputer(x);
+  if (history.state === 'single-player') {
+    Controller.createNewGameWithComputer(x);
+  } else if (history.state === 'multiplayer') {
+    Controller.createNewMultiplayerGame(x);
+  }
+
 };
 
 document.addEventListener('click', (e) => {
   const element = e.target as HTMLElement;
   if (element.closest('.choice-quantity .two')) {
-    Router.url.searchParams.set('numberOfPlayers', '2');
-    Router.setState('single-player');
     addMark(element);
     showStartGameBtn();
     localStorage.setItem('players', '2');
-  }
-  if (element.closest('.choice-quantity .three')) {
-    Router.url.searchParams.set('numberOfPlayers', '3');
-    Router.setState('single-player');
+  } else if (element.closest('.choice-quantity .three')) {
     addMark(element);
     showStartGameBtn();
     localStorage.setItem('players', '3');
-  }
-  if (element.closest('.choice-quantity .four')) {
-    Router.url.searchParams.set('numberOfPlayers', '4');
-    Router.setState('single-player');
+  } else if (element.closest('.choice-quantity .four')) {
     addMark(element);
     showStartGameBtn();
     localStorage.setItem('players', '4');
-  }
-  if (element.closest('.btn-easy')) {
-    Router.url.searchParams.set('difficult', 'easy');
-    Router.setState('single-player');
+  } else if (element.closest('.btn-easy')) {
     choiceDifficulty(element, '.btn-hard');
     showStartGameBtn();
-  }
-  if (element.closest('.btn-hard')) {
-    Router.url.searchParams.set('difficult', 'hard');
-    Router.setState('single-player');
+  } else if (element.closest('.btn-hard')) {
     choiceDifficulty(element, '.btn-easy');
     showStartGameBtn();
-  }
-  if (element.closest('.btn-start')) {
+  } else if (element.closest('.btn-start')) {
     goToGameField(language.chosen);
     removeRegistrationContainer();
     showDistributionCardsForPlayers(+(localStorage.getItem('players') as string));
