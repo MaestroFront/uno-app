@@ -30,7 +30,8 @@ body{
     }
   }
 
-  div.loader {
+  div.loader,
+  .finding-game {
     display: flex;
     width: 100vw;
     height: 100vh;
@@ -125,4 +126,9 @@ body{
   }
   100% {
   }
+}
+.finding-game {
+  position: fixed;
+  z-index: 999;
+  top: 0;
 }

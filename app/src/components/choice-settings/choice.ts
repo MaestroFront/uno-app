@@ -60,7 +60,7 @@ const showStartGameBtn = () => {
   if (x === 2 || (x === 1 && history.state === 'multiplayer')) startGameBtn?.classList.add('show');
 };
 
-const fillGameField = (quantity: number, lang: string) => {
+export const fillGameField = (quantity: number, lang: string) => {
   const main = document.querySelector('.main') as HTMLDivElement;
   (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
     'show',
@@ -69,7 +69,7 @@ const fillGameField = (quantity: number, lang: string) => {
   createGameField(quantity, lang);
 };
 
-const goToGameField = (lang: string) => {
+export const goToGameField = (lang: string) => {
   const main = document.querySelector('.main') as HTMLDivElement;
   let x = 0;
   (document.querySelector('.opacity') as HTMLDivElement).classList.remove(
@@ -112,9 +112,27 @@ document.addEventListener('click', (e) => {
     choiceDifficulty(element, '.btn-easy');
     showStartGameBtn();
   } else if (element.closest('.btn-start')) {
-    goToGameField(language.chosen);
-    removeRegistrationContainer();
-    showDistributionCardsForPlayers(+(localStorage.getItem('players') as string));
-    moveCardToPlayer();
+    if (history.state !== 'multiplayer') {
+      goToGameField(language.chosen);
+      removeRegistrationContainer();
+      showDistributionCardsForPlayers(+(localStorage.getItem('players') as string));
+      moveCardToPlayer();
+    } else {
+      let x = 0;
+      if ((document.querySelector('.two') as HTMLImageElement).classList.contains('mark')) x += 2;
+      if ((document.querySelector('.three') as HTMLImageElement).classList.contains('mark')) x += 3;
+      if ((document.querySelector('.four') as HTMLImageElement).classList.contains('mark')) x += 4;
+      goToGameField(language.chosen);
+      removeRegistrationContainer();
+      showDistributionCardsForPlayers(+(localStorage.getItem('players') as string));
+      const div = createElement('div', 'finding-game');
+      div.innerHTML = `
+        <div class="yellow-circle"></div>
+        <div class="red-circle"></div>
+        <div class="blue-circle"></div>
+        <div class="green-circle"></div>`;
+      document.body.append(div);
+      Controller.createNewMultiplayerGame(x);
+    }
   }
 });
