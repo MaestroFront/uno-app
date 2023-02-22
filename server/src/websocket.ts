@@ -23,8 +23,45 @@ class WebsocketServer {
     });
     this.ws = new WebSocket.Server({ server });
     server.listen(port, () => {
-      console.log(chalk.bgCyan(`Listen port ${port}`));
+      WebsocketServer.messageLog('start', `WebSocket server start and listen on port ${port}`);
     });
+  }
+
+  static messageLog(status: string, message: string): void {
+    const date = new Date(Date.now());
+    let messageForLog = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} - ${date.getHours()}:${date.getMinutes()}::${date.getSeconds()} >>> `
+      .concat(message);
+    switch (status) {
+      case 'error': {
+        messageForLog = chalk.bgRedBright.whiteBright(messageForLog);
+        break;
+      }
+      case 'start': {
+        messageForLog = chalk.bgGreen.black(messageForLog);
+        break;
+      }
+      case 'connect': {
+        messageForLog = chalk.bgYellow.black(messageForLog);
+        break;
+      }
+      case 'disconnect': {
+        messageForLog = chalk.bgBlue.white(messageForLog);
+        break;
+      }
+      case 'update': {
+        messageForLog = chalk.whiteBright(messageForLog);
+        break;
+      }
+      case 'fail': {
+        messageForLog = chalk.redBright(messageForLog);
+        break;
+      }
+      case 'success': {
+        messageForLog = chalk.greenBright(messageForLog);
+        break;
+      }
+    }
+    console.log(messageForLog);
   }
 
   connectionOnClose(connection: WebSocket) {
@@ -32,7 +69,7 @@ class WebsocketServer {
       const client: Client = this.clients.filter(value => {
         return value.socket === connection;
       })[0];
-      console.log(chalk.bgRedBright(`${client.userName} is disconnected!`));
+      WebsocketServer.messageLog('disconnect', `${client.userName} is disconnected!`);
       this.clients = this.clients.filter(value => {
         return value.socket !== connection;
       });
@@ -66,7 +103,7 @@ class WebsocketServer {
         case 'UPDATE_NAME': {
           this.clients.forEach(value => {
             if (value.socket === connection) {
-              console.log(chalk.bgBlue(`User ${value.userName} update nickname on ${msg.data}`));
+              WebsocketServer.messageLog('update', `User ${value.userName} update nickname on ${msg.data}`);
               value.userName = msg.data;
             }
           });
@@ -97,14 +134,14 @@ class WebsocketServer {
           void DBUno.openDB('write').then(() => {
             DBUno.db.get('SELECT * FROM Users where UserName = ?', [user.userName], (err, data: DBUsers) => {
               if (data?.UserId !== undefined) {
-                console.log(chalk.yellow(`New user with nickname: '${user.userName}' try registered, but this nickname already exist...`));
+                WebsocketServer.messageLog('success', `New user with nickname: '${user.userName}' try registered, but this nickname already exist...`);
                 userWS.send(JSON.stringify({ action: 'REGISTRATION', data: JSON.stringify({ status: false }) }));
               } else {
                 user.password = hashPassword(user.password);
                 DBUno.db.run('INSERT INTO Users(UserName, UserPassword, Email) VALUES(?, ?, ?)',
                   [user.userName, user.password, user.email],
                   (er) => {if (err) console.log(er);});
-                console.log(chalk.green(`New user with nickname: '${user.userName}' successful registered!`));
+                WebsocketServer.messageLog('fail', `New user with nickname: '${user.userName}' successful registered!`);
                 userWS.send(JSON.stringify({ action: 'REGISTRATION', data: JSON.stringify({ status: true }) }));
               }
             });
@@ -119,10 +156,10 @@ class WebsocketServer {
               if (data?.UserId !== undefined && data.UserPassword === hashPassword(user.password)) {
                 const d = new Date();
                 d.setTime(d.getTime() + (10 * 24 * 60 * 60 * 1000));
-                console.log(chalk.green(`A user with a nickname '${user.userName}' is logged into the site!`));
+                WebsocketServer.messageLog('success', `A user with a nickname '${user.userName}' is logged into the site!`);
                 userWS.send(JSON.stringify({ action: 'LOGIN', data: JSON.stringify({ status: true, data: `user=${user.userName};expires=${d.toString()}` }) }));
               } else {
-                console.log(chalk.red(`Try user with a nickname '${user.userName}' logged`));
+                WebsocketServer.messageLog('fail', `Try user with a nickname '${user.userName}' logged`);
                 userWS.send(JSON.stringify({ action: 'LOGIN', data: JSON.stringify({ status: false, data: '' }) }));
               }
             });
@@ -138,7 +175,7 @@ class WebsocketServer {
       this.unregisteredUsersCounter++;
       const client: Client = { socket: connection, userName: `User-${this.unregisteredUsersCounter}` };
       this.clients.push(client);
-      console.log(chalk.bgYellow(`New user ${client.userName} is connected!`));
+      WebsocketServer.messageLog('connect', `New user ${client.userName} is connected!`);
       this.connectionOnClose(connection);
       this.connectionOnMessage(connection);
     });
