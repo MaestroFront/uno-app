@@ -2,12 +2,12 @@
 
 import { createElement, createParagraph } from './components/helpers/helpers';
 import { CardInfo, WebSocketMessage } from './types';
-// import CardDeck, { cardDeck } from '../../server/src/game/сard_deck';
 import { blueColor, greenColor, redColor, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from './components/cards/cards';
 import { clickSoundPlay, getCardSoundPlay, getChooseSound } from './components/sounds';
 import { moveCurrCard } from './components/game-field/game-animation';
 import { chooseColorAnimation } from './components/animated-items/animated-items';
 import Router from './components/router';
+import { moveCardToPlayer } from './components/game-field/game-field';
 
 class Controller {
   static webSocket: WebSocket;
@@ -16,7 +16,7 @@ class Controller {
 
   /* Controller launch */
   static async start(port: number): Promise<void> {
-    const url = 'localhost'; // '194.158.205.78'
+    const url = '194.158.205.78'; // 'localhost'
     this.webSocket = new WebSocket(`ws://${url}:${port}`);
     function WSWhenConnect() {
       if (document.cookie.includes('user=')) {
@@ -271,6 +271,11 @@ class Controller {
           }
           break;
         }
+        case 'START_MULTIPLAYER_GAME': {
+          (document.querySelector('.finding-game') as HTMLDivElement)?.remove();
+          moveCardToPlayer();
+          break;
+        }
       }
     });
   }
@@ -282,7 +287,7 @@ class Controller {
   }
 
   static createNewMultiplayerGame(numberOfPlayers: number): void {
-    console.log(`multigame ${numberOfPlayers}`);
+    Controller.webSocket.send(JSON.stringify({ action: 'CREATE_GAME', data: JSON.stringify({ players: numberOfPlayers, online: true }) }));
   }
 }
 

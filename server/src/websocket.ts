@@ -1,10 +1,11 @@
 import WebSocket from 'ws';
 import * as http from 'http';
-import { Client, CreateGameMessage, DBUsers, Game, UserInfo, WebSocketMessage } from './game/types';
+import { Client, CreateGameMessage, DBUsers, Game, MultiGame, UserInfo, WebSocketMessage } from './game/types';
 import UnoGame from './game/uno-game';
 import chalk from 'chalk';
 import DBUno from './database';
 import { hashPassword } from './express';
+import Multipllayer from './game/multipllayer';
 
 class WebsocketServer {
   private readonly ws: WebSocket.Server<WebSocket>;
@@ -14,6 +15,8 @@ class WebsocketServer {
   private clients: Client[] = [];
 
   private games: Game[] = [];
+
+  private multiPlayer: MultiGame[] = [];
 
   constructor(port: number) {
     this.unregisteredUsersCounter = 0;
@@ -88,12 +91,33 @@ class WebsocketServer {
       switch (msg.action) {
         case 'CREATE_GAME': {
           const settings: CreateGameMessage = JSON.parse(msg.data) as CreateGameMessage;
-          const newGame: Game = {
-            id: this.games.length + 1,
-            game: new UnoGame(settings.players, this.findClient(connection)),
-          };
-          this.games.push(newGame);
-          newGame.game.startGame();
+          /* multiplayer */
+          if (settings.online) {
+            const availableRoom = this.multiPlayer.filter(value => {
+              return value.numberOfPlayers === settings.players && value.players.length < value.numberOfPlayers;
+            });
+            if (availableRoom.length !== 0) {
+              this.multiPlayer.forEach(value => {
+                if (value.id === availableRoom[0].id) {
+                  value.players.push(this.findClient(connection));
+                  if (value.players.length === value.numberOfPlayers) {
+                    value.game = new Multipllayer(value.players);
+                  }
+                }
+              });
+            } else {
+              const newMultiGame: MultiGame = { id: this.multiPlayer.length + 1,
+                numberOfPlayers: settings.players, players: [this.findClient(connection)], game: null };
+              this.multiPlayer.push(newMultiGame);
+            }
+          } else { /* offline game */
+            const newGame: Game = {
+              id: this.games.length + 1,
+              game: new UnoGame(settings.players, this.findClient(connection)),
+            };
+            this.games.push(newGame);
+            newGame.game.startGame();
+          }
           break;
         }
         case 'WHATS_MY_NAME': {
