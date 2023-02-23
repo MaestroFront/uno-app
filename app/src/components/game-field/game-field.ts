@@ -10,6 +10,7 @@ import { getCardFromDeck } from './game-animation';
 import { renderChat } from '../chat/chat';
 import {
   changeDirection,
+  renderBlockMessage,
   renderDiamond,
   renderReverseMessage,
 } from '../animated-items/animated-items';
@@ -178,7 +179,7 @@ export const createGameField = (quantity: number, lang: string) => {
     openRulesWindow();
   });
 
-  main.append(container, renderChat(), renderDiamond(), renderReverseMessage(), createRulesWindow(lang), btnRules);
+  main.append(container, renderChat(), renderDiamond(), renderReverseMessage(), renderBlockMessage(), createRulesWindow(lang), btnRules);
   /* мои подключени */
   deck.addEventListener('click', (e) => {
     getCardFromDeck(e, 'bottom');//TODO..анимация карты в зависимости от позиции игрока: top, bottom, left, right

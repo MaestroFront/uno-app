@@ -151,7 +151,8 @@
 
 
 /*-------------------------------------REVERSE----------*/
-.reverse-container {
+.reverse-container,
+.block-container {
     width: 15%;
     height: 15%;
     display: none;
@@ -159,13 +160,15 @@
     background: #ffffff;
   }
 
-  .reverse-container.show {
+  .reverse-container.show,
+  .block-container.show {
     display: block;
   }
 
   .reverse-container,
   .reverse-right,
-  .reverse-left {
+  .reverse-left,
+  .block-container {
     position: absolute;
     left: 0;
     right: 0;
@@ -189,6 +192,13 @@
     display: block;
   }
 
-  .reverse-right.show {
+  .reverse-right.show,
+  .block-container.show {
     display: block;
+  }
+
+  .block-img {
+    position: relative;
+    bottom: 45px;
+    width: 200px;
   }

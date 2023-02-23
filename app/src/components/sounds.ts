@@ -6,6 +6,7 @@ export const chatSound = new Audio('../../assets/music/chat.mp3');
 export const getColorSound = new Audio('../../assets/music/color.mp3');
 export const getReverseSound = new Audio('../../assets/music/revers.mp3');
 export const getChooseSound = new Audio('../../assets/music/choose.mp3');
+export const getBlockSound = new Audio('../../assets/music/block.mp3');
 
 
 export const musicPlay = () => {
@@ -47,6 +48,7 @@ export const onSounds = () => {
   getColorSound.volume = 1;
   getReverseSound.volume = 1;
   getChooseSound.volume = 1;
+  getBlockSound.volume = 1;
 };
 export const offSounds = () => {
   click.volume = 0;
@@ -55,6 +57,7 @@ export const offSounds = () => {
   getColorSound.volume = 0;
   getReverseSound.volume = 0;
   getChooseSound.volume = 0;
+  getBlockSound.volume = 0;
 };
 
 export const setSounds = (el:HTMLButtonElement ) => {
