@@ -5,7 +5,7 @@ import { CardInfo, WebSocketMessage } from './types';
 import { blueColor, greenColor, redColor, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from './components/cards/cards';
 import { clickSoundPlay, getCardSoundPlay, getChooseSound } from './components/sounds';
 import { moveCurrCard } from './components/game-field/game-animation';
-import { chooseColorAnimation } from './components/animated-items/animated-items';
+import { chooseColorAnimation, showReverseAnimation } from './components/animated-items/animated-items';
 import Router from './components/router';
 import { moveCardToPlayer } from './components/game-field/game-field';
 
@@ -16,7 +16,7 @@ class Controller {
 
   /* Controller launch */
   static async start(port: number): Promise<void> {
-    const url = '194.158.205.78'; // 'localhost'
+    const url = 'localhost'; // '194.158.205.78'
     this.webSocket = new WebSocket(`ws://${url}:${port}`);
     function WSWhenConnect() {
       if (document.cookie.includes('user=')) {
@@ -28,7 +28,7 @@ class Controller {
     }
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
     while (this.webSocket.readyState) {
-      await sleep(500).then(() => WSWhenConnect());
+      await sleep(1000).then(() => WSWhenConnect());
     }
     //TODO: Remove this feature after switching to normal maps
     function createSimpleCard(id: number, color: string, value: number) {
@@ -274,6 +274,29 @@ class Controller {
         case 'START_MULTIPLAYER_GAME': {
           (document.querySelector('.finding-game') as HTMLDivElement)?.remove();
           moveCardToPlayer();
+          break;
+        }
+        case 'REVERSE': {
+          const direction = (JSON.parse(msg.data) as { direction: boolean }).direction;
+          showReverseAnimation(Boolean(direction));
+          break;
+        }
+        case 'SKIP_TURN': {
+          // TODO: здесь вставить анимацию пропуска хода
+          showReverseAnimation(true);
+          break;
+        }
+        case 'COMPUTER_CHOOSE_COLOR': {
+          // TODO тут события выбора цвета компьютером
+          const diamond = document.querySelector('.diamond-container') as HTMLDivElement;
+          diamond.classList.add('choose-color');
+          const color = msg.data;
+          console.log(color);
+          setTimeout(() => (document.querySelector(`#${color}-diamond`) as HTMLElement).classList.add('color-hover'), 1000);
+          setTimeout(() => {
+            (document.querySelector(`#${color}-diamond`) as HTMLElement).classList.remove('color-hover');
+            diamond.classList.remove('choose-color');
+          }, 3500);
           break;
         }
       }

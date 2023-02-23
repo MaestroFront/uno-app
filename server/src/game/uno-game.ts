@@ -161,13 +161,17 @@ class UnoGame {
   funCardsActions() {
     const topCardInfo: CardInfo = CardDeck.getColorAndValue(this.topCard);
     if (topCardInfo.value === 11) {
-      this.sendMessage('Lets reverse');
       this.reverse = !this.reverse;
+      this.user.socket.send(
+        JSON.stringify({ action: 'REVERSE', data: JSON.stringify({ direction: this.reverse }) }));
+      this.sleep(5000);
     } else if (topCardInfo.value === 12 || topCardInfo.value === 10) {
       this.setNextPlayerID();
       if (topCardInfo.value === 10) {
         this.takeCards(2);
       } else {
+        this.user.socket.send(JSON.stringify({ action: 'SKIP_TURN', data: '' }));
+        this.sleep(5000);
         this.sendMessage(`${this.players[this.currentPlayerId].player?.playersName as string} skips a turn!`);
       }
     }
@@ -202,6 +206,8 @@ class UnoGame {
     } else {
       this.currentColor = (this.players[this.currentPlayerId].player as ComputerPlayer).chooseColor();
       this.sendMessage(`${(this.players[this.currentPlayerId].player as ComputerPlayer).playersName} choose ${this.currentColor} color!`);
+      this.user.socket.send(JSON.stringify({ action: 'COMPUTER_CHOOSE_COLOR', data: this.currentColor }));
+      this.sleep(5000);
       this.user.socket.send(JSON.stringify({ action: 'MOVE', data: JSON.stringify({ topCard: topCardInfo, currentColor: this.currentColor }) }));
       if (topCardInfo.value === 14) {
         this.setNextPlayerID();

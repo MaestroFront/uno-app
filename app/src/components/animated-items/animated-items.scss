@@ -1,5 +1,5 @@
 /*-------------------------------------DIAMOND COLOR----------*/
-.diamond-container { 
+.diamond-container {
     position: absolute;
     width: 15%;
     height: 15%;
@@ -28,7 +28,7 @@
    transform: rotate(45deg);
     box-shadow: 0px 8px 100px 100px #ffffff;
   }
-  
+
   .diamond {
     position: absolute;
     width: 49%;
@@ -37,10 +37,10 @@
     box-sizing: border-box;
     cursor: pointer;
   }
-  
+
   .diamond .cover {
     border-radius: inherit;
-    content: '';    
+    content: '';
     display: block;
     height: 100%;
     position: absolute;
@@ -50,14 +50,14 @@
     box-sizing: content-box;
     transition: opacity 0.45s;
   }
-  
+
   #red-diamond {
     left: 0;
     top: 0;
     background: #eca4a4;
     box-shadow: inset 1px 1px 22px 16px rgb(194 17 32);
   }
-  
+
   #red-diamond .cover {
     background: rgb(194 17 32);
   }
@@ -75,11 +75,11 @@
   #blue-diamond .cover {
     border: 2px solid #ffffff;
   }
-  
+
   #yellow-diamond .cover {
     background: #FFC300;
   }
-  
+
   #blue-diamond {
     left: 0;
     bottom: 0;
@@ -90,7 +90,7 @@
   #blue-diamond .cover {
     background: darkblue;
   }
-  
+
   #green-diamond {
     right: 0;
     bottom: 0;
@@ -115,19 +115,19 @@
   #red-diamond.shy .cover {
     animation-delay: 0s;
   }
-  
+
   #yellow-diamond.shy .cover {
     animation-delay: 0.5s;
   }
-  
+
   #green-diamond.shy .cover {
     animation-delay: 1s;
   }
-  
+
   #blue-diamond.shy .cover {
     animation-delay: 1.5s;
   }
-  
+
   @keyframes shying {
       0% {opacity: 0; }
       10% {opacity: 1; }
@@ -139,7 +139,8 @@
     display: block;
 }
 
-.diamond-container.choose-color .diamond:hover .cover {
+.diamond-container.choose-color .diamond:hover .cover,
+.color-hover {
   opacity: 1;
   cursor: pointer;
   transform: scale(1.1);
@@ -157,11 +158,11 @@
     box-shadow: 0px 8px 100px 100px #ffffff;
     background: #ffffff;
   }
-  
+
   .reverse-container.show {
     display: block;
   }
-  
+
   .reverse-container,
   .reverse-right,
   .reverse-left {
@@ -172,7 +173,7 @@
     top: 0;
     margin: auto;
   }
-  
+
   /*.reverse-right,*/
   .reverse-left {
     width: 230px;
@@ -183,7 +184,7 @@
     width: 230px;
     display: none;
   }
-  
+
   .reverse-left.show {
     display: block;
   }
