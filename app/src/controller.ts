@@ -5,7 +5,7 @@ import { CardInfo, WebSocketMessage } from './types';
 import { blueColor, greenColor, redColor, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from './components/cards/cards';
 import { clickSoundPlay, getCardSoundPlay, getChooseSound } from './components/sounds';
 import { moveCurrCard } from './components/game-field/game-animation';
-import { chooseColorAnimation, showBlockAnimation, showReverseAnimation } from './components/animated-items/animated-items';
+import { chooseColorAnimation, showBlockAnimation, showRandomColor, showReverseAnimation } from './components/animated-items/animated-items';
 import Router from './components/router';
 import { moveCardToPlayer } from './components/game-field/game-field';
 
@@ -232,27 +232,35 @@ class Controller {
           break;
         }
         case 'REVERSE': {
-          const direction = (JSON.parse(msg.data) as { direction: boolean }).direction;
-          showReverseAnimation(Boolean(direction));
+          const direction = !(JSON.parse(msg.data) as { direction: boolean }).direction;
+          showReverseAnimation(!!direction);
           break;
         }
         case 'SKIP_TURN': {
-          // TODO: здесь вставить анимацию пропуска хода
+          // анимация пропуска хода
           showBlockAnimation();
           break;
         }
         case 'COMPUTER_CHOOSE_COLOR': {
-          // TODO тут события выбора цвета компьютером
-          const diamond = document.querySelector('.diamond-container') as HTMLDivElement;
-          diamond.classList.add('choose-color');
-          const color = msg.data;
+          // события выбора цвета компьютером
+          // const diamond = document.querySelector('.diamond-container') as HTMLDivElement;
+          // diamond.classList.add('choose-color');
+
+          let color = msg.data;
+          switch (color) {
+            case 'blue': {color = blueColor;} break;
+            case 'red': {color = redColor;} break;
+            case 'green': {color = greenColor;} break;
+            default: {color = yellowColor;} break;
+          }
           console.log(color);
-          setTimeout(() => (document.querySelector(`#${color}-diamond`) as HTMLElement).classList.add('color-hover'), 1000);
-          setTimeout(() => {
-            (document.querySelector(`#${color}-diamond`) as HTMLElement).classList.remove('color-hover');
-            diamond.classList.remove('choose-color');
-            void getChooseSound.play();
-          }, 3500);
+          // setTimeout(() => (document.querySelector(`#${color}-diamond`) as HTMLElement).classList.add('color-hover'), 1000);
+          // setTimeout(() => {
+          //   (document.querySelector(`#${color}-diamond`) as HTMLElement).classList.remove('color-hover');
+          //   diamond.classList.remove('choose-color');
+          //   void getChooseSound.play();
+          // }, 3500);
+          showRandomColor(color);
           break;
         }
       }
