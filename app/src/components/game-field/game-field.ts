@@ -8,7 +8,11 @@ import Controller from '../../controller';
 import { renderBackSide, renderCardWithNumber, yellowColor } from '../cards/cards';
 import { getCardFromDeck } from './game-animation';
 import { renderChat } from '../chat/chat';
-import { renderDiamond, renderReverseMessage } from '../animated-items/animated-items';
+import {
+  changeDirection,
+  renderDiamond,
+  renderReverseMessage,
+} from '../animated-items/animated-items';
 import { createRulesWindow, openRulesWindow } from '../rules-page/rules-page';
 
 const playerField = (playerClassName: string, playerName: string) => {
@@ -127,7 +131,7 @@ const renderDeck = (): HTMLDivElement => {
 
   const lastCard = renderOneCard(renderCardWithNumber('8', yellowColor, 0.25));
   // lastCard.classList.add('last-card');
-  
+
   fullDeck.append(lastCard);
   deck.append(fullDeck);
   return deck;
@@ -162,6 +166,9 @@ export const createGameField = (quantity: number, lang: string) => {
   const currentCard = createElement('div', 'current-card');
   const uno = createImage('uno', '../assets/img/logo-UNO.png', 'uno');
 
+  uno.addEventListener('click', () => {
+    changeDirection(true);
+  });
   field.append(deck, currentCard, createRhomb(), uno);
   container.append(field);
 

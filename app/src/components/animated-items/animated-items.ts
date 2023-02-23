@@ -68,7 +68,7 @@ export const renderReverseMessage = (): HTMLDivElement => {
   return reverse;
 };
 
-const changeDirection = (reverse: boolean) => {
+export const changeDirection = (reverse: boolean) => {
   let direction;
   let turn;
   const clockWise = document.querySelector('.reverse-right') as HTMLImageElement;
