@@ -89,7 +89,7 @@ body{
 }
 
 .current-player-move {
-  animation: 2s anim-popoutin ease infinite;
+  animation: 6s anim-popoutin ease infinite;
 }
 
 @keyframes anim-popoutin {
@@ -101,7 +101,7 @@ body{
   }
   25% {
     color: #d5cb13;
-    transform: scale(2);
+    transform: scale(1);
     opacity: 1;
     text-shadow: 3px 10px 5px rgba(0, 0, 0, 0.5);
   }

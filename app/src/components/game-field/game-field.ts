@@ -15,6 +15,7 @@ import {
   renderReverseMessage,
 } from '../animated-items/animated-items';
 import { createRulesWindow, openRulesWindow } from '../rules-page/rules-page';
+import { getCardsSound } from '../sounds';
 
 const playerField = (playerClassName: string, playerName: string) => {
   const block = createElement('div', playerClassName) as HTMLDivElement;
@@ -232,6 +233,7 @@ export const moveCardToPlayer = (): void => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   const cards = document.querySelectorAll('.card-distribution') as NodeListOf<HTMLDivElement>;
   const newCards = sliceIntoChunks(cards, 7);
+  void getCardsSound.play();
 
   newCards[0].reverse().forEach((card, index) => {
     setTimeout(() => {

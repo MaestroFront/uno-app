@@ -5,7 +5,7 @@ import { CardInfo, WebSocketMessage } from './types';
 import { blueColor, greenColor, redColor, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from './components/cards/cards';
 import { clickSoundPlay, getCardSoundPlay, getChooseSound } from './components/sounds';
 import { moveCurrCard } from './components/game-field/game-animation';
-import { chooseColorAnimation, showReverseAnimation } from './components/animated-items/animated-items';
+import { chooseColorAnimation, showBlockAnimation, showReverseAnimation } from './components/animated-items/animated-items';
 import Router from './components/router';
 import { moveCardToPlayer } from './components/game-field/game-field';
 
@@ -90,51 +90,6 @@ class Controller {
         void getChooseSound.play();
         sentChosenColor(chooseColorAnimation(e));
       });
-
-
-      // const div = document.createElement('div');
-      // div.id = 'popup_choose_color';
-      // div.style.display = 'flex';
-      // div.style.margin = '0 auto';
-      // div.style.width = '400px';
-      // div.style.top = '25%';
-      // div.style.left = '25%';
-      // div.style.height = '300px';
-      // div.style.zIndex = '999';
-      // div.style.position = 'fixed';
-      // let button = document.createElement('button');
-      // button.innerText = 'green';
-      // button.style.backgroundColor = 'green';
-      // button.onclick = () => {
-      //   (document.querySelector('#popup_choose_color') as HTMLDivElement).remove();
-      //   sentChosenColor('green');
-      // };
-      // div.append(button);
-      // button = document.createElement('button');
-      // button.innerText = 'blue';
-      // button.style.backgroundColor = 'blue';
-      // button.onclick = () => {
-      //   (document.querySelector('#popup_choose_color') as HTMLDivElement).remove();
-      //   sentChosenColor('blue');
-      // };
-      // div.append(button);
-      // button = document.createElement('button');
-      // button.innerText = 'red';
-      // button.style.backgroundColor = 'red';
-      // button.onclick = () => {
-      //   (document.querySelector('#popup_choose_color') as HTMLDivElement).remove();
-      //   sentChosenColor('red');
-      // };
-      // div.append(button);
-      // button = document.createElement('button');
-      // button.innerText = 'yellow';
-      // button.style.backgroundColor = 'yellow';
-      // button.onclick = () => {
-      //   (document.querySelector('#popup_choose_color') as HTMLDivElement).remove();
-      //   sentChosenColor('yellow');
-      // };
-      // div.append(button);
-      // document.body.append(div);
     }
     Controller.webSocket.addEventListener('message', (message: MessageEvent<string>) => {
       const msg: WebSocketMessage = JSON.parse(message.data) as WebSocketMessage;
@@ -283,7 +238,7 @@ class Controller {
         }
         case 'SKIP_TURN': {
           // TODO: здесь вставить анимацию пропуска хода
-          showReverseAnimation(true);
+          showBlockAnimation();
           break;
         }
         case 'COMPUTER_CHOOSE_COLOR': {
@@ -296,6 +251,7 @@ class Controller {
           setTimeout(() => {
             (document.querySelector(`#${color}-diamond`) as HTMLElement).classList.remove('color-hover');
             diamond.classList.remove('choose-color');
+            void getChooseSound.play();
           }, 3500);
           break;
         }
