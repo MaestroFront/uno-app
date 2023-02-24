@@ -5,7 +5,7 @@ import UnoGame from './game/uno-game';
 import chalk from 'chalk';
 import DBUno from './database';
 import { hashPassword } from './express';
-import Multipllayer from './game/multipllayer';
+import Multiplayer from './game/multiplayer';
 
 class WebsocketServer {
   private readonly ws: WebSocket.Server<WebSocket>;
@@ -101,7 +101,7 @@ class WebsocketServer {
                 if (value.id === availableRoom[0].id) {
                   value.players.push(this.findClient(connection));
                   if (value.players.length === value.numberOfPlayers) {
-                    value.game = new Multipllayer(value.players);
+                    value.game = new Multiplayer(value.players, settings.players);
                   }
                 }
               });
