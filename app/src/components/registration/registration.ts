@@ -125,12 +125,7 @@ export const createRegOrLogWindow = (method: string, lang: string) => {
           .then(obj => {
             if (obj?.status) {
               document.cookie = obj.data;
-              const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
-              Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
-              Router.setState('home');
-              Router.checkPage();
-              // eslint-disable-next-line no-alert
-              alert(`You signed in as ${cookie[0].replace('user=', '')}`);
+              Controller.signAs();
             } else {
               // eslint-disable-next-line no-alert
               alert('Wrong name or password');

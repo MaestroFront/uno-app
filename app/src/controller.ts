@@ -8,6 +8,7 @@ import { moveCurrCard } from './components/game-field/game-animation';
 import { chooseColorAnimation, showBlockAnimation, showRandomColor, showReverseAnimation } from './components/animated-items/animated-items';
 import Router from './components/router';
 import { moveCardToPlayer } from './components/game-field/game-field';
+import { createLoader } from './index';
 
 class Controller {
   static webSocket: WebSocket;
@@ -16,7 +17,7 @@ class Controller {
 
   /* Controller launch */
   static async start(port: number): Promise<void> {
-    const url = 'localhost'; // '194.158.205.78'
+    const url = '194.158.205.78'; // 'localhost' 194.158.205.78
     this.webSocket = new WebSocket(`ws://${url}:${port}`);
     function WSWhenConnect() {
       if (document.cookie.includes('user=')) {
@@ -27,20 +28,29 @@ class Controller {
       }
     }
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-    while (this.webSocket.readyState) {
-      await sleep(1000).then(() => WSWhenConnect());
+    while (this.webSocket.readyState === 0) {
+      await sleep(1000).then(() => {
+        if (this.webSocket.readyState === 1) {
+          WSWhenConnect();
+        }
+      });
     }
-    //TODO: Remove this feature after switching to normal maps
+    if (this.webSocket.readyState > 1) {
+      document.body.innerHTML = '';
+      createLoader();
+      // eslint-disable-next-line no-alert
+      if (confirm('NO CONNECTION! PAGE WILL BE RELOAD!')) {
+        setTimeout(() => window.location.reload(), 2000);
+      }
+    }
     function createSimpleCard(id: number, color: string, value: number) {
       const div = createElement('div', 'simple-card');
-
       switch (color) {
         case 'blue': {color = blueColor;} break;
         case 'red': {color = redColor;} break;
         case 'green': {color = greenColor;} break;
         default: {color = yellowColor;} break;
       }
-
       if (id < 100) {
         const idNum  = id % 25;
         if (idNum < 19) {
@@ -57,7 +67,6 @@ class Controller {
       } else {
         div.append(renderMultiCard(0.25));
       }
-
       div.id = id.toString();
       div.addEventListener('click', evt => {
         clickSoundPlay();
@@ -77,13 +86,10 @@ class Controller {
       return div;
     }
 
-
-    //TODO: Remove this feature after switching to a pretty window with popup messages
     function showColorSelectWindow():void {
       function sentChosenColor(color: string): void {
         Controller.webSocket.send(JSON.stringify({ action: 'USERS_SELECTED_COLOR', data: color }));
       }
-
       const diamond = document.querySelector('.diamond-container') as HTMLDivElement;
       diamond.classList.add('choose-color');
       diamond.addEventListener('click', (e: Event) => {
@@ -201,12 +207,7 @@ class Controller {
           const messageLogin = JSON.parse(msg.data) as { status: boolean, data: string };
           document.cookie = messageLogin.data;
           if (messageLogin.status) {
-            const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
-            Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
-            Router.setState('home');
-            Router.checkPage();
-            // eslint-disable-next-line no-alert
-            alert(`You signed in as ${cookie[0].replace('user=', '')}`);
+            Controller.signAs();
           } else {
           // eslint-disable-next-line no-alert
             alert('Wrong name or password');
@@ -233,7 +234,7 @@ class Controller {
         }
         case 'REVERSE': {
           const direction = !(JSON.parse(msg.data) as { direction: boolean }).direction;
-          showReverseAnimation(!!direction);
+          showReverseAnimation(direction);
           break;
         }
         case 'SKIP_TURN': {
@@ -242,10 +243,6 @@ class Controller {
           break;
         }
         case 'COMPUTER_CHOOSE_COLOR': {
-          // события выбора цвета компьютером
-          // const diamond = document.querySelector('.diamond-container') as HTMLDivElement;
-          // diamond.classList.add('choose-color');
-
           let color = msg.data;
           switch (color) {
             case 'blue': {color = blueColor;} break;
@@ -253,18 +250,21 @@ class Controller {
             case 'green': {color = greenColor;} break;
             default: {color = yellowColor;} break;
           }
-          console.log(color);
-          // setTimeout(() => (document.querySelector(`#${color}-diamond`) as HTMLElement).classList.add('color-hover'), 1000);
-          // setTimeout(() => {
-          //   (document.querySelector(`#${color}-diamond`) as HTMLElement).classList.remove('color-hover');
-          //   diamond.classList.remove('choose-color');
-          //   void getChooseSound.play();
-          // }, 3500);
+          (document.querySelector('.rhomb') as HTMLElement).style.fill = color;
           showRandomColor(color);
           break;
         }
       }
     });
+  }
+
+  static signAs() {
+    const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
+    Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
+    Router.setState('home');
+    Router.checkPage();
+    // eslint-disable-next-line no-alert
+    alert(`You signed in as ${cookie[0].replace('user=', '')}`);
   }
 
   /* Sending commands to the server to create a new game */
