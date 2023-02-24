@@ -1,9 +1,9 @@
 
 //------------------------get random color
 
-import { blueColor, greenColor, redColor, yellowColor } from '../cards/cards';
-import { createElement, createImage, getRandomInt } from '../helpers/helpers';
-import { getColorSound, getReverseSound } from '../sounds';
+// import { blueColor, greenColor, redColor, yellowColor } from '../cards/cards';
+import { createElement, createImage } from '../helpers/helpers';
+import { getBlockSound, getColorSound, getReverseSound } from '../sounds';
 
 export const renderDiamond = (): HTMLDivElement => {
   const diamond = createElement('div', 'diamond-container') as HTMLDivElement;
@@ -21,9 +21,9 @@ export const renderDiamond = (): HTMLDivElement => {
   return diamond;
 };
 
-export const getColorAnimation = () => {
-  const colors = [blueColor, greenColor, yellowColor, redColor];
-  const color = colors[getRandomInt(colors.length)];
+export const getColorAnimation = (color: string) => {
+  // const colors = [blueColor, greenColor, yellowColor, redColor];
+  // const color = colors[getRandomInt(colors.length)];
   Array.from(document.getElementsByClassName('diamond')).forEach(el => el.classList.add('shy'));
 
   if ((document.getElementById('red-diamond') as HTMLDivElement).classList.contains('shy')) {
@@ -37,7 +37,7 @@ export const getColorAnimation = () => {
 
     setTimeout(() => {
       (document.querySelector('.diamond-container') as HTMLDivElement).classList.remove('show');
-    }, 2500);
+    }, 3000);
 
     setTimeout(() => {
       (document.getElementById('red-diamond') as HTMLDivElement).style.backgroundColor = '#eca4a4';
@@ -48,13 +48,13 @@ export const getColorAnimation = () => {
       (document.getElementById('yellow-diamond') as HTMLDivElement).style.boxShadow = 'inset 1px 1px 22px 16px #FFC300';
       (document.getElementById('green-diamond') as HTMLDivElement).style.backgroundColor = '#a4eca7';
       (document.getElementById('green-diamond') as HTMLDivElement).style.boxShadow = 'inset 1px 1px 22px 16px #258f37';
-    }, 3000);
+    }, 3500);
   }
 };
 
-export const showRandomColor = () => {
+export const showRandomColor = (color: string) => {
   (document.querySelector('.diamond-container') as HTMLDivElement).classList.add('show');
-  getColorAnimation();
+  getColorAnimation(color);
   void getColorSound.play();
 };
 
@@ -129,3 +129,43 @@ export const chooseColor = () => {
     console.log('color', color);
   });
 };
+
+
+//------------------------get block
+export const renderBlockMessage = (): HTMLDivElement => {
+  const blockWrapper = createElement('div', 'block-container') as HTMLDivElement;
+  const blockImg = createImage('block-img', '../../assets/img/block.png', 'block');
+
+  blockWrapper.append(blockImg);
+  return blockWrapper;
+};
+
+export const blockPlayer = () => {
+
+  const block = document.querySelector('.block-img') as HTMLImageElement;
+
+  const blockKeyframes = new KeyframeEffect(
+    block,
+    [
+      { transform: 'scale(1)' },
+      { transform: 'scale(1.2)' },
+      { transform: 'scale(1)' },
+    ],
+    { duration: 2000, fill: 'none', iterations: 1 },
+  );
+  const blockCardAnimation = new Animation(blockKeyframes, document.timeline);
+  blockCardAnimation.play();
+  void getBlockSound.play();
+
+  setTimeout(() => {
+    (document.querySelector('.block-container') as HTMLDivElement).classList.remove('show');
+  }, 2500);
+};
+
+
+export const showBlockAnimation = () => {
+  (document.querySelector('.block-container') as HTMLDivElement).classList.add('show');
+  blockPlayer();
+};
+
+// (document.querySelector('body') as HTMLBodyElement).addEventListener('click', showBlockAnimation);

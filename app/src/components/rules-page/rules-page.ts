@@ -51,7 +51,6 @@ export const createCardBlock  = (currCard: Element, cardTitle: string, cardValue
 
 const createCardsDescription = (lang: string, size: number): HTMLDivElement => {
   const cardsDescription = createElement('div', 'cards-description') as HTMLDivElement;
-  console.log('lang', lang);
   const numberedCard = createCardBlock(renderCardWithNumber('8', greenColor, size), langData[lang]['numbered-card-title'], langData[lang]['numbered-card-points'], langData[lang]['numbered-card-descr'], lang);
   const plusTwoCard = createCardBlock(renderPlusTwoCard(blueColor, size), langData[lang]['plustwo-card-title'], langData[lang]['action-card-points'], langData[lang]['plustwo-card-descr'], lang);
   const reverseCard = createCardBlock(renderReverseCard(redColor, size), langData[lang]['reverse-card-title'], langData[lang]['action-card-points'], langData[lang]['reverse-card-descr'], lang);
