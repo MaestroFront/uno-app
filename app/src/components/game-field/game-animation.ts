@@ -3,14 +3,16 @@ import { getCardSoundPlay } from '../sounds';
 export const moveCurrCard = (e: Event) => {
   const el = e.target as Element;
   const currCard = (el.parentElement as Element).parentElement as HTMLElement;
+  const rect = el.getBoundingClientRect();
+
   if (el.closest('.cardCenter')) {
     const currCardKeyframes = new KeyframeEffect(
       currCard,
       [
         { transform: 'translate(0%, 0%)' },
-        { transform: 'translate(150%, -150%)' },
+        { transform: `translate(${window.innerWidth / 1.9 - rect.x}px, -210px)` },
       ],
-      { duration: 1200, fill: 'none' },
+      { duration: 2000, fill: 'none' },
     );
     const moveCardAnimation = new Animation(currCardKeyframes, document.timeline);
     moveCardAnimation.play();

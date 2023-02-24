@@ -63,8 +63,8 @@
   height: 115px;
   /* TODO: maybe remove next 3 lines after switch on normal cards */
   display: flex;
+  justify-content: center;
   gap: 3px;
-  position: relative;
   transition: 1s all;
   z-index: 1;
   opacity: 0;
@@ -89,6 +89,9 @@
   border-radius: 5px;
   width: 30%;
   height: 83%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
 }
 
 .current-card .simple-card {
@@ -142,7 +145,6 @@
 
 /*active player's card*/
 .simple-card {
-  position: relative;
   transition: all 0.3s ease-in-out;
 }
 
@@ -238,7 +240,7 @@
 
 .card-distribution {
   position: absolute;
-  transition: all 3s ease-in-out;
+  transition: all 1.5s ease-in-out;
 }
 
 .card-distribution.hide-card {
