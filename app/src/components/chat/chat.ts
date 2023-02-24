@@ -8,6 +8,17 @@ const openChat = () => {
   void chatSound.play();
 };
 
+const scrollChat = () => {
+  const element = document.querySelector('.scroll-container') as HTMLDivElement;
+  if (!element) return ; 
+  
+  element.scrollIntoView({
+    behavior: 'smooth',
+    block: 'end',
+  });
+  console.log(element);
+};
+
 export const renderChat = () => {
   const chat = createElement('div', 'chat') as HTMLDivElement;
   const header = createElement('div', 'chat-header');
@@ -17,18 +28,22 @@ export const renderChat = () => {
 
   const chatWindow = createElement('div', 'chat-window');
   const messageList = createElement('ul', 'message-list');
+  const bottomScrollContainer = createElement('div', 'scroll-container');
   const chatInput = createElement('div', 'chat-input');
   const messageInput = createElement('input', 'message-input') as HTMLInputElement;
   messageInput.type = 'text';
   messageInput.maxLength = 25;
 
-  const button = createButton('chat-send-btn', 'button', 'Send');
+  const button = createButton('btn-send', 'button', 'Send');
 
   button.addEventListener('click', () => {
+    // const block = document.querySelector('.chat-window') as HTMLDivElement;
+    // block.scrollTop = block.clientHeight;
     Controller.webSocket.send(JSON.stringify(
       { action: 'CHAT_MESSAGE',
         data: (document.querySelector('.message-input') as HTMLInputElement).value }));
     (document.querySelector('.message-input') as HTMLInputElement).value = '';
+    scrollChat();
   });
 
   messageInput.addEventListener('keypress', (event) => {
@@ -38,7 +53,7 @@ export const renderChat = () => {
   });
 
   chatInput.append(messageInput, button);
-  chatWindow.append(messageList);
+  chatWindow.append(messageList, bottomScrollContainer);
   header.append(headerBtn);
   chat.append(header, chatWindow, chatInput );
 

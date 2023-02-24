@@ -200,7 +200,7 @@ class Controller {
           messageContainer.append(userMessage);
           userSettingsContainer.append(userNick, userTime);
           li.append(messageContainer, userSettingsContainer);
-          (document.querySelector('.chat-window') as HTMLElement).append(li);
+          (document.querySelector('.message-list') as HTMLElement).append(li);
           break;
         }
         case 'LOGIN': {
