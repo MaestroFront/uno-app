@@ -15,18 +15,20 @@
 @import url(../src/components/animated-items/animated-items.scss);
 @import url(../src/components/exit-window/exit-window.scss);
 @import url(../src/components/error-page/error-page.scss);
+@import url(../src/components/winner-message/winner-message.scss);
+
 body{
   user-select: none;
-  cursor: url('./assets/img/cursor.png'), auto!important;
+  /*cursor: url('./assets/img/cursor.png'), auto!important;*/
   button {
-    cursor: url('./assets/img/pointer.png'), pointer!important;
+    /*cursor: url('./assets/img/pointer.png'), pointer!important;*/
   }
 
   img {
     &.two,
     &.three,
     &.four {
-      cursor: url('./assets/img/pointer.png'), pointer!important;
+      /*cursor: url('./assets/img/pointer.png'), pointer!important;*/
     }
   }
 
