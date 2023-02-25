@@ -9,6 +9,8 @@ import { chooseColorAnimation, showBlockAnimation, showRandomColor, showReverseA
 import Router from './components/router';
 import { moveCardToPlayer } from './components/game-field/game-field';
 import { createLoader } from './index';
+import { showWinnerMessage } from './components/winner-message/winner-message';
+import { language } from './components/local-storage';
 
 class Controller {
   static webSocket: WebSocket;
@@ -181,6 +183,8 @@ class Controller {
         case 'RESULTS_OF_ROUND': {
           const results: { players: string, points: number }[] = JSON.parse(msg.data) as { players: string, points: number }[];
           console.log(results);
+          //TODO проверить что выводит резудьтат
+          showWinnerMessage(language.chosen, results[0].players, results[0].points);
           break;
         }
         case 'CLEAR_FIELD': {
@@ -200,7 +204,7 @@ class Controller {
           messageContainer.append(userMessage);
           userSettingsContainer.append(userNick, userTime);
           li.append(messageContainer, userSettingsContainer);
-          (document.querySelector('.chat-window') as HTMLElement).append(li);
+          (document.querySelector('.message-list') as HTMLElement).append(li);
           break;
         }
         case 'LOGIN': {

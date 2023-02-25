@@ -8,6 +8,7 @@ import './components/choice-settings/choice';
 import './components/local-storage';
 import './components/chat/chat';
 import './components/animated-items/animated-items';
+import './components/winner-message/winner-message';
 import Router from './components/router';
 export const imgLogo = new Image();
 imgLogo.src = './assets/img/UNO_Logo.svg';
