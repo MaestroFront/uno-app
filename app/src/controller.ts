@@ -20,6 +20,7 @@ class Controller {
   private static myName: string;
 
   /* Controller launch */
+  private static usersList: { name: string, id: number }[];
 
   static async start(port: number): Promise<void> {
     const url = 'localhost'; // 'localhost' 194.158.205.78
@@ -81,10 +82,14 @@ class Controller {
           if (clickedEl) {
             clickedEl.id = id.toString();
           }
-
-          const user: string = ((evt.target as HTMLDivElement).parentElement as HTMLElement).className;
-          const dataForSent = JSON.stringify({ userName: user, cardId: (evt.target as HTMLDivElement).id });
-          Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
+          if (history.state === 'multiplayer') {
+            const dataForSent = JSON.stringify({ userId: myId, cardId: (evt.target as HTMLDivElement).id });
+            Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
+          } else {
+            const user: string = ((evt.target as HTMLDivElement).parentElement as HTMLElement).className;
+            const dataForSent = JSON.stringify({ userName: user, cardId: (evt.target as HTMLDivElement).id });
+            Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
+          }
         }, 1500);
       });
       return div;
@@ -132,24 +137,36 @@ class Controller {
         /* Receiving a message from the server */
         case 'MESSAGE': {
           if (msg.data.includes('Move by ')) {
-            document.querySelectorAll('.current-player-move').forEach(value => value.classList.remove('current-player-move'));
-            switch (msg.data.replace('Move by ', '')) {
-              case 'Computer-1': {
-                (document.querySelector('#name-player-2') as HTMLDivElement).classList.add('current-player-move');
-                break;
-              }
-              case 'Computer-2': {
-                (document.querySelector('#name-player-3') as HTMLDivElement).classList.add('current-player-move');
-                break;
-              }
-              case 'Computer-3': {
-                (document.querySelector('#name-player-4') as HTMLDivElement).classList.add('current-player-move');
-                break;
-              }
-              default : {
-                (document.querySelector('#name-player-1') as HTMLDivElement).classList.add('current-player-move');
+            document.querySelectorAll('.current-player-move')
+              .forEach(value => value.classList.remove('current-player-move'));
+            if (history.state === 'multiplayer') {
+              const name = msg.data.replace('Move by ', '');
+              this.usersList.forEach(value => {
+                if (value.name === name) {
+                  (document.querySelector(`#name-player-${value.id + 1}`) as HTMLDivElement).classList.add('current-player-move');
+                }
+              });
+            } else {
+              switch (msg.data.replace('Move by ', '')) {
+                case 'Computer-1': {
+                  (document.querySelector('#name-player-2') as HTMLDivElement).classList.add('current-player-move');
+                  break;
+                }
+                case 'Computer-2': {
+                  (document.querySelector('#name-player-3') as HTMLDivElement).classList.add('current-player-move');
+                  break;
+                }
+                case 'Computer-3': {
+                  (document.querySelector('#name-player-4') as HTMLDivElement).classList.add('current-player-move');
+                  break;
+                }
+                default : {
+                  (document.querySelector('#name-player-1') as HTMLDivElement).classList.add('current-player-move');
+                }
               }
             }
+          } else {
+            console.log(msg.data);
           }
           break;
         }
@@ -179,6 +196,7 @@ class Controller {
           let usersName: string[] | { name: string, id: number }[];
           if (history.state === 'multiplayer') {
             usersName = JSON.parse(msg.data) as { name: string, id: number }[];
+            this.usersList = [...usersName];
             myId = 0;
             const players: HTMLElement[] = [];
             usersName.forEach(value => {if (value.name === this.myName) {myId = value.id;}});
