@@ -5,7 +5,7 @@ import UnoGame from './game/uno-game';
 import chalk from 'chalk';
 import DBUno from './database';
 import { hashPassword } from './express';
-import Multipllayer from './game/multipllayer';
+import Multiplayer from './game/multiplayer';
 
 class WebsocketServer {
   private readonly ws: WebSocket.Server<WebSocket>;
@@ -17,6 +17,8 @@ class WebsocketServer {
   private games: Game[] = [];
 
   private multiPlayer: MultiGame[] = [];
+
+  usersPlayOnline: Set<string> = new Set();
 
   constructor(port: number) {
     this.unregisteredUsersCounter = 0;
@@ -76,13 +78,28 @@ class WebsocketServer {
       this.clients = this.clients.filter(value => {
         return value.socket !== connection;
       });
+      const user = this.findClient(connection);
+      if (user && this.usersPlayOnline.has(user.userName)) {
+        this.usersPlayOnline.delete(user.userName);
+      }
     });
   }
 
   findClient(connection: WebSocket): Client {
-    return this.clients.filter(value => {
+    const result = this.clients.filter(value => {
       return value.socket === connection;
-    })[0];
+    });
+    return result[0];
+  }
+
+  findRoom(numberOfPlayers: number): number {
+    let id = 0;
+    this.multiPlayer.forEach(room => {
+      if (room.numberOfPlayers === numberOfPlayers && room.players.length < room.numberOfPlayers) {
+        id = room.id;
+      }
+    });
+    return id;
   }
 
   connectionOnMessage(connection: WebSocket) {
@@ -93,35 +110,38 @@ class WebsocketServer {
           const settings: CreateGameMessage = JSON.parse(msg.data) as CreateGameMessage;
           /* multiplayer */
           if (settings.online) {
-            const availableRoom = this.multiPlayer.filter(value => {
-              return value.numberOfPlayers === settings.players && value.players.length < value.numberOfPlayers;
-            });
-            if (availableRoom.length !== 0) {
-              this.multiPlayer.forEach(value => {
-                if (value.id === availableRoom[0].id) {
-                  value.players.push(this.findClient(connection));
-                  if (value.players.length === value.numberOfPlayers) {
-                    value.game = new Multipllayer(value.players);
+            const client = this.findClient(connection) ;
+            if (!this.usersPlayOnline.has(client?.userName)) {
+              this.usersPlayOnline.add(client?.userName );
+              const id = this.findRoom(settings.players);
+              if (id === 0) {
+                this.multiPlayer.push({  id: this.multiPlayer.length + 1,
+                  numberOfPlayers: settings.players,
+                  players: [client],
+                  game: null });
+              } else {
+                for (let i = 0; i < this.multiPlayer.length; i++) {
+                  if (this.multiPlayer[i].id === id) {
+                    this.multiPlayer[i].players.push(client);
+                    if (this.multiPlayer[i].players.length === this.multiPlayer[i].numberOfPlayers) {
+                      this.multiPlayer[i].game = new Multiplayer(this.multiPlayer[i].players, this.multiPlayer[i].numberOfPlayers);
+                    }
                   }
                 }
-              });
-            } else {
-              const newMultiGame: MultiGame = { id: this.multiPlayer.length + 1,
-                numberOfPlayers: settings.players, players: [this.findClient(connection)], game: null };
-              this.multiPlayer.push(newMultiGame);
+              }
+            } else { /* offline game */
+              const newGame: Game = {
+                id: this.games.length + 1,
+                game: new UnoGame(settings.players, this.findClient(connection) ),
+              };
+              this.games.push(newGame);
+              newGame.game.startGame();
             }
-          } else { /* offline game */
-            const newGame: Game = {
-              id: this.games.length + 1,
-              game: new UnoGame(settings.players, this.findClient(connection)),
-            };
-            this.games.push(newGame);
-            newGame.game.startGame();
           }
           break;
         }
         case 'WHATS_MY_NAME': {
-          connection.send(JSON.stringify({ action: 'YOUR_NAME', data: this.findClient(connection).userName }));
+          connection.send(JSON.stringify({ action: 'YOUR_NAME', data: this.findClient(connection)?.userName }));
           break;
         }
         case 'UPDATE_NAME': {

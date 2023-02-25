@@ -2,7 +2,7 @@ import ComputerPlayer from './computer-player';
 import Player from './player';
 import WebSocket from 'ws';
 import UnoGame from './uno-game';
-import Multipllayer from './multipllayer';
+import Multiplayer from './multiplayer';
 
 export interface CardInfo {
   id: number,
@@ -33,7 +33,7 @@ export interface MultiGame {
   id: number;
   numberOfPlayers: number;
   players: Client[];
-  game: Multipllayer | null;
+  game: Multiplayer | null;
 }
 
 export interface CreateGameMessage {

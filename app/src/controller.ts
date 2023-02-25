@@ -12,12 +12,16 @@ import { createLoader } from './index';
 import { showWinnerMessage } from './components/winner-message/winner-message';
 import { language } from './components/local-storage';
 
+let myId = 0;
+
 class Controller {
   static webSocket: WebSocket;
 
   private static myName: string;
 
   /* Controller launch */
+  private static usersList: { name: string, id: number }[];
+
   static async start(port: number): Promise<void> {
     const url = '194.158.205.78'; // 'localhost' 194.158.205.78
     this.webSocket = new WebSocket(`ws://${url}:${port}`);
@@ -25,9 +29,8 @@ class Controller {
       if (document.cookie.includes('user=')) {
         const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
         Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
-      } else {
-        Controller.webSocket.send(JSON.stringify({ action: 'WHATS_MY_NAME', data: '' }));
       }
+      Controller.webSocket.send(JSON.stringify({ action: 'WHATS_MY_NAME', data: '' }));
     }
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
     while (this.webSocket.readyState === 0) {
@@ -79,10 +82,14 @@ class Controller {
           if (clickedEl) {
             clickedEl.id = id.toString();
           }
-
-          const user: string = ((evt.target as HTMLDivElement).parentElement as HTMLElement).className;
-          const dataForSent = JSON.stringify({ userName: user, cardId: (evt.target as HTMLDivElement).id });
-          Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
+          if (history.state === 'multiplayer') {
+            const dataForSent = JSON.stringify({ userId: myId, cardId: (evt.target as HTMLDivElement).id });
+            Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
+          } else {
+            const user: string = ((evt.target as HTMLDivElement).parentElement as HTMLElement).className;
+            const dataForSent = JSON.stringify({ userName: user, cardId: (evt.target as HTMLDivElement).id });
+            Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
+          }
         }, 1500);
       });
       return div;
@@ -110,34 +117,57 @@ class Controller {
         /* Получение карты с сервера */
         case 'GET_CARD': {
           void getCardSoundPlay();
-          const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
-          const cardsOnHand = (document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement;
-          cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+          if (history.state === 'multiplayer') {
+            const data: { playerName: string, playerId: number, card: CardInfo } =
+                JSON.parse(msg.data) as { playerName: string, playerId: number, card: CardInfo };
+            if (data.playerName === this.myName) {
+              const cardsOnHand = (document.querySelector('.player-1') as HTMLElement).firstChild as HTMLElement;
+              cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+            } else {
+              const cardsOnHand = (document.querySelector(`#player-${data.playerId + 1}`) as HTMLElement).firstChild as HTMLElement;
+              cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+            }
+          } else {
+            const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
+            const cardsOnHand = (document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement;
+            cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+          }
           break;
         }
         /* Receiving a message from the server */
         case 'MESSAGE': {
           if (msg.data.includes('Move by ')) {
-            document.querySelectorAll('.current-player-move').forEach(value => value.classList.remove('current-player-move'));
-            switch (msg.data.replace('Move by ', '')) {
-              case 'Computer-1': {
-                (document.querySelector('#name-player-2') as HTMLDivElement).classList.add('current-player-move');
-                break;
-              }
-              case 'Computer-2': {
-                (document.querySelector('#name-player-3') as HTMLDivElement).classList.add('current-player-move');
-                break;
-              }
-              case 'Computer-3': {
-                (document.querySelector('#name-player-4') as HTMLDivElement).classList.add('current-player-move');
-                break;
-              }
-              default : {
-                (document.querySelector('#name-player-1') as HTMLDivElement).classList.add('current-player-move');
+            document.querySelectorAll('.current-player-move')
+              .forEach(value => value.classList.remove('current-player-move'));
+            if (history.state === 'multiplayer') {
+              const name = msg.data.replace('Move by ', '');
+              this.usersList.forEach(value => {
+                if (value.name === name) {
+                  (document.querySelector(`#name-player-${value.id + 1}`) as HTMLDivElement).classList.add('current-player-move');
+                }
+              });
+            } else {
+              switch (msg.data.replace('Move by ', '')) {
+                case 'Computer-1': {
+                  (document.querySelector('#name-player-2') as HTMLDivElement).classList.add('current-player-move');
+                  break;
+                }
+                case 'Computer-2': {
+                  (document.querySelector('#name-player-3') as HTMLDivElement).classList.add('current-player-move');
+                  break;
+                }
+                case 'Computer-3': {
+                  (document.querySelector('#name-player-4') as HTMLDivElement).classList.add('current-player-move');
+                  break;
+                }
+                default : {
+                  (document.querySelector('#name-player-1') as HTMLDivElement).classList.add('current-player-move');
+                }
               }
             }
+          } else {
+            console.log(msg.data);
           }
-          console.log(msg.data);
           break;
         }
         /* Processing a move */
@@ -163,9 +193,52 @@ class Controller {
         }
         /* Set the names of players and computers on the playing field */
         case 'SET_USERS_LIST': {
-          const usersName: string[] = JSON.parse(msg.data) as string[];
-          for (let i = 0; i < usersName.length; i++) {
-            (document.querySelector(`#name-player-${i + 1}`) as HTMLParagraphElement).innerText = usersName[i];
+          let usersName: string[] | { name: string, id: number }[];
+          if (history.state === 'multiplayer') {
+            usersName = JSON.parse(msg.data) as { name: string, id: number }[];
+            this.usersList = [...usersName];
+            myId = 0;
+            const players: HTMLElement[] = [];
+            usersName.forEach(value => {if (value.name === this.myName) {myId = value.id;}});
+            for (let i = 0; i < usersName.length; i++) {
+              (document.querySelector(`#name-player-${i + 1}`) as HTMLParagraphElement).innerText = usersName[i].name;
+              players.push((document.querySelector(`.player-${i + 1}`)) as HTMLElement);
+            }
+            switch (myId) {
+              case 1: {
+                players[0].className = `player-${players.length}`;
+                for (let i = 1; i < players.length; i++) {
+                  players[i].className = `player-${i}`;
+                }
+                break;
+              }
+              case 2: {
+                if (players.length === 4) {
+                  players[0].className = 'player-3';
+                  players[1].className = 'player-4';
+                  players[2].className = 'player-1';
+                  players[3].className = 'player-2';
+                } else {
+                  players[0].className = 'player-2';
+                  players[1].className = 'player-3';
+                  players[2].className = 'player-1';
+                }
+                break;
+              }
+              case 3: {
+                console.log(players);
+                players[3].className = 'player-1';
+                for (let i = 0; i < 3; i++) {
+                  players[i].className = `player-${i + 2}`;
+                }
+                break;
+              }
+            }
+          } else {
+            usersName = JSON.parse(msg.data) as string[];
+            for (let i = 0; i < usersName.length; i++) {
+              (document.querySelector(`#name-player-${i + 1}`) as HTMLParagraphElement).innerText = usersName[i];
+            }
           }
           break;
         }
