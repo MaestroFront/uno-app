@@ -189,15 +189,29 @@ export const createGameField = (quantity: number, lang: string) => {
   });
 };
 
-export const showDistributionCardsForPlayers = (quantityOfPlayers: number): void => {
+export const showDistributionCardsForPlayers = (quantityOfPlayers: number, start: boolean, plusTwo: boolean, plusFour: boolean): void => {
 
   const deck = document.querySelector('.deck') as HTMLDivElement;
   const container = createElement('div', 'cards-container') as HTMLDivElement;
 
-  for (let i = 0; i < quantityOfPlayers * 7; i++) {
-    const card = createElement('div', 'card-distribution') as HTMLDivElement;
-    card.append(renderBackSide(0.25));
-    container.append(card);
+  if (start) {
+    for (let i = 0; i < quantityOfPlayers * 7; i++) {
+      const card = createElement('div', 'card-distribution') as HTMLDivElement;
+      card.append(renderBackSide(0.25));
+      container.append(card);
+    }
+  } else if (plusTwo) {
+    for (let i = 0; i < 2; i++) {
+      const card = createElement('div', 'card-distribution') as HTMLDivElement;
+      card.append(renderBackSide(0.25));
+      container.append(card);
+    }
+  } else if (plusFour) {
+    for (let i = 0; i < 4; i++) {
+      const card = createElement('div', 'card-distribution') as HTMLDivElement;
+      card.append(renderBackSide(0.25));
+      container.append(card);
+    }
   }
 
   deck.append(container);
@@ -229,45 +243,77 @@ const showPlayersNames = (): void => {
   names.forEach((name) => name.classList.add('show'));
 };
 
-export const moveCardToPlayer = (): void => {
+export const moveCardToPlayers = (start: boolean, plusTwo: boolean, plusFour: boolean, reverse: string): void => {
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   const cards = document.querySelectorAll('.card-distribution') as NodeListOf<HTMLDivElement>;
   const newCards = sliceIntoChunks(cards, 7);
+  const players = (document.querySelector('.game-field') as HTMLDivElement).children.length - 1;
   void getCardsSound.play();
 
-  newCards[0].reverse().forEach((card, index) => {
-    setTimeout(() => {
-      card.style.transform = `translate(${index * 70 - 90}%, 165%) rotateZ(720deg)`;
-    }, index * 300);
-  });
-
-  newCards[1].reverse().forEach((card, index) => {
-    setTimeout(() => {
-      card.style.transform = `translate(-345%, ${index * 38 - 115}%) rotateZ(720deg) rotate(270deg)`;
-    }, index * 300);
-  });
-
-  if (newCards[2]) {
-    newCards[2].reverse().forEach((card, index) => {
+  if (start) {
+    newCards[0].reverse().forEach((card, index) => {
       setTimeout(() => {
-        card.style.transform = `translate(${index * 70 - 90}%, -142%) rotateZ(720deg)`;
-      }, index * 300);
+        card.style.transform = `translate(${index * 70 - 90}%, 165%) rotateZ(-360deg)`;
+      }, index * 500);
     });
-  }
-
-  if (newCards[3]) {
-    newCards[3].reverse().forEach((card, index) => {
+  
+    newCards[1].reverse().forEach((card, index) => {
       setTimeout(() => {
-        card.style.transform = `translate(558%, ${index * 38 - 115}%) rotateZ(720deg) rotate(90deg)`;
-      }, index * 300);
+        card.style.transform = `translate(-345%, ${index * 38 - 115}%) rotateZ(360deg) rotate(270deg)`;
+      }, index * 500);
     });
+  
+    if (newCards[2]) {
+      newCards[2].reverse().forEach((card, index) => {
+        setTimeout(() => {
+          card.style.transform = `translate(${index * 70 - 90}%, -142%) rotateZ(-360deg)`;
+        }, index * 500);
+      });
+    }
+  
+    if (newCards[3]) {
+      newCards[3].reverse().forEach((card, index) => {
+        setTimeout(() => {
+          card.style.transform = `translate(558%, ${index * 38 - 115}%) rotateZ(360deg) rotate(90deg)`;
+        }, index * 500);
+      });
+    }
+    setTimeout(() => {
+      hideDistributionCards();
+      showCards();
+      showPlayersNames();
+    }, 3500);
+  } else if (plusTwo || plusFour) {
+    if (reverse === 'true' || (reverse === 'false' && players === 2)) {
+      console.log('left');
+      newCards.flat().reverse().forEach((card, index) => {
+        setTimeout(() => {
+          card.style.transform = `translate(-345%, ${index * 38 - 115}%) rotateZ(360deg) rotate(270deg)`;
+        }, index * 500);
+      });
+    }
+    if (reverse === 'false' && players === 4) {
+      console.log('right');
+      newCards.flat().reverse().forEach((card, index) => {
+        setTimeout(() => {
+          card.style.transform = `translate(558%, ${index * 38 - 115}%) rotateZ(360deg) rotate(90deg)`;
+        }, index * 500);
+      });
+    }
+    if (reverse === 'false' && players === 3) {
+      console.log('top');
+      newCards.flat().reverse().forEach((card, index) => {
+        setTimeout(() => {
+          card.style.transform = `translate(${index * 70 - 90}%, -142%) rotateZ(-360deg)`;
+        }, index * 500);
+      });
+    }
+    setTimeout(() => {
+      hideDistributionCards();
+      showCards();
+      showPlayersNames();
+    }, 1000);
   }
-
-  setTimeout(() => {
-    hideDistributionCards();
-    showCards();
-    showPlayersNames();
-  }, 5000);
 
 };

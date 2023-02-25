@@ -1,7 +1,7 @@
 import { getCardSoundPlay } from '../sounds';
 
 export const moveCurrCard = (e: Event) => {
-  const el = e.target as Element;
+  const el = e.target as HTMLElement;
   const currCard = (el.parentElement as Element).parentElement as HTMLElement;
   const rect = el.getBoundingClientRect();
 
@@ -18,8 +18,6 @@ export const moveCurrCard = (e: Event) => {
     moveCardAnimation.play();
   }
 };
-
-
 
 export const getCardFromDeck = (e: Event, playerNumber: string ) => {
   const card = document.querySelector('.get-card') as HTMLDivElement;

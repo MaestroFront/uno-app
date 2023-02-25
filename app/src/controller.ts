@@ -7,7 +7,7 @@ import { clickSoundPlay, getCardSoundPlay, getChooseSound } from './components/s
 import { moveCurrCard } from './components/game-field/game-animation';
 import { chooseColorAnimation, showBlockAnimation, showRandomColor, showReverseAnimation } from './components/animated-items/animated-items';
 import Router from './components/router';
-import { moveCardToPlayer } from './components/game-field/game-field';
+import { moveCardToPlayers } from './components/game-field/game-field';
 import { createLoader } from './index';
 import { showWinnerMessage } from './components/winner-message/winner-message';
 import { language } from './components/local-storage';
@@ -233,11 +233,13 @@ class Controller {
         }
         case 'START_MULTIPLAYER_GAME': {
           (document.querySelector('.finding-game') as HTMLDivElement)?.remove();
-          moveCardToPlayer();
+          moveCardToPlayers(true, false, false, localStorage.getItem('reverse') as string);
           break;
         }
         case 'REVERSE': {
           const direction = !(JSON.parse(msg.data) as { direction: boolean }).direction;
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          localStorage.setItem('reverse', `${direction}`);
           showReverseAnimation(direction);
           break;
         }
