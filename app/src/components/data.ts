@@ -80,6 +80,11 @@ export const langData: ILangData = {
 
     'res-name': 'Nickname',
     'res-points': 'Points',
+
+    'win-title': 'Congratulations!',
+    'win-winner': 'is the winner.',
+    'win-score-text': 'He gets',
+    'win-score': 'points.',
   },
   'ru': {
     'rules-goal-title': 'Цель игры',
@@ -159,5 +164,10 @@ export const langData: ILangData = {
 
     'res-name': 'Имя',
     'res-points': 'Баллы',
+
+    'win-title': 'Поздравляю!',
+    'win-winner': ' - победитель.',
+    'win-score-text': 'Он получает',
+    'win-score': 'баллов.',
   },
 };

@@ -131,6 +131,7 @@ const renderDeck = (): HTMLDivElement => {
     i++;
   }
 
+  //TODO тут отрисовывается карта, которая должна лететь на руку игроку
   const lastCard = renderOneCard(renderCardWithNumber('8', yellowColor, 0.25));
   // lastCard.classList.add('last-card');
 
