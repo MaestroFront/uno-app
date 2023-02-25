@@ -1,4 +1,4 @@
-import { createGameField, moveCardToPlayer, showDistributionCardsForPlayers } from '../game-field/game-field';
+import { createGameField, moveCardToPlayers, showDistributionCardsForPlayers } from '../game-field/game-field';
 import { createButtonResults } from '../header/header';
 import { addButtonBackToMainPage, createButton, createElement, createImage, createParagraph } from '../helpers/helpers';
 import Controller from '../../controller';
@@ -115,8 +115,8 @@ document.addEventListener('click', (e) => {
     if (history.state !== 'multiplayer') {
       goToGameField(language.chosen);
       removeRegistrationContainer();
-      showDistributionCardsForPlayers(+(localStorage.getItem('players') as string));
-      moveCardToPlayer();
+      showDistributionCardsForPlayers(+(localStorage.getItem('players') as string), true, false, false);
+      moveCardToPlayers(true, false, false, localStorage.getItem('reverse') as string);
     } else {
       // let x = 0;
       // if ((document.querySelector('.two') as HTMLImageElement).classList.contains('mark')) x += 2;
@@ -124,7 +124,7 @@ document.addEventListener('click', (e) => {
       // if ((document.querySelector('.four') as HTMLImageElement).classList.contains('mark')) x += 4;
       goToGameField(language.chosen);
       removeRegistrationContainer();
-      showDistributionCardsForPlayers(+(localStorage.getItem('players') as string));
+      showDistributionCardsForPlayers(+(localStorage.getItem('players') as string), true, false, false);
       const div = createElement('div', 'finding-game');
       div.innerHTML = `
         <div class="yellow-circle"></div>
