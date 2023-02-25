@@ -256,7 +256,7 @@ class Multiplayer {
     for (let i = 0; i < this.players.length; i++) {
       this.dealCardToUser(7, i);
     }
-    this.sendMessage(`Move by ${this.players[this.currentPlayerId].playersName}`);
+    // this.sendMessage(`Move by ${this.players[this.currentPlayerId].playersName}`);
     // this.user.socket.on('message', message => {
     //   const mes = JSON.parse(message.toString()) as WebSocketMessage;
     //   switch (mes.action) {

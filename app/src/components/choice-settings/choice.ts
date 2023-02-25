@@ -56,7 +56,6 @@ const showStartGameBtn = () => {
   difficultiesBtns.forEach(item => {
     if (item.classList.contains('off')) x += 1;
   });
-  console.log(x);
   if (x === 2 || (x === 1 && history.state === 'multiplayer')) startGameBtn?.classList.add('show');
 };
 
@@ -85,6 +84,7 @@ export const goToGameField = (lang: string) => {
   createButtonResults(lang);
   if (history.state === 'single-player') {
     Controller.createNewGameWithComputer(x);
+  // }
   } else if (history.state === 'multiplayer') {
     Controller.createNewMultiplayerGame(x);
   }
@@ -118,10 +118,10 @@ document.addEventListener('click', (e) => {
       showDistributionCardsForPlayers(+(localStorage.getItem('players') as string));
       moveCardToPlayer();
     } else {
-      let x = 0;
-      if ((document.querySelector('.two') as HTMLImageElement).classList.contains('mark')) x += 2;
-      if ((document.querySelector('.three') as HTMLImageElement).classList.contains('mark')) x += 3;
-      if ((document.querySelector('.four') as HTMLImageElement).classList.contains('mark')) x += 4;
+      // let x = 0;
+      // if ((document.querySelector('.two') as HTMLImageElement).classList.contains('mark')) x += 2;
+      // if ((document.querySelector('.three') as HTMLImageElement).classList.contains('mark')) x += 3;
+      // if ((document.querySelector('.four') as HTMLImageElement).classList.contains('mark')) x += 4;
       goToGameField(language.chosen);
       removeRegistrationContainer();
       showDistributionCardsForPlayers(+(localStorage.getItem('players') as string));
@@ -132,7 +132,7 @@ document.addEventListener('click', (e) => {
         <div class="blue-circle"></div>
         <div class="green-circle"></div>`;
       document.body.append(div);
-      Controller.createNewMultiplayerGame(x);
+      // Controller.createNewMultiplayerGame(x);
     }
   }
 });

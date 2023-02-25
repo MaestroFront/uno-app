@@ -19,7 +19,7 @@ class Controller {
 
   /* Controller launch */
   static async start(port: number): Promise<void> {
-    const url = '194.158.205.78'; // 'localhost' 194.158.205.78
+    const url = 'localhost'; // 'localhost' 194.158.205.78
     this.webSocket = new WebSocket(`ws://${url}:${port}`);
     function WSWhenConnect() {
       if (document.cookie.includes('user=')) {
