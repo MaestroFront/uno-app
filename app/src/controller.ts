@@ -109,6 +109,7 @@ class Controller {
         }
         /* Получение карты с сервера */
         case 'GET_CARD': {
+          console.log('ff');
           void getCardSoundPlay();
           const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
           const cardsOnHand = (document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement;
@@ -163,7 +164,9 @@ class Controller {
         }
         /* Set the names of players and computers on the playing field */
         case 'SET_USERS_LIST': {
+
           const usersName: string[] = JSON.parse(msg.data) as string[];
+          console.log(usersName);
           for (let i = 0; i < usersName.length; i++) {
             (document.querySelector(`#name-player-${i + 1}`) as HTMLParagraphElement).innerText = usersName[i];
           }
@@ -279,6 +282,7 @@ class Controller {
 
   static createNewMultiplayerGame(numberOfPlayers: number): void {
     Controller.webSocket.send(JSON.stringify({ action: 'CREATE_GAME', data: JSON.stringify({ players: numberOfPlayers, online: true }) }));
+    Controller.webSocket.send(JSON.stringify({ action: 'GET_USERS_LIST', data: '' }));
   }
 }
 

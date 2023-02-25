@@ -46,8 +46,7 @@ class Multiplayer {
       this.gameResults.push({ player: this.users[i].userName, total: 0 });
     }
     this.users.forEach(user => user.socket.send(JSON.stringify({ action: 'START_MULTIPLAYER_GAME', data: '' })));
-
-    this.sendMessage('HELLO!');
+    this.startGame();
   }
 
   setNextPlayerID(): void {
@@ -251,84 +250,15 @@ class Multiplayer {
     this.users.forEach(user => user.socket.send(JSON.stringify({ action: 'MESSAGE', data: message })));
   }
 
+
   /* Launching the start of the game */
   startGame(): void {
     for (let i = 0; i < this.players.length; i++) {
       this.dealCardToUser(7, i);
     }
-    // this.sendMessage(`Move by ${this.players[this.currentPlayerId].playersName}`);
-    // this.user.socket.on('message', message => {
-    //   const mes = JSON.parse(message.toString()) as WebSocketMessage;
-    //   switch (mes.action) {
-    //     case 'MOVE_BY_USER': {
-    //       if (this.weNotHaveAWinner) {
-    //         const move = JSON.parse(mes.data) as { userName: string, cardId: string };
-    //         if (this.checkUsersMove(parseInt(move.cardId))) {
-    //           this.topCard = (this.players[0].player as Player).getMove(parseInt(move.cardId));
-    //           const cardInfo: CardInfo = CardDeck.getColorAndValue(this.topCard);
-    //           if (cardInfo.color === CardDeck.colors[4]) {
-    //             this.wildCardActions();
-    //           } else {
-    //             this.currentColor = cardInfo.color;
-    //             this.user.socket.send(JSON.stringify({ action: 'MOVE', data: JSON.stringify({ topCard: cardInfo, currentColor: this.currentColor }) }));
-    //             this.deck.discardCard(this.topCard);
-    //             this.movesCount++;
-    //             if (this.checkWinner()) {
-    //               if (cardInfo.value > 9 && cardInfo.value < 13) {
-    //                 this.funCardsActions();
-    //               }
-    //               this.setNextPlayerID();
-    //               this.startComputersMoves();
-    //             }
-    //           }
-    //         } else {
-    //           this.sendMessage('Wrong move!');
-    //         }
-    //       }
-    //       break;
-    //     }
-    //     case 'GET_CARD_BY_USER': {
-    //       if ((this.players[0].player as Player).selectPossibleOptionsForMove(this.topCard, this.currentColor) || this.topCard === 999) {
-    //         this.sendMessage('You have options for move!');
-    //       } else {
-    //         this.user.socket.send(JSON.stringify({ action: 'UPDATE_CARD', data: `player-${1}` }));
-    //         this.dealCardToUser(1);
-    //         if (!(this.players[0].player as Player).selectPossibleOptionsForMove(this.topCard, this.currentColor)) {
-    //           this.setNextPlayerID();
-    //           this.sendMessage('You cant options for move! You skip the turn!');
-    //           this.startComputersMoves();
-    //         }
-    //       }
-    //       break;
-    //     }
-    //     case 'GET_USERS_LIST': {
-    //       const usersName: string[] = [];
-    //       this.players.forEach(players => usersName.push(players.player?.playersName as string));
-    //       this.user.socket.send(JSON.stringify({ action: 'SET_USERS_LIST', data: JSON.stringify(usersName) }));
-    //       break;
-    //     }
-    //     case 'USERS_SELECTED_COLOR': {
-    //       this.currentColor = mes.data;
-    //       const cardInfo: CardInfo = CardDeck.getColorAndValue(this.topCard);
-    //       this.user.socket.send(JSON.stringify({ action: 'MOVE', data: JSON.stringify({ topCard: cardInfo, currentColor: this.currentColor }) }));
-    //       if (cardInfo.value === 14) {
-    //         this.setNextPlayerID();
-    //         this.takeCards(4);
-    //       }
-    //       if (this.currentPlayerId + 1 >= this.players.length) {
-    //         this.currentPlayerId = 0;
-    //       } else {
-    //         this.setNextPlayerID();
-    //         if (this.checkWinner()) {
-    //           if (this.currentPlayerId !== 0) {
-    //             this.startComputersMoves();
-    //           }
-    //         }
-    //       }
-    //       break;
-    //     }
-    //   }
-    // });
+    const names: string[] = [];
+    this.users.forEach(value => names.push(value.userName));
+    this.users.forEach(value => value.socket.send(JSON.stringify({ action: 'SET_USERS_LIST', data: JSON.stringify(names) })));
   }
 }
 

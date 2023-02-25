@@ -85,11 +85,11 @@ class WebsocketServer {
     });
   }
 
-  findClient(connection: WebSocket): Client | null {
+  findClient(connection: WebSocket): Client {
     const result = this.clients.filter(value => {
       return value.socket === connection;
     });
-    return result.length > 0 ? result[0] : null;
+    return result[0];
   }
 
   findRoom(numberOfPlayers: number): number {
@@ -110,18 +110,19 @@ class WebsocketServer {
           const settings: CreateGameMessage = JSON.parse(msg.data) as CreateGameMessage;
           /* multiplayer */
           if (settings.online) {
-            if (!this.usersPlayOnline.has(this.findClient(connection)?.userName)) {
-              this.usersPlayOnline.add(this.findClient(connection)?.userName);
+            const client = this.findClient(connection) ;
+            if (!this.usersPlayOnline.has(client?.userName)) {
+              this.usersPlayOnline.add(client?.userName );
               const id = this.findRoom(settings.players);
               if (id === 0) {
                 this.multiPlayer.push({  id: this.multiPlayer.length + 1,
                   numberOfPlayers: settings.players,
-                  players: [this.findClient(connection)],
+                  players: [client],
                   game: null });
               } else {
                 for (let i = 0; i < this.multiPlayer.length; i++) {
                   if (this.multiPlayer[i].id === id) {
-                    this.multiPlayer[i].players.push(this.findClient(connection));
+                    this.multiPlayer[i].players.push(client);
                     if (this.multiPlayer[i].players.length === this.multiPlayer[i].numberOfPlayers) {
                       this.multiPlayer[i].game = new Multiplayer(this.multiPlayer[i].players, this.multiPlayer[i].numberOfPlayers);
                     }
@@ -131,7 +132,7 @@ class WebsocketServer {
             } else { /* offline game */
               const newGame: Game = {
                 id: this.games.length + 1,
-                game: new UnoGame(settings.players, this.findClient(connection) as Client),
+                game: new UnoGame(settings.players, this.findClient(connection) ),
               };
               this.games.push(newGame);
               newGame.game.startGame();
@@ -140,7 +141,7 @@ class WebsocketServer {
           break;
         }
         case 'WHATS_MY_NAME': {
-          connection.send(JSON.stringify({ action: 'YOUR_NAME', data: this.findClient(connection).userName }));
+          connection.send(JSON.stringify({ action: 'YOUR_NAME', data: this.findClient(connection)?.userName }));
           break;
         }
         case 'UPDATE_NAME': {
