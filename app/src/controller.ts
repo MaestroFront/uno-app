@@ -12,12 +12,15 @@ import { createLoader } from './index';
 import { showWinnerMessage } from './components/winner-message/winner-message';
 import { language } from './components/local-storage';
 
+let myId = 0;
+
 class Controller {
   static webSocket: WebSocket;
 
   private static myName: string;
 
   /* Controller launch */
+
   static async start(port: number): Promise<void> {
     const url = 'localhost'; // 'localhost' 194.158.205.78
     this.webSocket = new WebSocket(`ws://${url}:${port}`);
@@ -25,9 +28,8 @@ class Controller {
       if (document.cookie.includes('user=')) {
         const cookie = document.cookie.split(';').filter(value => {return value.includes('user=');});
         Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
-      } else {
-        Controller.webSocket.send(JSON.stringify({ action: 'WHATS_MY_NAME', data: '' }));
       }
+      Controller.webSocket.send(JSON.stringify({ action: 'WHATS_MY_NAME', data: '' }));
     }
     const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
     while (this.webSocket.readyState === 0) {
@@ -109,11 +111,22 @@ class Controller {
         }
         /* Получение карты с сервера */
         case 'GET_CARD': {
-          console.log('ff');
           void getCardSoundPlay();
-          const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
-          const cardsOnHand = (document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement;
-          cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+          if (history.state === 'multiplayer') {
+            const data: { playerName: string, playerId: number, card: CardInfo } =
+                JSON.parse(msg.data) as { playerName: string, playerId: number, card: CardInfo };
+            if (data.playerName === this.myName) {
+              const cardsOnHand = (document.querySelector('.player-1') as HTMLElement).firstChild as HTMLElement;
+              cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+            } else {
+              const cardsOnHand = (document.querySelector(`#player-${data.playerId + 1}`) as HTMLElement).firstChild as HTMLElement;
+              cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+            }
+          } else {
+            const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
+            const cardsOnHand = (document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement;
+            cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+          }
           break;
         }
         /* Receiving a message from the server */
@@ -138,7 +151,6 @@ class Controller {
               }
             }
           }
-          console.log(msg.data);
           break;
         }
         /* Processing a move */
@@ -164,11 +176,51 @@ class Controller {
         }
         /* Set the names of players and computers on the playing field */
         case 'SET_USERS_LIST': {
-
-          const usersName: string[] = JSON.parse(msg.data) as string[];
-          console.log(usersName);
-          for (let i = 0; i < usersName.length; i++) {
-            (document.querySelector(`#name-player-${i + 1}`) as HTMLParagraphElement).innerText = usersName[i];
+          let usersName: string[] | { name: string, id: number }[];
+          if (history.state === 'multiplayer') {
+            usersName = JSON.parse(msg.data) as { name: string, id: number }[];
+            myId = 0;
+            const players: HTMLElement[] = [];
+            usersName.forEach(value => {if (value.name === this.myName) {myId = value.id;}});
+            for (let i = 0; i < usersName.length; i++) {
+              (document.querySelector(`#name-player-${i + 1}`) as HTMLParagraphElement).innerText = usersName[i].name;
+              players.push((document.querySelector(`.player-${i + 1}`)) as HTMLElement);
+            }
+            switch (myId) {
+              case 1: {
+                players[0].className = `player-${players.length}`;
+                for (let i = 1; i < players.length; i++) {
+                  players[i].className = `player-${i}`;
+                }
+                break;
+              }
+              case 2: {
+                if (players.length === 4) {
+                  players[0].className = 'player-3';
+                  players[1].className = 'player-4';
+                  players[2].className = 'player-1';
+                  players[3].className = 'player-2';
+                } else {
+                  players[0].className = 'player-2';
+                  players[1].className = 'player-3';
+                  players[2].className = 'player-1';
+                }
+                break;
+              }
+              case 3: {
+                console.log(players);
+                players[3].className = 'player-1';
+                for (let i = 0; i < 3; i++) {
+                  players[i].className = `player-${i + 2}`;
+                }
+                break;
+              }
+            }
+          } else {
+            usersName = JSON.parse(msg.data) as string[];
+            for (let i = 0; i < usersName.length; i++) {
+              (document.querySelector(`#name-player-${i + 1}`) as HTMLParagraphElement).innerText = usersName[i];
+            }
           }
           break;
         }
@@ -282,7 +334,6 @@ class Controller {
 
   static createNewMultiplayerGame(numberOfPlayers: number): void {
     Controller.webSocket.send(JSON.stringify({ action: 'CREATE_GAME', data: JSON.stringify({ players: numberOfPlayers, online: true }) }));
-    Controller.webSocket.send(JSON.stringify({ action: 'GET_USERS_LIST', data: '' }));
   }
 }
 

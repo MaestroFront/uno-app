@@ -41,7 +41,7 @@ class Multiplayer {
     this.weNotHaveAWinner = true;
     this.gameResults = [];
     this.numberOfPlayers = numberOfPlayers;
-    for (let i = 1; i < numberOfPlayers; i++) {
+    for (let i = 0; i < numberOfPlayers; i++) {
       this.players.push(new Player(this.users[i].userName));
       this.gameResults.push({ player: this.users[i].userName, total: 0 });
     }
@@ -81,11 +81,15 @@ class Multiplayer {
   }
 
   /* Distribution of cards to the player */
-  dealCardToUser(quantity: number, playerID: number):void {
+  dealCardToUser(quantity: number, playerID: number): void {
     this.players[playerID].takeCards(this.deck.getCards(quantity));
     this.players[playerID].getYourCards().forEach(value => {
-      const dataForSend: string = JSON.stringify({ player: `player-${1}`, card: CardDeck.getColorAndValue(value) });
-      this.users[playerID].socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend }));
+      const dataForSend: string = JSON.stringify(
+        { playerName: this.players[playerID].playersName,
+          playerId: playerID,
+          card: CardDeck.getColorAndValue(value) });
+      this.users.forEach(user => user.socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend })));
+      // this.users[playerID].socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend }));
     });
   }
 
@@ -253,13 +257,23 @@ class Multiplayer {
 
   /* Launching the start of the game */
   startGame(): void {
-    for (let i = 0; i < this.players.length; i++) {
+    const names: { name: string, id: number }[] = [];
+    this.users.forEach((value, index) => {
+      names.push({ name: value.userName, id: index });
+    });
+    this.users.forEach(value => value.socket.send(
+      JSON.stringify({ action: 'SET_USERS_LIST', data: JSON.stringify(names) }),
+    ));
+    for (let i = 0; i < this.numberOfPlayers; i++) {
       this.dealCardToUser(7, i);
     }
-    const names: string[] = [];
-    this.users.forEach(value => names.push(value.userName));
-    this.users.forEach(value => value.socket.send(JSON.stringify({ action: 'SET_USERS_LIST', data: JSON.stringify(names) })));
+    this.currentPlayerId = 0;
+    this.sendMessage(`Move by ${this.players[this.currentPlayerId].playersName}!`);
+    this.users.forEach(user => {
+      user.socket.on('message', (message) => {
+
+      });
+    });
   }
 }
-
 export default Multiplayer;
