@@ -71,6 +71,26 @@ class Controller {
     return div;
   }
 
+  static createModal(title: string, text: string) {
+    const div = createElement('div', 'modalView');
+    div.id = 'modalView';
+    let div1 = document.createElement('div');
+    div1.id = 'modalView__closeBtn';
+    div1.addEventListener('click', () => {
+      document.getElementById('modalView')?.remove();
+    });
+    div.append(div1);
+    div1 = document.createElement('div');
+    div1.classList.add('modalView__content', 'centered');
+    const h = document.createElement('h2');
+    h.innerText = title;
+    const p = document.createElement('p');
+    p.innerText = text;
+    div1.append(h, p);
+    div.append(div1);
+    document.body.append(div);
+  }
+
   static async start(port: number): Promise<void> {
     const url = '194.158.205.78'; // 'localhost' 194.158.205.78
     this.webSocket = new WebSocket(`ws://${url}:${port}`);
@@ -169,7 +189,7 @@ class Controller {
               }
             }
           } else {
-            console.log(msg.data);
+            Controller.createModal('INFO', `${msg.data}`);
           }
           break;
         }
@@ -238,7 +258,6 @@ class Controller {
                 break;
               }
               case 3: {
-                console.log(players);
                 players[3].className = 'player-1';
                 for (let i = 0; i < 3; i++) {
                   players[i].className = `player-${i + 2}`;
@@ -312,21 +331,18 @@ class Controller {
           if (messageLogin.status) {
             Controller.signAs();
           } else {
-          // eslint-disable-next-line no-alert
-            alert('Wrong name or password');
+            Controller.createModal('ERROR', 'Wrong name or password');
           }
           break;
         }
         case 'REGISTRATION': {
           const messageRegistration = JSON.parse(msg.data) as { status: boolean };
           if (messageRegistration.status) {
-            // eslint-disable-next-line no-alert
-            alert('registered!');
+            Controller.createModal('DONE', 'Successfully registered! Please log-in!');
             Router.setState('home');
             Router.checkPage();
           } else {
-            // eslint-disable-next-line no-alert
-            alert('user with this nickname already exist!');
+            Controller.createModal('ERROR', 'User with this nickname already exist!');
           }
           break;
         }
@@ -368,8 +384,7 @@ class Controller {
     Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
     Router.setState('home');
     Router.checkPage();
-    // eslint-disable-next-line no-alert
-    alert(`You signed in as ${cookie[0].replace('user=', '')}`);
+    Controller.createModal('DONE', `You signed in as ${cookie[0].replace('user=', '')}`);
   }
 
   /* Sending commands to the server to create a new game */
