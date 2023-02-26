@@ -5,7 +5,7 @@ export const moveCurrCard = (e: Event) => {
   const currCard = (el.parentElement as Element).parentElement as HTMLElement;
   const rect = el.getBoundingClientRect();
 
-  if (el.closest('.cardCenter')) {
+  if (el.closest('.simple-card')) {
     const currCardKeyframes = new KeyframeEffect(
       currCard,
       [
