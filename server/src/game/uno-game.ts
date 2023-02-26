@@ -5,7 +5,7 @@ import Player from './player';
 class UnoGame {
   deck: CardDeck;
 
-  gameWinner: string;
+  gameWinner: { player: string, total: number };
 
   gameResults: { player: string, total: number }[];
 
@@ -31,7 +31,7 @@ class UnoGame {
 
   constructor(numberOfPlayers: number, client: Client) {
     this.deck = new CardDeck();
-    this.gameWinner = '';
+    this.gameWinner = { player: '', total: 0 };
     this.gameResults = [];
     this.user = client;
     this.topCard = 999;
@@ -225,12 +225,15 @@ class UnoGame {
       if (roundResult.player === value.player) {
         value.total += roundResult.total;
         if (value.total >= 250) {
-          this.gameWinner = value.player;
+          this.gameWinner.player = value.player;
+          this.gameWinner.total = value.total;
         }
       }
     });
-    if (this.gameWinner !== '') {
-      this.sendMessage(`${this.gameWinner} win the game!`);
+    this.user.socket.send(JSON.stringify({ action: 'RESULTS_OF_GAME', data: JSON.stringify(this.gameResults) }));
+    if (this.gameWinner.player !== '') {
+      this.sendMessage(`${this.gameWinner.player} win the game!`);
+      this.user.socket.send(JSON.stringify({ action: 'WINNER', data: JSON.stringify(this.gameWinner) }));
     } else {
       this.deck = new CardDeck();
       this.topCard = 999;
