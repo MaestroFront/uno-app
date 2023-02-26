@@ -1,8 +1,8 @@
 /* Accepts input and converts it to commands for the model or view. */
 
-import { createElement, createParagraph } from './components/helpers/helpers';
+import { createButton, createElement, createParagraph } from './components/helpers/helpers';
 import { CardInfo, WebSocketMessage } from './types';
-import { blueColor, greenColor, redColor, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from './components/cards/cards';
+import { blueColor, greenColor, redColor, renderBackSide, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from './components/cards/cards';
 import { clickSoundPlay, getCardSoundPlay, getChooseSound } from './components/sounds';
 import { moveCurrCard } from './components/game-field/game-animation';
 import { chooseColorAnimation, showBlockAnimation, showRandomColor, showReverseAnimation } from './components/animated-items/animated-items';
@@ -26,6 +26,7 @@ class Controller {
 
   static createSimpleCard(id: number, color: string, value: number) {
     const div = createElement('div', 'simple-card');
+    div.append(renderBackSide(0.25));
     switch (color) {
       case 'blue': {color = blueColor;} break;
       case 'red': {color = redColor;} break;
@@ -71,16 +72,15 @@ class Controller {
     return div;
   }
 
-  static createModal(title: string, text: string) {
+  static createModal(title: string, text: string, tagName: string) {
     const div = createElement('div', 'modalView');
     div.id = 'modalView';
-    let div1 = document.createElement('div');
-    div1.id = 'modalView__closeBtn';
-    div1.addEventListener('click', () => {
+    const btn = createButton('btn-cross', 'button', 'x');
+    btn.addEventListener('click', () => {
       document.getElementById('modalView')?.remove();
     });
-    div.append(div1);
-    div1 = document.createElement('div');
+    div.append(btn);
+    const div1 = document.createElement('div');
     div1.classList.add('modalView__content', 'centered');
     const h = document.createElement('h2');
     h.innerText = title;
@@ -88,7 +88,13 @@ class Controller {
     p.innerText = text;
     div1.append(h, p);
     div.append(div1);
-    document.body.append(div);
+    if (document.querySelector('.modalView')) {
+      document.querySelector('.modalView')?.remove();
+      document.body.append(div);
+    } else {
+      (document.querySelector(`${tagName}`) as HTMLDivElement).append(div);
+    }
+    setTimeout(() => document.querySelectorAll('.modalView').forEach((item) => item.remove()), 2000);
   }
 
   static async start(port: number): Promise<void> {
@@ -189,7 +195,7 @@ class Controller {
               }
             }
           } else {
-            Controller.createModal('INFO', `${msg.data}`);
+            Controller.createModal('HELP', `${msg.data}`, '.game-field');
           }
           break;
         }
@@ -331,18 +337,18 @@ class Controller {
           if (messageLogin.status) {
             Controller.signAs();
           } else {
-            Controller.createModal('ERROR', 'Wrong name or password');
+            Controller.createModal('ERROR', 'Wrong name or password', '.reg-window');
           }
           break;
         }
         case 'REGISTRATION': {
           const messageRegistration = JSON.parse(msg.data) as { status: boolean };
           if (messageRegistration.status) {
-            Controller.createModal('DONE', 'Successfully registered! Please log-in!');
+            Controller.createModal('DONE', 'Successfully registered! Please log-in!', '.reg-window');
             Router.setState('home');
             Router.checkPage();
           } else {
-            Controller.createModal('ERROR', 'User with this nickname already exist!');
+            Controller.createModal('ERROR', 'User with this nickname already exist!', '.reg-window');
           }
           break;
         }
@@ -384,7 +390,7 @@ class Controller {
     Controller.webSocket.send(JSON.stringify({ action: 'UPDATE_NAME', data: cookie[0].replace('user=', '') }));
     Router.setState('home');
     Router.checkPage();
-    Controller.createModal('DONE', `You signed in as ${cookie[0].replace('user=', '')}`);
+    Controller.createModal('DONE', `You signed in as ${cookie[0].replace('user=', '')}`, '.reg-window');
   }
 
   /* Sending commands to the server to create a new game */

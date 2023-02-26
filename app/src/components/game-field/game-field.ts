@@ -257,20 +257,20 @@ export const moveCardToPlayers = (start: boolean, plusTwo: boolean, plusFour: bo
   if (start) {
     newCards[0].reverse().forEach((card, index) => {
       setTimeout(() => {
-        card.style.transform = `translate(${index * 70 - 90}%, 165%) rotateZ(-360deg)`;
+        card.style.transform = `translate(${index * 70 - 85}%, 168%) rotateZ(-360deg) rotate(-360deg)`;
       }, index * 500);
     });
 
     newCards[1].reverse().forEach((card, index) => {
       setTimeout(() => {
-        card.style.transform = `translate(-345%, ${index * 38 - 115}%) rotateZ(360deg) rotate(270deg)`;
+        card.style.transform = `translate(-338%, ${index * 38 - 135}%) rotateZ(360deg) rotate(270deg)`;
       }, index * 500);
     });
 
     if (newCards[2]) {
       newCards[2].reverse().forEach((card, index) => {
         setTimeout(() => {
-          card.style.transform = `translate(${index * 70 - 90}%, -142%) rotateZ(-360deg)`;
+          card.style.transform = `translate(${index * 70 - 90}%, -165%) rotateZ(-360deg) rotate(-360deg)`;
         }, index * 500);
       });
     }
@@ -278,7 +278,7 @@ export const moveCardToPlayers = (start: boolean, plusTwo: boolean, plusFour: bo
     if (newCards[3]) {
       newCards[3].reverse().forEach((card, index) => {
         setTimeout(() => {
-          card.style.transform = `translate(558%, ${index * 38 - 115}%) rotateZ(360deg) rotate(90deg)`;
+          card.style.transform = `translate(542%, ${index * 38 - 135}%) rotateZ(360deg) rotate(90deg)`;
         }, index * 500);
       });
     }
@@ -286,10 +286,9 @@ export const moveCardToPlayers = (start: boolean, plusTwo: boolean, plusFour: bo
       hideDistributionCards();
       showCards();
       showPlayersNames();
-    }, 3500);
+    }, 4500);
   } else if (plusTwo || plusFour) {
     if (reverse === 'true' || (reverse === 'false' && players === 2)) {
-      console.log('left');
       newCards.flat().reverse().forEach((card, index) => {
         setTimeout(() => {
           card.style.transform = `translate(-345%, ${index * 38 - 115}%) rotateZ(360deg) rotate(270deg)`;
@@ -297,7 +296,6 @@ export const moveCardToPlayers = (start: boolean, plusTwo: boolean, plusFour: bo
       });
     }
     if (reverse === 'false' && players === 4) {
-      console.log('right');
       newCards.flat().reverse().forEach((card, index) => {
         setTimeout(() => {
           card.style.transform = `translate(558%, ${index * 38 - 115}%) rotateZ(360deg) rotate(90deg)`;
@@ -305,7 +303,6 @@ export const moveCardToPlayers = (start: boolean, plusTwo: boolean, plusFour: bo
       });
     }
     if (reverse === 'false' && players === 3) {
-      console.log('top');
       newCards.flat().reverse().forEach((card, index) => {
         setTimeout(() => {
           card.style.transform = `translate(${index * 70 - 90}%, -142%) rotateZ(-360deg)`;
