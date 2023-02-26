@@ -272,6 +272,20 @@ class Controller {
           showWinnerMessage(language.chosen, results[0].players, results[0].points);
           break;
         }
+        case 'RESULTS_OF_GAME': {
+          // TODO выводит результат за всю игру
+          const results: { players: string, points: number }[] = JSON.parse(msg.data) as { players: string, points: number }[];
+          console.log(results);
+          // showWinnerMessage(language.chosen, results[0].players, results[0].points);
+          break;
+        }
+        case 'WINNER': {
+          // TODO выводит победителя (имя и баллы)
+          const winner: { players: string, total: number } = JSON.parse(msg.data) as { players: string, total: number };
+          console.log(winner);
+          // showWinnerMessage(language.chosen, results[0].players, results[0].points);
+          break;
+        }
         case 'CLEAR_FIELD': {
           document.querySelectorAll('.cards').forEach(value => value.innerHTML = '') ;
           (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
