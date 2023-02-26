@@ -5,7 +5,7 @@ import {
   createParagraph,
 } from '../helpers/helpers';
 import Controller from '../../controller';
-import { renderBackSide, renderCardWithNumber, yellowColor } from '../cards/cards';
+import { renderBackSide } from '../cards/cards';
 import { getCardFromDeck } from './game-animation';
 import { renderChat } from '../chat/chat';
 import {
@@ -101,7 +101,7 @@ const createRhomb = () => {
   return rhomb;
 };
 
-const renderOneCard = (element: Element) => {
+export const renderOneCard = (element: Element) => {
   const card = createElement('div', 'get-card') as HTMLDivElement;
   card.id = 'get-card';
 
@@ -120,7 +120,7 @@ const renderOneCard = (element: Element) => {
   return card;
 };
 
-const renderDeck = (): HTMLDivElement => {
+export const renderDeck = (): HTMLDivElement => {
   const deck = createElement('div', 'deck') as HTMLDivElement;
   const fullDeck = createElement('div', 'full-deck') as HTMLDivElement;
   for (let i = 0; i < 5;) {
@@ -132,8 +132,11 @@ const renderDeck = (): HTMLDivElement => {
   }
 
   //TODO тут отрисовывается карта, которая должна лететь на руку игроку
-  const lastCard = renderOneCard(renderCardWithNumber('8', yellowColor, 0.25));
+  // const lastCard = renderOneCard(renderCardWithNumber('8', yellowColor, 0.25));
   // lastCard.classList.add('last-card');
+  const lastCard = renderOneCard(
+    Controller.createSimpleCard(
+      Controller.topCard.id, Controller.topCard.color, Controller.topCard.value));
 
   fullDeck.append(lastCard);
   deck.append(fullDeck);
@@ -257,13 +260,13 @@ export const moveCardToPlayers = (start: boolean, plusTwo: boolean, plusFour: bo
         card.style.transform = `translate(${index * 70 - 90}%, 165%) rotateZ(-360deg)`;
       }, index * 500);
     });
-  
+
     newCards[1].reverse().forEach((card, index) => {
       setTimeout(() => {
         card.style.transform = `translate(-345%, ${index * 38 - 115}%) rotateZ(360deg) rotate(270deg)`;
       }, index * 500);
     });
-  
+
     if (newCards[2]) {
       newCards[2].reverse().forEach((card, index) => {
         setTimeout(() => {
@@ -271,7 +274,7 @@ export const moveCardToPlayers = (start: boolean, plusTwo: boolean, plusFour: bo
         }, index * 500);
       });
     }
-  
+
     if (newCards[3]) {
       newCards[3].reverse().forEach((card, index) => {
         setTimeout(() => {

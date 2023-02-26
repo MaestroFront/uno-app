@@ -117,6 +117,7 @@ class UnoGame {
       const dataForSend: string = JSON.stringify({ player: `player-${1}`, card: CardDeck.getColorAndValue(value) });
       this.user.socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend }));
     });
+    this.updateTopCard();
   }
 
   /* Distribution of cards to the computer player */
@@ -128,6 +129,7 @@ class UnoGame {
         this.user.socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend }));
       });
     }
+    this.updateTopCard();
   }
 
   /* Pause in milliseconds */
@@ -304,11 +306,16 @@ class UnoGame {
     }
   }
 
+  updateTopCard() {
+    this.user.socket.send(JSON.stringify({ action: 'UPDATE_TOP_CARD', data: JSON.stringify(this.deck.getTopCard()) }));
+  }
+
   /* Launching the start of the game */
   startGame(): void {
     this.dealCardToUser(7);
     this.dealCardToComputer(7);
     this.sendMessage(`Move by ${this.players[0].player?.playersName as string}`);
+    this.updateTopCard();
     this.user.socket.on('message', message => {
       const mes = JSON.parse(message.toString()) as WebSocketMessage;
       switch (mes.action) {

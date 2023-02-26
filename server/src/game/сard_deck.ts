@@ -53,6 +53,10 @@ class CardDeck {
     return returnedCardArray;
   }
 
+  getTopCard() {
+    return CardDeck.getColorAndValue(this.deck[this.deck.length - 1]);
+  }
+
   /* Places a card in the discard pile */
   discardCard(cardId: number): void {
     this.usersCards.splice(this.usersCards.indexOf(cardId), 1);

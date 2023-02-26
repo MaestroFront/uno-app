@@ -129,14 +129,14 @@ class WebsocketServer {
                   }
                 }
               }
-            } else { /* offline game */
-              const newGame: Game = {
-                id: this.games.length + 1,
-                game: new UnoGame(settings.players, this.findClient(connection) ),
-              };
-              this.games.push(newGame);
-              newGame.game.startGame();
             }
+          } else { /* offline game */
+            const newGame: Game = {
+              id: this.games.length + 1,
+              game: new UnoGame(settings.players, this.findClient(connection) ),
+            };
+            this.games.push(newGame);
+            newGame.game.startGame();
           }
           break;
         }
