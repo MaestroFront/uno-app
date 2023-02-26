@@ -7,7 +7,7 @@ import { clickSoundPlay, getCardSoundPlay, getChooseSound } from './components/s
 import { moveCurrCard } from './components/game-field/game-animation';
 import { chooseColorAnimation, showBlockAnimation, showRandomColor, showReverseAnimation } from './components/animated-items/animated-items';
 import Router from './components/router';
-import { moveCardToPlayers } from './components/game-field/game-field';
+import { moveCardToPlayers, renderOneCard } from './components/game-field/game-field';
 import { createLoader } from './index';
 import { showWinnerMessage } from './components/winner-message/winner-message';
 import { language } from './components/local-storage';
@@ -19,8 +19,57 @@ class Controller {
 
   private static myName: string;
 
+  public static topCard: CardInfo = { id: 50, value: 1, color: 'yellow' };
+
   /* Controller launch */
   private static usersList: { name: string, id: number }[];
+
+  static createSimpleCard(id: number, color: string, value: number) {
+    const div = createElement('div', 'simple-card');
+    switch (color) {
+      case 'blue': {color = blueColor;} break;
+      case 'red': {color = redColor;} break;
+      case 'green': {color = greenColor;} break;
+      default: {color = yellowColor;} break;
+    }
+    if (id < 100) {
+      const idNum  = id % 25;
+      if (idNum < 19) {
+        div.append(renderCardWithNumber(value.toString(), color, 0.25));
+      } else if (idNum < 21) {
+        div.append(renderPlusTwoCard(color, 0.25));
+      } else if (idNum < 23) {
+        div.append(renderReverseCard(color, 0.25));
+      } else {
+        div.append(renderBlockedCard(color, 0.25));
+      }
+    } else if (id > 104) {
+      div.append(renderPlusFourCard(0.25));
+    } else {
+      div.append(renderMultiCard(0.25));
+    }
+    div.id = id.toString();
+    div.addEventListener('click', evt => {
+      clickSoundPlay();
+      moveCurrCard(evt);
+      setTimeout(() => {
+        const clickedEl = (evt.target as HTMLDivElement).closest('.cardCenter') as Element;
+
+        if (clickedEl) {
+          clickedEl.id = id.toString();
+        }
+        if (history.state === 'multiplayer') {
+          const dataForSent = JSON.stringify({ userId: myId, cardId: (evt.target as HTMLDivElement).id });
+          Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
+        } else {
+          const user: string = ((evt.target as HTMLDivElement).parentElement as HTMLElement).className;
+          const dataForSent = JSON.stringify({ userName: user, cardId: (evt.target as HTMLDivElement).id });
+          Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
+        }
+      }, 1500);
+    });
+    return div;
+  }
 
   static async start(port: number): Promise<void> {
     const url = '194.158.205.78'; // 'localhost' 194.158.205.78
@@ -47,52 +96,6 @@ class Controller {
       if (confirm('NO CONNECTION! PAGE WILL BE RELOAD!')) {
         setTimeout(() => window.location.reload(), 2000);
       }
-    }
-    function createSimpleCard(id: number, color: string, value: number) {
-      const div = createElement('div', 'simple-card');
-      switch (color) {
-        case 'blue': {color = blueColor;} break;
-        case 'red': {color = redColor;} break;
-        case 'green': {color = greenColor;} break;
-        default: {color = yellowColor;} break;
-      }
-      if (id < 100) {
-        const idNum  = id % 25;
-        if (idNum < 19) {
-          div.append(renderCardWithNumber(value.toString(), color, 0.25));
-        } else if (idNum < 21) {
-          div.append(renderPlusTwoCard(color, 0.25));
-        } else if (idNum < 23) {
-          div.append(renderReverseCard(color, 0.25));
-        } else {
-          div.append(renderBlockedCard(color, 0.25));
-        }
-      } else if (id > 104) {
-        div.append(renderPlusFourCard(0.25));
-      } else {
-        div.append(renderMultiCard(0.25));
-      }
-      div.id = id.toString();
-      div.addEventListener('click', evt => {
-        clickSoundPlay();
-        moveCurrCard(evt);
-        setTimeout(() => {
-          const clickedEl = (evt.target as HTMLDivElement).closest('.cardCenter') as Element;
-
-          if (clickedEl) {
-            clickedEl.id = id.toString();
-          }
-          if (history.state === 'multiplayer') {
-            const dataForSent = JSON.stringify({ userId: myId, cardId: (evt.target as HTMLDivElement).id });
-            Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
-          } else {
-            const user: string = ((evt.target as HTMLDivElement).parentElement as HTMLElement).className;
-            const dataForSent = JSON.stringify({ userName: user, cardId: (evt.target as HTMLDivElement).id });
-            Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
-          }
-        }, 1500);
-      });
-      return div;
     }
 
     function showColorSelectWindow():void {
@@ -122,15 +125,15 @@ class Controller {
                 JSON.parse(msg.data) as { playerName: string, playerId: number, card: CardInfo };
             if (data.playerName === this.myName) {
               const cardsOnHand = (document.querySelector('.player-1') as HTMLElement).firstChild as HTMLElement;
-              cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+              cardsOnHand.append(Controller.createSimpleCard(data.card.id, data.card.color, data.card.value));
             } else {
               const cardsOnHand = (document.querySelector(`#player-${data.playerId + 1}`) as HTMLElement).firstChild as HTMLElement;
-              cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+              cardsOnHand.append(Controller.createSimpleCard(data.card.id, data.card.color, data.card.value));
             }
           } else {
             const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
             const cardsOnHand = (document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement;
-            cardsOnHand.append(createSimpleCard(data.card.id, data.card.color, data.card.value));
+            cardsOnHand.append(Controller.createSimpleCard(data.card.id, data.card.color, data.card.value));
           }
           break;
         }
@@ -170,6 +173,15 @@ class Controller {
           }
           break;
         }
+        case 'UPDATE_TOP_CARD': {
+          Controller.topCard = JSON.parse(msg.data) as CardInfo;
+          document.querySelector('.get-card')?.remove();
+          const lastCard = renderOneCard(
+            Controller.createSimpleCard(
+              Controller.topCard.id, Controller.topCard.color, Controller.topCard.value));
+          document.querySelector('.full-deck')?.append(lastCard);
+          break;
+        }
         /* Processing a move */
         case 'MOVE': {
           clickSoundPlay();
@@ -182,7 +194,7 @@ class Controller {
           const dataMove: { topCard: CardInfo, currentColor: string } = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
           (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
           (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement)?.remove();
-          (document.querySelector('.current-card') as HTMLElement).append(createSimpleCard(dataMove.topCard.id, dataMove.topCard.color, dataMove.topCard.value));
+          (document.querySelector('.current-card') as HTMLElement).append(Controller.createSimpleCard(dataMove.topCard.id, dataMove.topCard.color, dataMove.topCard.value));
           (document.querySelector('.rhomb') as SVGElement).style.fill = dataMove.currentColor;
           break;
         }
