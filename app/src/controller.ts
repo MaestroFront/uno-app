@@ -7,12 +7,12 @@ import { clickSoundPlay, getCardSoundPlay, getChooseSound } from './components/s
 import { moveCurrCard } from './components/game-field/game-animation';
 import { chooseColorAnimation, showBlockAnimation, showRandomColor, showReverseAnimation } from './components/animated-items/animated-items';
 import Router from './components/router';
-import { moveCardToPlayers, renderOneCard } from './components/game-field/game-field';
+import { moveCardToPlayers, renderDeck, renderOneCard } from './components/game-field/game-field';
 import { createLoader } from './index';
 import { showWinnerMessage } from './components/winner-message/winner-message';
 import { language } from './components/local-storage';
 
-let myId = 0;
+export let myId = 0;
 
 class Controller {
   static webSocket: WebSocket;
@@ -67,7 +67,7 @@ class Controller {
           const dataForSent = JSON.stringify({ userName: user, cardId: (evt.target as HTMLDivElement).id });
           Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
         }
-      }, 1500);
+      }, 1600);
     });
     return div;
   }
@@ -98,7 +98,7 @@ class Controller {
   }
 
   static async start(port: number): Promise<void> {
-    const url = '194.158.205.78'; // 'localhost' 194.158.205.78
+    const url = 'localhost'; // 'localhost' 194.158.205.78
     this.webSocket = new WebSocket(`ws://${url}:${port}`);
     function WSWhenConnect() {
       if (document.cookie.includes('user=')) {
@@ -149,13 +149,13 @@ class Controller {
           if (history.state === 'multiplayer') {
             const data: { playerName: string, playerId: number, card: CardInfo } =
                 JSON.parse(msg.data) as { playerName: string, playerId: number, card: CardInfo };
-            if (data.playerName === this.myName) {
-              const cardsOnHand = (document.querySelector('.player-1') as HTMLElement).firstChild as HTMLElement;
-              cardsOnHand.append(Controller.createSimpleCard(data.card.id, data.card.color, data.card.value));
-            } else {
-              const cardsOnHand = (document.querySelector(`#player-${data.playerId + 1}`) as HTMLElement).firstChild as HTMLElement;
-              cardsOnHand.append(Controller.createSimpleCard(data.card.id, data.card.color, data.card.value));
-            }
+            // if (data.playerName === this.myName) {
+            //   const cardsOnHand = (document.querySelector('.player-1') as HTMLElement).firstChild as HTMLElement;
+            //   cardsOnHand.append(Controller.createSimpleCard(data.card.id, data.card.color, data.card.value));
+            // } else {
+            const cardsOnHand = (document.querySelector(`#player-${data.playerId + 1}`) as HTMLElement).firstChild as HTMLElement;
+            cardsOnHand.append(Controller.createSimpleCard(data.card.id, data.card.color, data.card.value));
+            // }
           } else {
             const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
             const cardsOnHand = (document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement;
@@ -211,13 +211,24 @@ class Controller {
         /* Processing a move */
         case 'MOVE': {
           clickSoundPlay();
-          const cardsOnHand = (document.getElementById('player-1') as HTMLDivElement).getElementsByClassName('simple-card');
-          Array.from(cardsOnHand).forEach(card => {
-            card.addEventListener('click', (e) => {
-              moveCurrCard(e);
+          let dataMove: { topCard: CardInfo, userID: number, currentColor: string } | { topCard: CardInfo, currentColor: string };
+          if (history.state === 'multiplayer') {
+            dataMove = JSON.parse(msg.data) as { topCard: CardInfo, userID: number, currentColor: string };
+            const cardsOnHand = (document.getElementById(`player-${(dataMove as  { topCard: CardInfo, userID: number, currentColor: string }).userID + 1}`) as HTMLDivElement).getElementsByClassName('simple-card');
+            Array.from(cardsOnHand).forEach(card => {
+              card.addEventListener('click', (e) => {
+                moveCurrCard(e);
+              });
             });
-          });
-          const dataMove: { topCard: CardInfo, currentColor: string } = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
+          } else {
+            const cardsOnHand = (document.getElementById('player-1') as HTMLDivElement).getElementsByClassName('simple-card');
+            Array.from(cardsOnHand).forEach(card => {
+              card.addEventListener('click', (e) => {
+                moveCurrCard(e);
+              });
+            });
+            dataMove = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
+          }
           (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
           (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement)?.remove();
           (document.querySelector('.current-card') as HTMLElement).append(Controller.createSimpleCard(dataMove.topCard.id, dataMove.topCard.color, dataMove.topCard.value));
@@ -226,7 +237,12 @@ class Controller {
         }
         /* Clears the user field with cards */
         case 'UPDATE_CARD': {
-          ((document.querySelector(`.${msg.data}`) as HTMLElement).firstChild as HTMLElement).innerHTML = '';
+          if (history.state === 'multiplayer') {
+            ((document.querySelector(`#${msg.data}`) as HTMLElement).firstChild as HTMLElement).innerHTML = '';
+            console.log(((document.querySelector(`#${msg.data}`) as HTMLElement).firstChild as HTMLElement));
+          } else {
+            ((document.querySelector(`.${msg.data}`) as HTMLElement).firstChild as HTMLElement).innerHTML = '';
+          }
           break;
         }
         /* Set the names of players and computers on the playing field */
@@ -313,8 +329,9 @@ class Controller {
         }
         case 'CLEAR_FIELD': {
           document.querySelectorAll('.cards').forEach(value => value.innerHTML = '') ;
-          (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
-          (document.querySelector('.deck') as HTMLElement).innerHTML = '';
+          (document.querySelector('.current-card') as HTMLElement).remove();
+          (document.querySelector('.deck') as HTMLElement).remove();
+          (document.querySelector('.field') as HTMLElement).append(renderDeck(), createElement('div', 'current-card'));
           break;
         }
         case 'INCOME_CHAT_MESSAGE': {
@@ -358,9 +375,9 @@ class Controller {
           break;
         }
         case 'REVERSE': {
-          const direction = !(JSON.parse(msg.data) as { direction: boolean }).direction;
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          localStorage.setItem('reverse', `${direction}`);
+          const direction = !(JSON.parse(msg.data) as { direction: boolean }).direction ;
+          localStorage.setItem('reverse', String(direction));
+          console.log(String(direction));
           showReverseAnimation(direction);
           break;
         }

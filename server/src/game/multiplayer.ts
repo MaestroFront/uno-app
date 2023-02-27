@@ -22,7 +22,7 @@ class Multiplayer {
 
   private weNotHaveAWinner: boolean;
 
-  private numberOfPlayers: number;
+  private readonly numberOfPlayers: number;
 
   private players: Player[] = [];
 
@@ -89,7 +89,6 @@ class Multiplayer {
           playerId: playerID,
           card: CardDeck.getColorAndValue(value) });
       this.users.forEach(user => user.socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend })));
-      // this.users[playerID].socket.send(JSON.stringify({ action: 'GET_CARD', data: dataForSend }));
     });
   }
 
@@ -112,7 +111,6 @@ class Multiplayer {
         user.socket.send(
           JSON.stringify({ action: 'REVERSE', data: JSON.stringify({ direction: this.reverse }) }));
       });
-
       this.sleep(5000);
     } else if (topCardInfo.value === 12 || topCardInfo.value === 10) {
       this.setNextPlayerID();
@@ -145,7 +143,7 @@ class Multiplayer {
 
   /* Handling the action of wild cards */
   wildCardActions(userId: number) {
-    this.sendMessage('Choose color!');
+    this.sendMessageById(userId, 'Choose color!');
     this.users[userId].socket.send(JSON.stringify({ action: 'USER_MUST_CHOOSE_COLOR', data: '' }));
   }
 
@@ -295,6 +293,7 @@ class Multiplayer {
                     this.funCardsActions();
                   }
                   this.setNextPlayerID();
+                  this.sendMessage(`Move by ${this.players[this.currentPlayerId].playersName}`);
                 }
               } else  {
                 this.sendMessageById(data.userId, 'Wrong move!');
@@ -305,7 +304,36 @@ class Multiplayer {
             break;
           }
           case 'USERS_SELECTED_COLOR': {
-            console.log('select color');
+            this.currentColor = mes.data;
+            const cardInfo: CardInfo = CardDeck.getColorAndValue(this.topCard);
+            this.users[this.currentPlayerId].socket.send(JSON.stringify(
+              { action: 'MOVE',
+                data: JSON.stringify(
+                  { topCard: cardInfo,
+                    userID: this.currentPlayerId,
+                    currentColor: this.currentColor }) }));
+            break;
+          }
+          case 'GET_CARD_BY_USER': {
+            const userId = parseInt(mes.data, 10);
+            if (userId !== this.currentPlayerId) {
+              this.sendMessageById(userId, 'It\'s not your turn!');
+            } else {
+              if (this.players[this.currentPlayerId].selectPossibleOptionsForMove(this.topCard, this.currentColor) || this.topCard === 999) {
+                this.sendMessageById(this.currentPlayerId, 'You have options for move!');
+              } else {
+                this.users.forEach(userGC => {
+                  userGC.socket.send(JSON.stringify({ action: 'UPDATE_CARD', data: `player-${this.currentPlayerId + 1}` }));
+                });
+                this.dealCardToUser(1, this.currentPlayerId);
+                if (!this.players[this.currentPlayerId].selectPossibleOptionsForMove(this.topCard, this.currentColor)) {
+                  this.setNextPlayerID();
+                  this.sendMessageById(this.currentPlayerId, 'You cant options for move! You skip the turn!');
+                  this.sendMessage(`Move by ${this.players[this.currentPlayerId].playersName}`);
+                }
+              }
+            }
+            break;
           }
         }
       });
