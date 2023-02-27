@@ -4,7 +4,7 @@ import {
   createImage,
   createParagraph,
 } from '../helpers/helpers';
-import Controller from '../../controller';
+import Controller, { myId } from '../../controller';
 import { renderBackSide } from '../cards/cards';
 import { getCardFromDeck } from './game-animation';
 import { renderChat } from '../chat/chat';
@@ -188,7 +188,11 @@ export const createGameField = (quantity: number, lang: string) => {
   /* мои подключени */
   deck.addEventListener('click', (e) => {
     getCardFromDeck(e, 'bottom');//TODO..анимация карты в зависимости от позиции игрока: top, bottom, left, right
-    Controller.webSocket.send(JSON.stringify({ action: 'GET_CARD_BY_USER', data: '' }));
+    if (history.state === 'multiplayer') {
+      Controller.webSocket.send(JSON.stringify({ action: 'GET_CARD_BY_USER', data: myId.toString() }));
+    } else {
+      Controller.webSocket.send(JSON.stringify({ action: 'GET_CARD_BY_USER', data: '' }));
+    }
   });
 };
 
@@ -315,5 +319,4 @@ export const moveCardToPlayers = (start: boolean, plusTwo: boolean, plusFour: bo
       showPlayersNames();
     }, 1000);
   }
-
 };

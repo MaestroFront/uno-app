@@ -12,7 +12,7 @@ import { createLoader } from './index';
 import { showWinnerMessage } from './components/winner-message/winner-message';
 import { language } from './components/local-storage';
 
-let myId = 0;
+export let myId = 0;
 
 class Controller {
   static webSocket: WebSocket;
@@ -67,7 +67,7 @@ class Controller {
           const dataForSent = JSON.stringify({ userName: user, cardId: (evt.target as HTMLDivElement).id });
           Controller.webSocket.send(JSON.stringify({ action: 'MOVE_BY_USER', data: dataForSent }));
         }
-      }, 1500);
+      }, 1600);
     });
     return div;
   }
@@ -149,13 +149,13 @@ class Controller {
           if (history.state === 'multiplayer') {
             const data: { playerName: string, playerId: number, card: CardInfo } =
                 JSON.parse(msg.data) as { playerName: string, playerId: number, card: CardInfo };
-            if (data.playerName === this.myName) {
-              const cardsOnHand = (document.querySelector('.player-1') as HTMLElement).firstChild as HTMLElement;
-              cardsOnHand.append(Controller.createSimpleCard(data.card.id, data.card.color, data.card.value));
-            } else {
-              const cardsOnHand = (document.querySelector(`#player-${data.playerId + 1}`) as HTMLElement).firstChild as HTMLElement;
-              cardsOnHand.append(Controller.createSimpleCard(data.card.id, data.card.color, data.card.value));
-            }
+            // if (data.playerName === this.myName) {
+            //   const cardsOnHand = (document.querySelector('.player-1') as HTMLElement).firstChild as HTMLElement;
+            //   cardsOnHand.append(Controller.createSimpleCard(data.card.id, data.card.color, data.card.value));
+            // } else {
+            const cardsOnHand = (document.querySelector(`#player-${data.playerId + 1}`) as HTMLElement).firstChild as HTMLElement;
+            cardsOnHand.append(Controller.createSimpleCard(data.card.id, data.card.color, data.card.value));
+            // }
           } else {
             const data: { player: string, card: CardInfo } = JSON.parse(msg.data) as { player: string, card: CardInfo };
             const cardsOnHand = (document.querySelector(`.${data.player}`) as HTMLElement).firstChild as HTMLElement;
@@ -215,7 +215,7 @@ class Controller {
           if (history.state === 'multiplayer') {
             dataMove = JSON.parse(msg.data) as { topCard: CardInfo, userID: number, currentColor: string };
             const cardsOnHand = (document.getElementById(`player-${(dataMove as  { topCard: CardInfo, userID: number, currentColor: string }).userID + 1}`) as HTMLDivElement).getElementsByClassName('simple-card');
-            Array.from(cardsOnHand ).forEach(card => {
+            Array.from(cardsOnHand).forEach(card => {
               card.addEventListener('click', (e) => {
                 moveCurrCard(e);
               });
@@ -237,7 +237,12 @@ class Controller {
         }
         /* Clears the user field with cards */
         case 'UPDATE_CARD': {
-          ((document.querySelector(`.${msg.data}`) as HTMLElement).firstChild as HTMLElement).innerHTML = '';
+          if (history.state === 'multiplayer') {
+            ((document.querySelector(`#${msg.data}`) as HTMLElement).firstChild as HTMLElement).innerHTML = '';
+            console.log(((document.querySelector(`#${msg.data}`) as HTMLElement).firstChild as HTMLElement));
+          } else {
+            ((document.querySelector(`.${msg.data}`) as HTMLElement).firstChild as HTMLElement).innerHTML = '';
+          }
           break;
         }
         /* Set the names of players and computers on the playing field */
@@ -370,9 +375,9 @@ class Controller {
           break;
         }
         case 'REVERSE': {
-          const direction = !(JSON.parse(msg.data) as { direction: boolean }).direction;
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          localStorage.setItem('reverse', `${direction}`);
+          const direction = !(JSON.parse(msg.data) as { direction: boolean }).direction ;
+          localStorage.setItem('reverse', String(direction));
+          console.log(String(direction));
           showReverseAnimation(direction);
           break;
         }
