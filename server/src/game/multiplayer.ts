@@ -145,7 +145,7 @@ class Multiplayer {
 
   /* Handling the action of wild cards */
   wildCardActions(userId: number) {
-    this.sendMessage('Choose color!');
+    this.sendMessageById(userId, 'Choose color!');
     this.users[userId].socket.send(JSON.stringify({ action: 'USER_MUST_CHOOSE_COLOR', data: '' }));
   }
 
@@ -295,6 +295,7 @@ class Multiplayer {
                     this.funCardsActions();
                   }
                   this.setNextPlayerID();
+                  this.sendMessage(`Move by ${this.players[this.currentPlayerId].playersName}`);
                 }
               } else  {
                 this.sendMessageById(data.userId, 'Wrong move!');
@@ -305,7 +306,14 @@ class Multiplayer {
             break;
           }
           case 'USERS_SELECTED_COLOR': {
-            console.log('select color');
+            this.currentColor = mes.data;
+            const cardInfo: CardInfo = CardDeck.getColorAndValue(this.topCard);
+            this.users[this.currentPlayerId].socket.send(JSON.stringify(
+              { action: 'MOVE',
+                data: JSON.stringify(
+                  { topCard: cardInfo,
+                    userID: this.currentPlayerId,
+                    currentColor: this.currentColor }) }));
           }
         }
       });

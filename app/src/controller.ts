@@ -92,7 +92,7 @@ class Controller {
   }
 
   static async start(port: number): Promise<void> {
-    const url = '194.158.205.78'; // 'localhost' 194.158.205.78
+    const url = 'localhost'; // 'localhost' 194.158.205.78
     this.webSocket = new WebSocket(`ws://${url}:${port}`);
     function WSWhenConnect() {
       if (document.cookie.includes('user=')) {
@@ -205,17 +205,32 @@ class Controller {
         /* Processing a move */
         case 'MOVE': {
           clickSoundPlay();
-          const cardsOnHand = (document.getElementById('player-1') as HTMLDivElement).getElementsByClassName('simple-card');
-          Array.from(cardsOnHand).forEach(card => {
-            card.addEventListener('click', (e) => {
-              moveCurrCard(e);
+          if (history.state === 'multiplayer') {
+            const dataMove: { topCard: CardInfo, userID: number, currentColor: string } =
+                JSON.parse(msg.data) as { topCard: CardInfo, userID: number, currentColor: string };
+            const cardsOnHand = (document.querySelector(`#name-player-${dataMove.userID + 1}`)?.getElementsByClassName('simple-card') as HTMLElement[]);
+            Array.from(cardsOnHand ).forEach(card => {
+              card.addEventListener('click', (e) => {
+                moveCurrCard(e);
+              });
             });
-          });
-          const dataMove: { topCard: CardInfo, currentColor: string } = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
-          (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
-          (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement)?.remove();
-          (document.querySelector('.current-card') as HTMLElement).append(Controller.createSimpleCard(dataMove.topCard.id, dataMove.topCard.color, dataMove.topCard.value));
-          (document.querySelector('.rhomb') as SVGElement).style.fill = dataMove.currentColor;
+            (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
+            (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement)?.remove();
+            (document.querySelector('.current-card') as HTMLElement).append(Controller.createSimpleCard(dataMove.topCard.id, dataMove.topCard.color, dataMove.topCard.value));
+            (document.querySelector('.rhomb') as SVGElement).style.fill = dataMove.currentColor;
+          } else {
+            const cardsOnHand = (document.getElementById('player-1') as HTMLDivElement).getElementsByClassName('simple-card');
+            Array.from(cardsOnHand).forEach(card => {
+              card.addEventListener('click', (e) => {
+                moveCurrCard(e);
+              });
+            });
+            const dataMove: { topCard: CardInfo, currentColor: string } = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
+            (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
+            (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement)?.remove();
+            (document.querySelector('.current-card') as HTMLElement).append(Controller.createSimpleCard(dataMove.topCard.id, dataMove.topCard.color, dataMove.topCard.value));
+            (document.querySelector('.rhomb') as SVGElement).style.fill = dataMove.currentColor;
+          }
           break;
         }
         /* Clears the user field with cards */
