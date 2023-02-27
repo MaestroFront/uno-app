@@ -7,7 +7,7 @@ import { clickSoundPlay, getCardSoundPlay, getChooseSound } from './components/s
 import { moveCurrCard } from './components/game-field/game-animation';
 import { chooseColorAnimation, showBlockAnimation, showRandomColor, showReverseAnimation } from './components/animated-items/animated-items';
 import Router from './components/router';
-import { moveCardToPlayers, renderOneCard } from './components/game-field/game-field';
+import { moveCardToPlayers, renderDeck, renderOneCard } from './components/game-field/game-field';
 import { createLoader } from './index';
 import { showWinnerMessage } from './components/winner-message/winner-message';
 import { language } from './components/local-storage';
@@ -211,19 +211,15 @@ class Controller {
         /* Processing a move */
         case 'MOVE': {
           clickSoundPlay();
+          let dataMove: { topCard: CardInfo, userID: number, currentColor: string } | { topCard: CardInfo, currentColor: string };
           if (history.state === 'multiplayer') {
-            const dataMove: { topCard: CardInfo, userID: number, currentColor: string } =
-                JSON.parse(msg.data) as { topCard: CardInfo, userID: number, currentColor: string };
-            const cardsOnHand = (document.querySelector(`#name-player-${dataMove.userID + 1}`)?.getElementsByClassName('simple-card') as HTMLElement[]);
+            dataMove = JSON.parse(msg.data) as { topCard: CardInfo, userID: number, currentColor: string };
+            const cardsOnHand = (document.getElementById(`player-${(dataMove as  { topCard: CardInfo, userID: number, currentColor: string }).userID + 1}`) as HTMLDivElement).getElementsByClassName('simple-card');
             Array.from(cardsOnHand ).forEach(card => {
               card.addEventListener('click', (e) => {
                 moveCurrCard(e);
               });
             });
-            (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
-            (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement)?.remove();
-            (document.querySelector('.current-card') as HTMLElement).append(Controller.createSimpleCard(dataMove.topCard.id, dataMove.topCard.color, dataMove.topCard.value));
-            (document.querySelector('.rhomb') as SVGElement).style.fill = dataMove.currentColor;
           } else {
             const cardsOnHand = (document.getElementById('player-1') as HTMLDivElement).getElementsByClassName('simple-card');
             Array.from(cardsOnHand).forEach(card => {
@@ -231,12 +227,12 @@ class Controller {
                 moveCurrCard(e);
               });
             });
-            const dataMove: { topCard: CardInfo, currentColor: string } = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
-            (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
-            (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement)?.remove();
-            (document.querySelector('.current-card') as HTMLElement).append(Controller.createSimpleCard(dataMove.topCard.id, dataMove.topCard.color, dataMove.topCard.value));
-            (document.querySelector('.rhomb') as SVGElement).style.fill = dataMove.currentColor;
+            dataMove = JSON.parse(msg.data) as { topCard: CardInfo, currentColor: string };
           }
+          (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
+          (document.getElementById(`${dataMove.topCard.id}`) as HTMLElement)?.remove();
+          (document.querySelector('.current-card') as HTMLElement).append(Controller.createSimpleCard(dataMove.topCard.id, dataMove.topCard.color, dataMove.topCard.value));
+          (document.querySelector('.rhomb') as SVGElement).style.fill = dataMove.currentColor;
           break;
         }
         /* Clears the user field with cards */
@@ -328,8 +324,9 @@ class Controller {
         }
         case 'CLEAR_FIELD': {
           document.querySelectorAll('.cards').forEach(value => value.innerHTML = '') ;
-          (document.querySelector('.current-card') as HTMLElement).innerHTML = '';
-          (document.querySelector('.deck') as HTMLElement).innerHTML = '';
+          (document.querySelector('.current-card') as HTMLElement).remove();
+          (document.querySelector('.deck') as HTMLElement).remove();
+          (document.querySelector('.field') as HTMLElement).append(renderDeck(), createElement('div', 'current-card'));
           break;
         }
         case 'INCOME_CHAT_MESSAGE': {
