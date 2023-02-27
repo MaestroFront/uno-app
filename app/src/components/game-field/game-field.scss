@@ -14,7 +14,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 30%;
   height: 30%;
   flex-direction: column;
   border-radius: 10px;
@@ -24,33 +23,33 @@
 .player-1 {
   bottom: 0;
   left: 50%;
-  transform: translate(-20%, 0%);
+  transform: translate(-35%, 10%);
 }
 
 .player-2 {
   top: 50%;
   left: 0;
-  transform: rotate(-90deg) translate(60%, 0%);
+  transform: rotate(-90deg) translate(35%, -70%);
 }
 
 .player-3 {
   top: 0;
   left: 50%;
-  transform: translate(-20%, 0%);
+  transform: translate(-35%, -10%);
 }
 
 .player-4 {
   top: 50%;
   right: 0;
-  transform: rotate(90deg) translate(-5%, 0%);
+  transform: rotate(90deg) translate(-5%, -60%);
 }
 
 .player-name {
   font-size: 1em;
   color: white;
   position: absolute;
-  bottom: 0;
-  right: 20%;
+  bottom: 5%;
+  right: 30%;
   opacity: 0;
   transition: all 1s ease-in-out;
 }
@@ -93,9 +92,14 @@
   align-items: flex-end;
 }
 
-.current-card .simple-card {
-  top: 11%;
-  left: 19%;
+.simple-card .back-side {
+  position: absolute;
+}
+
+.player-1 .simple-card .back-side,
+.current-card .simple-card .back-side {
+  opacity: 0;
+  transform: scale(0);
 }
 
 .deck {
@@ -144,6 +148,7 @@
 
 /*active player's card*/
 .simple-card {
+  position: relative;
   transition: all 0.3s ease-in-out;
 }
 
