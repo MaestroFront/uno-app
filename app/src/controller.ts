@@ -316,8 +316,8 @@ class Controller {
         case 'RESULTS_OF_GAME': {
           // TODO выводит результат за всю игру
           const results: { players: string, points: number }[] = JSON.parse(msg.data) as { players: string, points: number }[];
-          console.log(results);
-          // showWinnerMessage(language.chosen, results[0].players, results[0].points);
+          const currWinner = results.filter(el => el.points != 0);
+          showWinnerMessage(language.chosen, currWinner[0].players, currWinner[0].points);
           break;
         }
         case 'WINNER': {
