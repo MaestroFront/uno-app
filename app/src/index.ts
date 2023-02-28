@@ -31,6 +31,9 @@ if (history.state !== '404' || history.state !== null) {
 void Controller.start(9001).then().catch();
 
 window.onload = () => {
+  localStorage.removeItem('reg-name');
+  localStorage.removeItem('reg-password');
+  localStorage.removeItem('reg-mail');
   Router.initialize();
   const loader = document.querySelector('.loader') as HTMLDivElement;
   if (loader || history.state === '404' || history.state === null) {

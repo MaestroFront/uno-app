@@ -114,6 +114,14 @@
   position: absolute;
   bottom: 5%;
   right: 5%;
+  opacity: .3;
+  pointer-events: none;
+}
+
+.btn-submit-reg.show,
+.btn-submit-log.show {
+  opacity: 1;
+  pointer-events: all;
 }
 
 .btn-yes {

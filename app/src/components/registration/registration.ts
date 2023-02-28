@@ -44,13 +44,31 @@ export const createRegOrLogWindow = (method: string, lang: string) => {
   const inputName = createInput(`input-${method}-name`, 'text', langData[lang]['reg-nickname-title']);
   inputName.pattern = '[A-Za-z]{5,10}';
   inputName.maxLength = 10;
-  inputName.oninput = () => inputName.value = inputName.value.replace(/[^а-яa-zА-ЯA-Z]/g, '');
+  inputName.oninput = () => {
+    inputName.value = inputName.value.replace(/[^а-яa-zА-ЯA-Z]/g, '');
+    if (inputName?.value.length >= 5) localStorage.setItem('reg-name', 'true');
+    if (localStorage.getItem('reg-mail') && localStorage.getItem('reg-password') && inputName?.value.length >= 5) {
+      document.querySelector('.btn-submit-reg')?.classList.add('show');
+    }
+    if (localStorage.getItem('reg-password') && inputName?.value.length >= 5) {
+      document.querySelector('.btn-submit-log')?.classList.add('show');
+    }
+  };
 
   const passwordTitle = createParagraph(`${method}-password-title`, langData[lang]['reg-pass']);
   const inputPassword = createInput(`input-${method}-password`, 'password', langData[lang]['reg-pass-title']);
   inputPassword.pattern = '[0-9]{5}';
   inputPassword.maxLength = 5;
-  inputPassword.oninput = () => inputPassword.value = inputPassword.value.replace(/[^0-9]/g, '');
+  inputPassword.oninput = () => {
+    inputPassword.value = inputPassword.value.replace(/[^0-9]/g, '');
+    if (inputPassword.value.length === 5) localStorage.setItem('reg-password', 'true');
+    if (localStorage.getItem('reg-name') && localStorage.getItem('reg-mail') && inputPassword.value.length === 5) {
+      document.querySelector('.btn-submit-reg')?.classList.add('show');
+    }
+    if (localStorage.getItem('reg-name') && inputPassword.value.length === 5) {
+      document.querySelector('.btn-submit-log')?.classList.add('show');
+    }
+  };
 
   const cross = createButton('btn-cross', 'button', 'x');
   const submit = createButton(`btn-submit-${method}`, 'submit', `${method}`);
@@ -79,6 +97,9 @@ export const createRegOrLogWindow = (method: string, lang: string) => {
   } else {
     if (method === 'reg') {
       submit.addEventListener('click', async (ev) => {
+        localStorage.removeItem('reg-name');
+        localStorage.removeItem('reg-password');
+        localStorage.removeItem('reg-mail');
         ev.preventDefault();
         const name = (document.querySelector('.input-reg-name') as HTMLInputElement).value;
         const pass = (document.querySelector('.input-reg-password') as HTMLInputElement).value;
@@ -142,7 +163,13 @@ export const createRegOrLogWindow = (method: string, lang: string) => {
   const mailBlock = createElement('div', 'mail-block') as HTMLDivElement;
   if (method === 'reg') {
     const mailTitle = createParagraph('mail-title', langData[lang]['reg-email']);
-    const mail = createInput('input-mail', 'mail', langData[lang]['reg-email-title']) as HTMLDivElement;
+    const mail = createInput('input-mail', 'mail', langData[lang]['reg-email-title']);
+    mail.oninput = () => {
+      if (mail?.value.length >= 5 && mail?.value.includes('@')) localStorage.setItem('reg-mail', 'true');
+      if (localStorage.getItem('reg-name') && localStorage.getItem('reg-password') && mail?.value.length >= 5 && mail?.value.includes('@')) {
+        document.querySelector('.btn-submit-reg')?.classList.add('show');
+      }
+    };
     mailBlock.append(mailTitle, mail);
     form.append(mailBlock);
   }
