@@ -17,17 +17,6 @@ import {
 import { createRulesWindow, openRulesWindow } from '../rules-page/rules-page';
 import { getCardsSound } from '../sounds';
 
-const playerField = (playerClassName: string, playerName: string) => {
-  const block = createElement('div', playerClassName) as HTMLDivElement;
-  block.id = playerClassName;
-  const cardsBlock = createElement('div', 'cards');
-  const title = createParagraph('player-name', playerName);
-  title.id = `name-${playerClassName}`;
-  block.append(cardsBlock, title);
-
-  return block;
-};
-
 const randomInteger = (min: number, max: number) => {
   // получить случайное число от (min-0.5) до (max+0.5)
   const rand = min - 0.5 + Math.random() * (max - min + 1);
@@ -67,7 +56,10 @@ interface INBAPlayers {
 }
 
 export const searchCompName = () => {
-  const index = randomInteger(0, 100);
+  const index1 = randomInteger(0, 100);
+  const index2 = randomInteger(0, 100);
+  const index3 = randomInteger(0, 100);
+  const index4 = randomInteger(0, 100);
   const options = {
     method: 'GET',
     headers: {
@@ -78,10 +70,25 @@ export const searchCompName = () => {
 
   fetch('https://free-nba.p.rapidapi.com/players?page=0&per_page=100', options)
     .then((response) => response.json())
-    .then((response: INBAPlayers) => localStorage.setItem('player', `${response.data[index].first_name + ' ' + response.data[index].last_name}`))
+    .then((response: INBAPlayers) => {
+      localStorage.setItem('player-1', `${response.data[index1].first_name + ' ' + response.data[index2].last_name}`);
+      localStorage.setItem('player-2', `${response.data[index2].first_name + ' ' + response.data[index1].last_name}`);
+      localStorage.setItem('player-3', `${response.data[index3].first_name + ' ' + response.data[index4].last_name}`);
+      localStorage.setItem('player-4', `${response.data[index4].first_name + ' ' + response.data[index3].last_name}`);
+    })
     .catch((err) => console.error(err));
+};
+searchCompName();
 
-  return localStorage.getItem('player');
+const playerField = (playerClassName: string, playerName: string) => {
+  const block = createElement('div', playerClassName) as HTMLDivElement;
+  block.id = playerClassName;
+  const cardsBlock = createElement('div', 'cards');
+  const title = createParagraph('player-name', playerName);
+  title.id = `name-${playerClassName}`;
+  block.append(cardsBlock, title);
+
+  return block;
 };
 
 const createRhomb = () => {
@@ -143,6 +150,10 @@ export const renderDeck = (): HTMLDivElement => {
   return deck;
 };
 
+const createNameComputer = (classPlayer: string, player: string) => {
+  (document.querySelector(classPlayer) as HTMLParagraphElement).textContent = localStorage.getItem(player);
+};
+
 export const createGameField = (quantity: number, lang: string) => {
   const main = document.querySelector('.main') as HTMLDivElement;
   const container = createElement('div', 'game-field') as HTMLDivElement;
@@ -151,6 +162,9 @@ export const createGameField = (quantity: number, lang: string) => {
       playerField('player-1', 'player 1'),
       playerField('player-2', 'player 2'),
     );
+    setTimeout(() => {
+      createNameComputer('.player-2 .player-name', 'player-2');
+    }, 2000);
   }
   if (quantity === 3) {
     container.append(
@@ -158,6 +172,10 @@ export const createGameField = (quantity: number, lang: string) => {
       playerField('player-2', 'player 2'),
       playerField('player-3', 'player 3'),
     );
+    setTimeout(() => {
+      createNameComputer('.player-2 .player-name', 'player-2');
+      createNameComputer('.player-3 .player-name', 'player-3');
+    }, 2000);
   }
   if (quantity === 4) {
     container.append(
@@ -166,6 +184,11 @@ export const createGameField = (quantity: number, lang: string) => {
       playerField('player-3', 'player 3'),
       playerField('player-4', 'player 4'),
     );
+    setTimeout(() => {
+      createNameComputer('.player-2 .player-name', 'player-2');
+      createNameComputer('.player-3 .player-name', 'player-3');
+      createNameComputer('.player-4 .player-name', 'player-4');
+    }, 2000);
   }
   const field = createElement('div', 'field');
   const deck = renderDeck();
