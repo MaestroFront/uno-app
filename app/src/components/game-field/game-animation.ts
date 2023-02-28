@@ -10,9 +10,9 @@ export const moveCurrCard = (e: Event) => {
       currCard,
       [
         { transform: 'translate(0%, 0%)' },
-        { transform: `translate(${window.innerWidth / 1.95 - rect.x}px, -210px)` },
+        { transform: `translate(${window.innerWidth / 1.9 - rect.x}px, -210px)` },
       ],
-      { duration: 2000, fill: 'none' },
+      { duration: 1800, fill: 'none' },
     );
     const moveCardAnimation = new Animation(currCardKeyframes, document.timeline);
     moveCardAnimation.play();
