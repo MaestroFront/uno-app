@@ -14,41 +14,40 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 30%;
+  /* height: 30%; */
+  width: 30%;
   flex-direction: column;
   border-radius: 10px;
-  position: absolute;
+  position: fixed;
 }
 
 .player-1 {
-  bottom: 0;
-  left: 50%;
-  transform: translate(-35%, 10%);
+  bottom: 2%;
+  left: 44%;
 }
 
 .player-2 {
-  top: 50%;
-  left: 0;
-  transform: rotate(-90deg) translate(35%, -70%);
+  top: 23%;
+  left: 0%;
+  transform: rotate(-90deg);
 }
 
 .player-3 {
-  top: 0;
-  left: 50%;
-  transform: translate(-35%, -10%);
+  top: 2%;
+  left: 44%;
 }
 
 .player-4 {
   top: 50%;
-  right: 0;
-  transform: rotate(90deg) translate(-5%, -60%);
+  right: 2%;
+  transform: rotate(90deg);
 }
 
 .player-name {
   font-size: 1em;
   color: white;
   position: absolute;
-  bottom: 5%;
+  bottom: -15%;
   right: 30%;
   opacity: 0;
   transition: all 1s ease-in-out;
