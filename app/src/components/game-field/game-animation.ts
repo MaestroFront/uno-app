@@ -5,12 +5,12 @@ export const moveCurrCard = (e: Event) => {
   const currCard = (el.parentElement as Element).parentElement as HTMLElement;
   const rect = el.getBoundingClientRect();
 
-  if (el.closest('.simple-card')) {
+  if (el.closest('.player-1 .cardCenter')) {
     const currCardKeyframes = new KeyframeEffect(
       currCard,
       [
         { transform: 'translate(0%, 0%)' },
-        { transform: `translate(${window.innerWidth / 1.9 - rect.x}px, -210px)` },
+        { transform: `translate(${window.innerWidth / 1.95 - rect.x}px, -210px)` },
       ],
       { duration: 2000, fill: 'none' },
     );
