@@ -13,7 +13,7 @@ const createResultsListTitle = (lang: string) => {
   return item;
 };
 
-const createPlayerResult = (nickname: string, points: number) => {
+export const createPlayerResult = (nickname: string, points: number) => {
   const player = createElement('li', 'results-item') as HTMLLIElement;
   const name = createSpan('result-player-name', nickname);
   const pointsQuantity = createSpan('player-points', `${points}`);
@@ -26,7 +26,6 @@ const createResultsTable = (lang: string) => {
   const container = createElement('div', 'results-container') as HTMLDivElement;
   const list = createElement('ul', 'results-list') as HTMLUListElement;
   list.append(createResultsListTitle(lang));
-  list.append(createPlayerResult('Boris', 10), createPlayerResult('Evgeny', 20), createPlayerResult('Jora', 23), createPlayerResult('Alex', 10000), createPlayerResult('Vitya', 2));
   const cross = createButton('btn-cross', 'burron', 'x');
 
   container.append(list, cross);
