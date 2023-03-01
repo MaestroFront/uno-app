@@ -4,7 +4,7 @@ import { createButton, createElement, createParagraph } from './components/helpe
 import { CardInfo, WebSocketMessage } from './types';
 import { blueColor, greenColor, redColor, renderBackSide, renderBlockedCard, renderCardWithNumber, renderMultiCard, renderPlusFourCard, renderPlusTwoCard, renderReverseCard, yellowColor } from './components/cards/cards';
 import { clickSoundPlay, getCardSoundPlay, getChooseSound } from './components/sounds';
-import { mouseEventsStop, moveCurrCard } from './components/game-field/game-animation';
+import { moveCurrCard } from './components/game-field/game-animation';
 import { chooseColorAnimation, showBlockAnimation, showRandomColor, showReverseAnimation } from './components/animated-items/animated-items';
 import Router from './components/router';
 import { moveCardToPlayers, renderDeck, renderOneCard } from './components/game-field/game-field';
@@ -191,7 +191,6 @@ class Controller {
                 }
                 default : {
                   (document.querySelector('#name-player-1') as HTMLDivElement).classList.add('current-player-move');
-                  mouseEventsStop(false);
                 }
               }
             }

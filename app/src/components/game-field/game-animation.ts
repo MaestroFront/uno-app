@@ -1,26 +1,11 @@
 import { getCardSoundPlay } from '../sounds';
 
-export const mouseEventsStop = (hide: boolean) => {
-  const playerCards = document.querySelector('.player-1') as HTMLBodyElement;
-  const field = document.querySelector('.field') as HTMLBodyElement;
-  if (hide) {
-    setTimeout(() => {
-      playerCards.classList.add('off');
-      field.classList.add('off');
-    }, 2000);
-  } else {
-    playerCards.classList.remove('off');
-    field.classList.remove('off');
-  }
-};
-
 export const moveCurrCard = (e: Event) => {
   const el = e.target as HTMLElement;
   const currCard = (el.parentElement as Element).parentElement as HTMLElement;
   const rect = el.getBoundingClientRect();
 
   if (el.closest('.player-1 .cardCenter')) {
-    mouseEventsStop(true);
     const currCardKeyframes = new KeyframeEffect(
       currCard,
       [
